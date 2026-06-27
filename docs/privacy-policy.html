@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PrivaMesh — Privacy Policy</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="logo.png" alt="PrivaMesh logo" />
+    <h1>Privacy Policy</h1>
+    <div class="tag">PrivaMesh · Last updated: 2026</div>
+  </header>
+
+  <p>PrivaMesh is a <strong>serverless</strong> messenger. We do not operate any backend server, account database, or message store. This policy explains what that means for your data.</p>
+
+  <h2>Summary</h2>
+  <ul>
+    <li><strong>We collect nothing.</strong> PrivaMesh has no servers, no analytics, no tracking, no ads.</li>
+    <li>Your messages, contacts, and keys are stored <strong>only on your device</strong>.</li>
+    <li>Messages travel as <strong>end-to-end encrypted</strong> data on the public Solana blockchain. We cannot read them.</li>
+    <li>We have no account for you, no email, no phone number — only a key pair you control.</li>
+  </ul>
+
+  <h2>What we do NOT collect</h2>
+  <p>PrivaMesh has <strong>no first-party server</strong>, so we do not — and technically cannot — collect, log, or store:</p>
+  <ul>
+    <li>Your messages or their content</li>
+    <li>Your contacts or contact graph</li>
+    <li>Your IP address</li>
+    <li>Analytics, usage data, device identifiers, or advertising identifiers</li>
+    <li>Email, phone number, name, or any personal identifier</li>
+  </ul>
+  <p>We do not use third-party analytics, advertising, or tracking SDKs.</p>
+
+  <h2>Data stored on your device only</h2>
+  <p>The following never leaves your device and is never transmitted to us:</p>
+  <ul>
+    <li>Your <strong>seed phrase</strong> and cryptographic keys — stored in the iOS Keychain, optionally locked behind Face ID / passcode.</li>
+    <li><strong>Decrypted messages, contacts, and chat history</strong> — stored locally, removable at any time.</li>
+    <li>App preferences (theme, language, notification settings).</li>
+  </ul>
+  <p>Deleting the app removes this local data. Your on-chain history (encrypted) remains on the blockchain, undecryptable without your keys.</p>
+
+  <h2>Data on the public blockchain</h2>
+  <p>PrivaMesh transports messages as encrypted memos inside Solana transactions. Therefore:</p>
+  <ul>
+    <li>The <strong>encrypted ciphertext</strong> of messages is publicly visible on the Solana ledger, but is unreadable without the recipient's keys.</li>
+    <li>Transaction metadata (existence, timestamp, fee payer) is public, as with any blockchain. PrivaMesh mitigates this with one-time <strong>stealth addresses</strong>, optional <strong>cover traffic</strong>, and an optional separate <strong>gas wallet</strong>.</li>
+    <li>This data is immutable and outside our control. We cannot delete it.</li>
+  </ul>
+
+  <h2>Third parties</h2>
+  <ul>
+    <li><strong>Solana RPC providers</strong> — the app connects to a public Solana RPC endpoint (configurable, self-hostable) to read and submit transactions. That provider may observe your IP address and the requests you make, like any internet service. Use a VPN, Tor (Orbot), or your own RPC for additional protection.</li>
+    <li><strong>Apple</strong> — subscription purchases (PrivaMesh+) are processed by Apple via StoreKit. Apple's privacy policy applies. We receive no payment details.</li>
+  </ul>
+
+  <h2>Encryption</h2>
+  <p>Messages are end-to-end encrypted using the X3DH key-agreement protocol and the Double Ratchet (AES-256-GCM). Keys are generated and held on your device only.</p>
+
+  <h2>Children</h2>
+  <p>PrivaMesh is not directed to children under 17.</p>
+
+  <h2>Changes</h2>
+  <p>We may update this policy. Material changes will be reflected in the app and on this page.</p>
+
+  <h2>Contact</h2>
+  <p>Questions or reports: <a href="mailto:privamesh@proton.me">privamesh@proton.me</a></p>
+
+  <hr />
+  <p class="muted"><a href="index.html">← PrivaMesh</a> · <a href="terms.html">Terms of Use</a></p>
+</div>
+</body>
+</html>

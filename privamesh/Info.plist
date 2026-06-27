@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>PrivaMesh</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>Used to scan your contact's QR code for secure key exchange.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Used to send encrypted photos to your contacts via Arweave.</string>
+
+    <key>NSFaceIDUsageDescription</key>
+    <string>Used to quickly unlock PrivaMesh without entering your passcode.</string>
+
+    <!-- Background polling for new messages / incoming transactions (server-less,
+         so no push — we wake periodically to poll the chain). -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.privamesh.refresh</string>
+    </array>
+
+    <!-- Standard encryption (AES-256, Curve25519) used solely for end-to-end message encryption.
+         Qualifies under EAR 740.13(e) publicly available encryption exemption. -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+</dict>
+</plist>

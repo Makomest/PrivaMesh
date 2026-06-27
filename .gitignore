@@ -1,0 +1,24 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad
+xcuserdata/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+
+# Secrets / local
+*.xcconfig.local
+secrets.plist
+
+# Generated App Store screenshots (regenerate locally)
+docs/store-screenshots/raw/
+docs/store-screenshots/out/

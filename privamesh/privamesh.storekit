@@ -1,0 +1,55 @@
+{
+  "identifier" : "0211F7C8-36DD-46B8-9D56-423729013BA6",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "29F93ACF-247E-4E22-A154-4511ED1689E3",
+      "localizations" : [
+
+      ],
+      "name" : "PrivaMesh+",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6BF640CE-F90C-43A1-81CB-5F30769FA355",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Премиум-членство PrivaMesh+: минт NFT-ников, безлимит лотов, галочка, до 3 аккаунтов",
+              "displayName" : "PrivaMesh+",
+              "locale" : "ru"
+            }
+          ],
+          "productID" : "com.privamesh.plus.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "PrivaMesh Plus Monthly",
+          "subscriptionGroupID" : "29F93ACF-247E-4E22-A154-4511ED1689E3",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

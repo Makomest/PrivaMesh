@@ -1,0 +1,5951 @@
+{
+  "sourceLanguage": "ru",
+  "strings": {
+    "": {},
+    "· %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        }
+      }
+    },
+    "«%@» и вся переписка с ним будут удалены с этого устройства. Контакт по-прежнему сможет тебе написать.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” and all chats with them will be deleted from this device. The contact can still message you."
+          }
+        }
+      }
+    },
+    "«%@» продан за %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” sold for %@"
+          }
+        }
+      }
+    },
+    "@": {},
+    "@%@ свободен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@%@ is available"
+          }
+        }
+      }
+    },
+    "@%@ уже занят": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@%@ is taken"
+          }
+        }
+      }
+    },
+    "**Double Ratchet** — новый ключ для каждого сообщения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Double Ratchet** — a new key for every message"
+          }
+        }
+      }
+    },
+    "**Face ID на seed** — ключи в Keychain под биометрией": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Face ID on seed** — keys in the Keychain behind biometrics"
+          }
+        }
+      }
+    },
+    "**Stealth адреса** — одноразовый адрес на каждую транзакцию": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Stealth addresses** — a one-time address per transaction"
+          }
+        }
+      }
+    },
+    "**Без телефона и email** — только seed phrase = твоя личность": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No phone or email** — only a seed phrase = your identity"
+          }
+        }
+      }
+    },
+    "**Вместо абонплаты** серверам, которые следят за тобой": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Instead of subscriptions** to servers that track you"
+          }
+        }
+      }
+    },
+    "**Восстанавливается** на любом устройстве только по 12 словам": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Recoverable** on any device from just 12 words"
+          }
+        }
+      }
+    },
+    "**Газ-кошелёк** — комиссии платит отдельный кошелёк, твой адрес скрыт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Gas wallet** — a separate wallet pays fees, your address stays hidden"
+          }
+        }
+      }
+    },
+    "**Запиши их на бумаге** и храни в надёжном месте. Не делай скриншот.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Write them on paper** and keep them safe. Don't screenshot."
+          }
+        }
+      }
+    },
+    "**Исчезающие сообщения** — авто-удаление локальных копий": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Disappearing messages** — auto-delete local copies"
+          }
+        }
+      }
+    },
+    "**Маскирующий трафик** — ложные сообщения прячут, когда ты пишешь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Cover traffic** — decoy messages hide when you actually write"
+          }
+        }
+      }
+    },
+    "**Мы не сможем помочь** если ты потеряешь слова. Нет серверов, нет аккаунтов на наших серверах.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**We can't help** if you lose the words. No servers, no accounts on our side."
+          }
+        }
+      }
+    },
+    "**Нет центрального сервера** — некого взломать или принудить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No central server** — nothing to hack or coerce"
+          }
+        }
+      }
+    },
+    "**Никакой регистрации** — seed phrase = твой аккаунт навсегда": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No sign-up** — a seed phrase is your account forever"
+          }
+        }
+      }
+    },
+    "**Никому не показывай** эти слова. Любой кто их увидит — получит доступ к твоему аккаунту.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Never show** these words to anyone. Whoever sees them gets your account."
+          }
+        }
+      }
+    },
+    "**Подпись контактов** — защита от подмены собеседника (MITM)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Signed contacts** — protection against impersonation (MITM)"
+          }
+        }
+      }
+    },
+    "**Полная децентрализация** — не блокируется, не цензурируется": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Fully decentralized** — unblockable, uncensorable"
+          }
+        }
+      }
+    },
+    "**Раздельные ключи аккаунтов** — твои аккаунты не связать между собой": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Separate account keys** — your accounts can't be linked"
+          }
+        }
+      }
+    },
+    "**Сообщения хранятся на блокчейне** Solana — зашифрованными": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Messages live on the Solana blockchain** — encrypted"
+          }
+        }
+      }
+    },
+    "**Уникальный ник** генерируется автоматически из твоего ключа": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**A unique nickname** is generated automatically from your key"
+          }
+        }
+      }
+    },
+    "/мес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/mo"
+          }
+        }
+      }
+    },
+    "\\(lamports) лампортов": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ lamports"
+          }
+        }
+      }
+    },
+    "%.1f с": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%.1f s"
+          }
+        }
+      }
+    },
+    "%@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ SOL"
+          }
+        }
+      }
+    },
+    "%@ SOL%@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ SOL%2$@"
+          }
+        }
+      }
+    },
+    "%@ SOL%@ за транзакцию": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ SOL%2$@ за транзакцию"
+          }
+        }
+      }
+    },
+    "%@ с": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s"
+          }
+        }
+      }
+    },
+    "%@%@ SOL": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@%2$@ SOL"
+          }
+        }
+      }
+    },
+    "%lld": {},
+    "%lld / %lld": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "%lld NFT": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld NFT"
+          }
+        }
+      }
+    },
+    "%lld лампортов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld lamports"
+          }
+        }
+      }
+    },
+    "%lld слов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld words"
+          }
+        }
+      }
+    },
+    "%lld цифр для входа в приложение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld digits to unlock the app"
+          }
+        }
+      }
+    },
+    "%lld цифры": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld digits"
+          }
+        }
+      }
+    },
+    "%lld.": {},
+    "%lld. %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld. %2$@"
+          }
+        }
+      }
+    },
+    "%lld/140": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/140"
+          }
+        }
+      }
+    },
+    "%lld/280": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/280"
+          }
+        }
+      }
+    },
+    "•••••": {},
+    "••••••": {},
+    "+": {},
+    "~**$0.0003** за сообщение = $0.30 за 1000 сообщений": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~**$0.0003** per message = $0.30 for 1000 messages"
+          }
+        }
+      }
+    },
+    "~%@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%@ SOL"
+          }
+        }
+      }
+    },
+    "−%@ SOL": {},
+    "∞": {},
+    "≈ $%.4f · %d лампортов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈ $%.4f · %d lamports"
+          }
+        }
+      }
+    },
+    "≈ $%@ · %lld лампортов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈ $%@ · %lld lamports"
+          }
+        }
+      }
+    },
+    "✓ Коллекция уже защищена on-chain. Повторно нажимать не нужно — каждый минт стоит комиссию.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✓ Collection is already secured on-chain. No need to tap again — each mint costs a fee."
+          }
+        }
+      }
+    },
+    "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит комиссию.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✓ Profile is already searchable. No need to tap again — each publish costs a fee."
+          }
+        }
+      }
+    },
+    "🎁 %@": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🎁 %@"
+          }
+        }
+      }
+    },
+    "🎁 Вам подарок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🎁 Gift for you"
+          }
+        }
+      }
+    },
+    "🎁 Подарок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🎁 Gift"
+          }
+        }
+      }
+    },
+    "0.0": {},
+    "1 SOL = $%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 SOL = $%@"
+          }
+        }
+      }
+    },
+    "1 день": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 day"
+          }
+        }
+      }
+    },
+    "1 неделя": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 week"
+          }
+        }
+      }
+    },
+    "1 час": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hour"
+          }
+        }
+      }
+    },
+    "6 цифр для входа в приложение": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 digits to unlock the app"
+          }
+        }
+      }
+    },
+    "99+": {},
+    "Accounts": {},
+    "Active": {},
+    "Close": {},
+    "Cover-трафик:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cover traffic:"
+          }
+        }
+      }
+    },
+    "Double Ratchet:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double Ratchet:"
+          }
+        }
+      }
+    },
+    "English": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        }
+      }
+    },
+    "Full decentralized privacy, unlocked.": {},
+    "https://your-rpc…": {},
+    "Last updated: June 2026": {},
+    "Loading pricing…": {},
+    "Manage Accounts": {},
+    "MAX": {},
+    "NFT-аватары": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NFT avatars"
+          }
+        }
+      }
+    },
+    "NFT-аватары и ники": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NFT avatars & nicknames"
+          }
+        }
+      }
+    },
+    "NFT-ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NFT nickname"
+          }
+        }
+      }
+    },
+    "NFT-ники": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NFT nicknames"
+          }
+        }
+      }
+    },
+    "OK": {},
+    "per month · cancel any time": {},
+    "Photo unavailable": {},
+    "Premium": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium"
+          }
+        }
+      }
+    },
+    "Privacy Policy": {},
+    "Privamesh": {},
+    "PrivaMesh": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PrivaMesh"
+          }
+        }
+      }
+    },
+    "PrivaMesh уже шифрует всё end-to-end. Включи доп. слои приватности — по желанию.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PrivaMesh already encrypts everything end-to-end. Turn on extra privacy layers — optional."
+          }
+        }
+      }
+    },
+    "PrivaMesh+": {},
+    "PrivaMesh+ открывает до %lld аккаунтов на устройстве.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PrivaMesh+ unlocks up to %lld accounts on this device."
+          }
+        }
+      }
+    },
+    "PrivaMesh+: до %lld аккаунтов.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PrivaMesh+: up to %lld accounts."
+          }
+        }
+      }
+    },
+    "QR / Бандл": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR / Bundle"
+          }
+        }
+      }
+    },
+    "Restore Purchases": {},
+    "RPC": {},
+    "RPC-узел": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RPC node"
+          }
+        }
+      }
+    },
+    "RPC: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RPC: %@"
+          }
+        }
+      }
+    },
+    "Seed phrase": {},
+    "Seed газ-кошелька": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet seed"
+          }
+        }
+      }
+    },
+    "Seed удалится с устройства. Сначала выведи остаток SOL — иначе он потеряется.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The seed will be deleted from this device. Withdraw any remaining SOL first — otherwise it's lost."
+          }
+        }
+      }
+    },
+    "Seed-фраза (12/24 слова)": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seed phrase (12/24 words)"
+          }
+        }
+      }
+    },
+    "Seed-фраза аккаунта не найдена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account seed phrase not found"
+          }
+        }
+      }
+    },
+    "Self-custodial · Solana": {},
+    "Signature": {},
+    "SOL": {},
+    "Solana — **быстро и дёшево**: ~65 000 транзакций в секунду": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solana — **fast and cheap**: ~65,000 transactions per second"
+          }
+        }
+      }
+    },
+    "Solana Address": {},
+    "Solana адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solana address"
+          }
+        }
+      }
+    },
+    "Stealth-адреса": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stealth addresses"
+          }
+        }
+      }
+    },
+    "Stealth-адреса:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stealth addresses:"
+          }
+        }
+      }
+    },
+    "Subscribe to PrivaMesh+": {},
+    "Trust Math, Not Companies": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust Math, Not Companies"
+          }
+        }
+      }
+    },
+    "Upgrade": {},
+    "Version": {},
+    "You're subscribed!": {},
+    "Аватары": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avatars"
+          }
+        }
+      }
+    },
+    "Авто-продление включено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-renew on"
+          }
+        }
+      }
+    },
+    "Авто-продление выключено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-renew off"
+          }
+        }
+      }
+    },
+    "Адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address"
+          }
+        }
+      }
+    },
+    "Адрес для пополнения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funding address"
+          }
+        }
+      }
+    },
+    "адрес получателя не является валидным Solana-адресом (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "recipient address is not a valid Solana address (%@)"
+          }
+        }
+      }
+    },
+    "Адрес скопирован": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address copied"
+          }
+        }
+      }
+    },
+    "Аккаунт %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account %lld"
+          }
+        }
+      }
+    },
+    "Аккаунт 1": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account 1"
+          }
+        }
+      }
+    },
+    "Аккаунты": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accounts"
+          }
+        }
+      }
+    },
+    "Активен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active"
+          }
+        }
+      }
+    },
+    "активна": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "active"
+          }
+        }
+      }
+    },
+    "Активна до %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active until %@"
+          }
+        }
+      }
+    },
+    "Активны": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active"
+          }
+        }
+      }
+    },
+    "Базовый аватар": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default avatar"
+          }
+        }
+      }
+    },
+    "Баланс": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance"
+          }
+        }
+      }
+    },
+    "Баланс SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SOL balance"
+          }
+        }
+      }
+    },
+    "Баланс: …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance: …"
+          }
+        }
+      }
+    },
+    "Баланс: %@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance: %@ SOL"
+          }
+        }
+      }
+    },
+    "Балланс": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance"
+          }
+        }
+      }
+    },
+    "Без сортировки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No sorting"
+          }
+        }
+      }
+    },
+    "Без уведомлений": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute notifications"
+          }
+        }
+      }
+    },
+    "Безлимит лотов на продаже": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited sale listings"
+          }
+        }
+      }
+    },
+    "Безлимит лотов на продаже (без премиума — до 3)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited listings (free — up to 3)"
+          }
+        }
+      }
+    },
+    "Безопасность": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Security"
+          }
+        }
+      }
+    },
+    "Бесплатно — до %lld лотов. PrivaMesh+ — без лимита.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free — up to %lld lots. PrivaMesh+ — unlimited."
+          }
+        }
+      }
+    },
+    "Биометрия": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biometrics"
+          }
+        }
+      }
+    },
+    "Биометрия недоступна на этом устройстве": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biometrics unavailable on this device"
+          }
+        }
+      }
+    },
+    "Будешь разблокировать приложение биометрией вместо ввода пароля каждый раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock the app with biometrics instead of entering the passcode each time."
+          }
+        }
+      }
+    },
+    "В QR некорректный Solana-адрес получателя.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The QR has an invalid Solana recipient address."
+          }
+        }
+      }
+    },
+    "В буфере не 12 слов (нашёл %lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clipboard doesn't have 12 words (found %lld)"
+          }
+        }
+      }
+    },
+    "в контактах: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in contacts: %@"
+          }
+        }
+      }
+    },
+    "Ваш лот": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your lot"
+          }
+        }
+      }
+    },
+    "Введи seed-фразу существующего аккаунта (12 или 24 слова).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the seed phrase of an existing account (12 or 24 words)."
+          }
+        }
+      }
+    },
+    "Введи действующий пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your current passcode"
+          }
+        }
+      }
+    },
+    "Введи ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter nickname"
+          }
+        }
+      }
+    },
+    "Введи ник вида **SwiftFox#1234**\nили полный адрес Solana": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a nickname like **SwiftFox#1234**\nor a full Solana address"
+          }
+        }
+      }
+    },
+    "Введи новый пароль ещё раз": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the new passcode again"
+          }
+        }
+      }
+    },
+    "Введи пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter passcode"
+          }
+        }
+      }
+    },
+    "Введи пароль чтобы подписать транзакцию": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your passcode to sign the transaction"
+          }
+        }
+      }
+    },
+    "Введи свои 12 слов по порядку. Аккаунт будет восстановлен с тем же ником и историей.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your 12 words in order. The account is restored with the same nickname and history."
+          }
+        }
+      }
+    },
+    "Введи сумму": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter amount"
+          }
+        }
+      }
+    },
+    "Введи те же %lld цифр ещё раз": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the same %lld digits again"
+          }
+        }
+      }
+    },
+    "Вернул базовый аватар": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reverted to default avatar"
+          }
+        }
+      }
+    },
+    "Вернуть авто-ник (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore auto-nickname (%@)"
+          }
+        }
+      }
+    },
+    "Включить %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable %@"
+          }
+        }
+      }
+    },
+    "Включить %@ для PrivaMesh": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable %@ for PrivaMesh"
+          }
+        }
+      }
+    },
+    "Включить %@?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable %@?"
+          }
+        }
+      }
+    },
+    "Войти в аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to account"
+          }
+        }
+      }
+    },
+    "Восстановить аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore account"
+          }
+        }
+      }
+    },
+    "Восстановить из seed phrase": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore from seed phrase"
+          }
+        }
+      }
+    },
+    "Восстановить покупки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore purchases"
+          }
+        }
+      }
+    },
+    "Восстановление...": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restoring..."
+          }
+        }
+      }
+    },
+    "Время доставки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delivery time"
+          }
+        }
+      }
+    },
+    "Все": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "Все RPC-эндпоинты отклонили транзакцию:\n": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All RPC endpoints rejected the transaction:\n"
+          }
+        }
+      }
+    },
+    "Все данные удалятся с устройства. Восстановить можно только seed phrase.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All data will be deleted from this device. Only the seed phrase can restore it."
+          }
+        }
+      }
+    },
+    "Всё можно включить/выключить позже в Профиле → Приватность.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can toggle everything later in Profile → Privacy."
+          }
+        }
+      }
+    },
+    "Все сообщения этого чата будут удалены с этого устройства. Сам контакт останется.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All messages in this chat will be deleted from this device. The contact stays."
+          }
+        }
+      }
+    },
+    "Вставить из буфера": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste from clipboard"
+          }
+        }
+      }
+    },
+    "Вставь карточку контакта…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste a contact card…"
+          }
+        }
+      }
+    },
+    "Входящая транзакция": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incoming transaction"
+          }
+        }
+      }
+    },
+    "Выбери NFT-ник как отображаемое имя": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick an NFT nickname as your display name"
+          }
+        }
+      }
+    },
+    "Выбери правильное слово для каждой позиции.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick the correct word for each position."
+          }
+        }
+      }
+    },
+    "Выбери предмет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick an item"
+          }
+        }
+      }
+    },
+    "Выбрать NFT-ник (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose NFT nickname (%lld)"
+          }
+        }
+      }
+    },
+    "Выкл": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off"
+          }
+        }
+      }
+    },
+    "высокая": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "high"
+          }
+        }
+      }
+    },
+    "Выставить на продажу: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List for sale: %@"
+          }
+        }
+      }
+    },
+    "Выставить предмет на продажу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List an item for sale"
+          }
+        }
+      }
+    },
+    "Выставлено на продажу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listed for sale"
+          }
+        }
+      }
+    },
+    "вычисляю…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calculating…"
+          }
+        }
+      }
+    },
+    "газ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gas"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк для комиссий": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet for fees"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк импортирован": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet imported"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк не создан": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet not created"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк создан": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet created"
+          }
+        }
+      }
+    },
+    "Газ-кошелёк удалён. Выведи остаток заранее.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas wallet deleted. Withdraw any balance beforehand."
+          }
+        }
+      }
+    },
+    "Галочка верификации у профиля": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verification checkmark on your profile"
+          }
+        }
+      }
+    },
+    "Главная": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
+          }
+        }
+      }
+    },
+    "Готово": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Готово %lld/%lld. Ошибка: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done %lld/%lld. Error: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Готово %1$lld/%2$lld. Ошибка: %3$@"
+          }
+        }
+      }
+    },
+    "Далее": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        }
+      }
+    },
+    "Дальше: чаты + отправка SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: chats + sending SOL"
+          }
+        }
+      }
+    },
+    "Децентрализованное соединение активно": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decentralized connection active"
+          }
+        }
+      }
+    },
+    "Дешёвые": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheap"
+          }
+        }
+      }
+    },
+    "до": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "to"
+          }
+        }
+      }
+    },
+    "До %lld аккаунтов на устройстве. Каждый — отдельный кошелёк со своим балансом, ником и чатами.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to %lld accounts on this device. Each is a separate wallet with its own balance, nickname and chats."
+          }
+        }
+      }
+    },
+    "До 3 аккаунтов на устройстве": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to 3 accounts on the device"
+          }
+        }
+      }
+    },
+    "Добавить контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add contact"
+          }
+        }
+      }
+    },
+    "Добавлен": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added"
+          }
+        }
+      }
+    },
+    "Добавлен %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added %@"
+          }
+        }
+      }
+    },
+    "Добавь контакт по QR-коду,\nчтобы начать защищённую переписку.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a contact by QR code\nto start a secure chat."
+          }
+        }
+      }
+    },
+    "Добавь описание профиля": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a profile description"
+          }
+        }
+      }
+    },
+    "Добавь свой Solana RPC (https). Приложение будет ходить через него; дефолтные узлы остаются резервом. Пусто = дефолт (Helius).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your Solana RPC (https). The app will use it; default nodes stay as backup. Empty = default (Helius)."
+          }
+        }
+      }
+    },
+    "Дорогие": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expensive"
+          }
+        }
+      }
+    },
+    "Доставлено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delivered"
+          }
+        }
+      }
+    },
+    "Доступ к seed-фразе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access to the seed phrase"
+          }
+        }
+      }
+    },
+    "Доступ к аккаунту": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account access"
+          }
+        }
+      }
+    },
+    "Другие": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "Ежемесячно · авто-продление": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monthly · auto-renew"
+          }
+        }
+      }
+    },
+    "Животные": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animals"
+          }
+        }
+      }
+    },
+    "Жми ♥ на лотах в маркете": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap ♥ on lots in the market"
+          }
+        }
+      }
+    },
+    "Забрано ✓": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Claimed ✓"
+          }
+        }
+      }
+    },
+    "Забрать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Claim"
+          }
+        }
+      }
+    },
+    "Забыл пароль? Сбросить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forgot passcode? Reset"
+          }
+        }
+      }
+    },
+    "Загрузка…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading…"
+          }
+        }
+      }
+    },
+    "Закрой и снова открой приложение, чтобы применить язык.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close and reopen the app to apply the language."
+          }
+        }
+      }
+    },
+    "Закрыть": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "Заметка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        }
+      }
+    },
+    "Заметка…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note…"
+          }
+        }
+      }
+    },
+    "заметки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "notes"
+          }
+        }
+      }
+    },
+    "Заминчено %lld/%lld. На остальные не хватает SOL — пополни кошелёк.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Заминчено %1$lld/%2$lld. На остальные не хватает SOL — пополни кошелёк."
+          }
+        }
+      }
+    },
+    "Заминчено on-chain: %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minted on-chain: %lld"
+          }
+        }
+      }
+    },
+    "Запиши эти 12 слов **по порядку**. Без них аккаунт не восстановить.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write down these 12 words **in order**. Without them the account can't be restored."
+          }
+        }
+      }
+    },
+    "Заполни адрес и сумму": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter address and amount"
+          }
+        }
+      }
+    },
+    "Зачем\nплатить?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why\npay?"
+          }
+        }
+      }
+    },
+    "Зашифрованное сообщение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encrypted message"
+          }
+        }
+      }
+    },
+    "зашифровано": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "encrypted"
+          }
+        }
+      }
+    },
+    "Защита\nна устройстве": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device\nsecurity"
+          }
+        }
+      }
+    },
+    "Защита seed по Face ID": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protect seed with Face ID"
+          }
+        }
+      }
+    },
+    "Защитить коллекцию on-chain": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secure collection on-chain"
+          }
+        }
+      }
+    },
+    "Защищено сквозным шифрованием": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protected by end-to-end encryption"
+          }
+        }
+      }
+    },
+    "Избранное": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved Messages"
+          }
+        }
+      }
+    },
+    "Изменить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        }
+      }
+    },
+    "Изменить пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change passcode"
+          }
+        }
+      }
+    },
+    "Изменить подпись и заметку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit label and note"
+          }
+        }
+      }
+    },
+    "или вставь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "or paste"
+          }
+        }
+      }
+    },
+    "Импорт газ-кошелька": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import gas wallet"
+          }
+        }
+      }
+    },
+    "Импортировать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        }
+      }
+    },
+    "Импортировать по seed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import by seed"
+          }
+        }
+      }
+    },
+    "Имя контакта": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact name"
+          }
+        }
+      }
+    },
+    "Имя контакта…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact name…"
+          }
+        }
+      }
+    },
+    "Имя отправителя в пуше": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sender name in push"
+          }
+        }
+      }
+    },
+    "Иначе — «Зашифрованное сообщение»": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otherwise — “Encrypted message”"
+          }
+        }
+      }
+    },
+    "Инвентарь пуст": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory is empty"
+          }
+        }
+      }
+    },
+    "Использовать %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use %@"
+          }
+        }
+      }
+    },
+    "Использовать этот бандл": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use this bundle"
+          }
+        }
+      }
+    },
+    "Исчезающие сообщения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disappearing messages"
+          }
+        }
+      }
+    },
+    "Ищем…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Searching…"
+          }
+        }
+      }
+    },
+    "Каждое сообщение защищено военным уровнем шифрования — ещё до отправки.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every message is protected with military-grade encryption — before it even leaves your device."
+          }
+        }
+      }
+    },
+    "Каждый аккаунт — отдельный кошелёк со своим балансом, ником и чатами.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each account is a separate wallet with its own balance, nickname and chats."
+          }
+        }
+      }
+    },
+    "Как назвать контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to name the contact"
+          }
+        }
+      }
+    },
+    "Как сохранить в контактах": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to save in contacts"
+          }
+        }
+      }
+    },
+    "Карточка получена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Card received"
+          }
+        }
+      }
+    },
+    "Карточка скопирована": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Card copied"
+          }
+        }
+      }
+    },
+    "Кибер": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cyber"
+          }
+        }
+      }
+    },
+    "Ключи и переписка защищены даже если телефон попал в чужие руки.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keys and chats stay protected even if the phone falls into the wrong hands."
+          }
+        }
+      }
+    },
+    "Коллекции": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collections"
+          }
+        }
+      }
+    },
+    "Комиссии сообщений платит этот кошелёк — твой основной адрес не появляется в блокчейне для переписки. Пополняй его из НЕсвязанного источника (биржа, другой кошелёк), иначе связь восстановится on-chain.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This wallet pays message fees — your main address never appears on-chain for chats. Fund it from an UNLINKED source (exchange, another wallet), otherwise the link is restored on-chain."
+          }
+        }
+      }
+    },
+    "Комиссия": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fee"
+          }
+        }
+      }
+    },
+    "Комиссия маркета %lld%%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Market fee %lld%%"
+          }
+        }
+      }
+    },
+    "Комиссия сети": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network fee"
+          }
+        }
+      }
+    },
+    "Комиссия сети ≈ %@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network fee ≈ %@ SOL"
+          }
+        }
+      }
+    },
+    "Комиссия сети Solana": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solana network fee"
+          }
+        }
+      }
+    },
+    "Комиссия сети: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network fee: %@"
+          }
+        }
+      }
+    },
+    "Контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact"
+          }
+        }
+      }
+    },
+    "Контакт «%@» повреждён (нет валидного prekey-бандла). Удали и добавь его заново.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact “%@” is corrupted (no valid prekey bundle). Delete and add them again."
+          }
+        }
+      }
+    },
+    "Короткая заметка о контакте…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A short note about the contact…"
+          }
+        }
+      }
+    },
+    "Короткие": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short"
+          }
+        }
+      }
+    },
+    "Космос": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Space"
+          }
+        }
+      }
+    },
+    "Кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wallet"
+          }
+        }
+      }
+    },
+    "Кошелёк и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The wallet and passcode will be deleted from this device. Only the seed phrase can restore it. Without it — lost forever."
+          }
+        }
+      }
+    },
+    "Кошелёк недоступен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wallet unavailable"
+          }
+        }
+      }
+    },
+    "Купи уникальный аватар в маркете": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy a unique avatar in the market"
+          }
+        }
+      }
+    },
+    "Купить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy"
+          }
+        }
+      }
+    },
+    "Купить можно в маркете — загрузить своё фото нельзя.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can buy in the market — uploading your own photo isn't allowed."
+          }
+        }
+      }
+    },
+    "Куплено (локально). Ончейн-минт не удался: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bought (locally). On-chain mint failed: %@"
+          }
+        }
+      }
+    },
+    "Куплено за %@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bought for %@ SOL"
+          }
+        }
+      }
+    },
+    "Куплено: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bought: %@"
+          }
+        }
+      }
+    },
+    "Лимит %lld лотов. Оформи PrivaMesh+ для безлимита.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limit %lld lots. Get PrivaMesh+ for unlimited."
+          }
+        }
+      }
+    },
+    "Личность защищена сквозным шифрованием": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Identity protected by end-to-end encryption"
+          }
+        }
+      }
+    },
+    "Личные заметки и медиа": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal notes and media"
+          }
+        }
+      }
+    },
+    "Лот не найден": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot not found"
+          }
+        }
+      }
+    },
+    "Лот сохранён, но публикация не удалась: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot saved, but publishing failed: %@"
+          }
+        }
+      }
+    },
+    "Максимум %lld аккаунта": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maximum %lld accounts"
+          }
+        }
+      }
+    },
+    "Маркет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Market"
+          }
+        }
+      }
+    },
+    "Маскирующий трафик": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cover traffic"
+          }
+        }
+      }
+    },
+    "Минт NFT": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NFT mint"
+          }
+        }
+      }
+    },
+    "Минт NFT-ников — функция PrivaMesh+": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minting NFT nicknames is a PrivaMesh+ feature"
+          }
+        }
+      }
+    },
+    "Минт NFT-ников/аватаров в блокчейн (портируемость по seed)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mint NFT nicknames/avatars on-chain (seed-portable)"
+          }
+        }
+      }
+    },
+    "Минт своих NFT-ников (до 3) и продажа": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mint your own NFT nicknames (up to 3) and sell"
+          }
+        }
+      }
+    },
+    "Минт создаёт NFT в сети Solana — оплачивается сетевая комиссия. Ник станет твоим и его можно продать.\nЗаминчено: %lld/%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minting creates an NFT on Solana — a network fee applies. The nickname becomes yours and can be sold.\nMinted: %lld/%lld"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Минт создаёт NFT в сети Solana — оплачивается сетевая комиссия. Ник станет твоим и его можно продать.\nЗаминчено: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "Минт…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minting…"
+          }
+        }
+      }
+    },
+    "Мои аватары": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My avatars"
+          }
+        }
+      }
+    },
+    "Мои лоты на продаже": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My listed lots"
+          }
+        }
+      }
+    },
+    "Мы физически не можем прочитать твои сообщения, удалить их или передать кому-либо.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We physically cannot read your messages, delete them, or hand them to anyone."
+          }
+        }
+      }
+    },
+    "Назад": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "Найти": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find"
+          }
+        }
+      }
+    },
+    "Найти пользователя": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a user"
+          }
+        }
+      }
+    },
+    "Настройки": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Начать общение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start messaging"
+          }
+        }
+      }
+    },
+    "Не беспокоить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do not disturb"
+          }
+        }
+      }
+    },
+    "Не делай скриншот этого экрана": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't screenshot this screen"
+          }
+        }
+      }
+    },
+    "Не из BIP-39: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not in BIP-39: %@"
+          }
+        }
+      }
+    },
+    "не продаётся": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not for sale"
+          }
+        }
+      }
+    },
+    "Не сейчас": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        }
+      }
+    },
+    "Не удалось восстановить аккаунт: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't restore account: %@"
+          }
+        }
+      }
+    },
+    "Не удалось загрузить историю": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load history"
+          }
+        }
+      }
+    },
+    "Не удалось импортировать seed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't import the seed"
+          }
+        }
+      }
+    },
+    "Не удалось обновить баланс": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't refresh balance"
+          }
+        }
+      }
+    },
+    "Не удалось отправить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to send"
+          }
+        }
+      }
+    },
+    "Не удалось подключить: проверь seed-фразу": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't connect: check the seed phrase"
+          }
+        }
+      }
+    },
+    "Не удалось подтвердить подлинность контакта (нет валидной подписи кошелька). Возможна подмена — добавь его по QR лично.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't verify the contact (no valid wallet signature). Possible spoofing — add them via QR in person."
+          }
+        }
+      }
+    },
+    "Не удалось прочитать seed phrase": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't read the seed phrase"
+          }
+        }
+      }
+    },
+    "Не удалось создать аккаунт: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't create account: %@"
+          }
+        }
+      }
+    },
+    "Не удалось сохранить пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't save the passcode"
+          }
+        }
+      }
+    },
+    "Не удалось сохранить пароль: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't save passcode: %@"
+          }
+        }
+      }
+    },
+    "невалидный URL эндпоинта: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid endpoint URL: %@"
+          }
+        }
+      }
+    },
+    "Невалидный адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid address"
+          }
+        }
+      }
+    },
+    "Неверный URL — нужен https://": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid URL — https:// required"
+          }
+        }
+      }
+    },
+    "Неверный пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrong passcode"
+          }
+        }
+      }
+    },
+    "Недавние транзакции": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent transactions"
+          }
+        }
+      }
+    },
+    "Недавние чаты": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent chats"
+          }
+        }
+      }
+    },
+    "Недостаточно SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough SOL"
+          }
+        }
+      }
+    },
+    "недостаточно SOL (нужно ≈ %@ на предмет + резерв)": {},
+    "недостаточно SOL (нужно ≈ %@ на предмет)": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not enough SOL (need ≈ %@ per item)"
+          }
+        }
+      }
+    },
+    "Недостаточно SOL для публикации (на балансе %@). Пополни кошелёк.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough SOL to publish (balance %@). Top up your wallet."
+          }
+        }
+      }
+    },
+    "Недостаточно SOL: нужно ≈ %@ (включая резерв ~0.0009 на rent), на балансе %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough SOL: need ≈ %@ (incl. ~0.0009 rent reserve), balance %@"
+          }
+        }
+      }
+    },
+    "Недостаточно SOL: нужно ≈ %@ на 1 предмет (с резервом на ренту кошелька), на балансе %@. Пополни кошелёк.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Недостаточно SOL: нужно ≈ %1$@ на 1 предмет (с резервом на ренту кошелька), на балансе %2$@. Пополни кошелёк."
+          }
+        }
+      }
+    },
+    "Недостаточно SOL: нужно ≈ %@ на 1 предмет, на балансе %@. Пополни кошелёк.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough SOL: need ≈ %@ per item, balance %@. Top up your wallet."
+          }
+        }
+      }
+    },
+    "Недостаточно баланса с учётом комиссии": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insufficient balance including the fee"
+          }
+        }
+      }
+    },
+    "Некорректная цена лота": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid lot price"
+          }
+        }
+      }
+    },
+    "некорректный Solana-адрес получателя (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid Solana recipient address (%@)"
+          }
+        }
+      }
+    },
+    "некорректный адрес (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid address (%@)"
+          }
+        }
+      }
+    },
+    "некорректный адрес реестра (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid registry address (%@)"
+          }
+        }
+      }
+    },
+    "Неожиданный ответ сервера": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unexpected server response"
+          }
+        }
+      }
+    },
+    "неожиданный ответ: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unexpected response: %@"
+          }
+        }
+      }
+    },
+    "Несколько аккаунтов — в PrivaMesh+": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multiple accounts — in PrivaMesh+"
+          }
+        }
+      }
+    },
+    "Несколько аккаунтов — в PrivaMesh+.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multiple accounts — in PrivaMesh+."
+          }
+        }
+      }
+    },
+    "Несколько аккаунтов доступны в PrivaMesh+": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multiple accounts are available in PrivaMesh+"
+          }
+        }
+      }
+    },
+    "Нет NFT для подарка.\nКупи аватар или ник в маркете.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No NFT to gift.\nBuy an avatar or nickname in the market."
+          }
+        }
+      }
+    },
+    "Нет избранного": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No favorites"
+          }
+        }
+      }
+    },
+    "Нет ключей профиля": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No profile keys"
+          }
+        }
+      }
+    },
+    "Нет переводов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No transfers"
+          }
+        }
+      }
+    },
+    "Нет предметов для продажи.\nКупи что-нибудь в маркете.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to sell.\nBuy something in the market."
+          }
+        }
+      }
+    },
+    "Нет серверов.\nСерьёзно.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No servers.\nSeriously."
+          }
+        }
+      }
+    },
+    "Нет сообщений": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No messages"
+          }
+        }
+      }
+    },
+    "Нет сообщений-транзакций": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No message transactions"
+          }
+        }
+      }
+    },
+    "Нет транзакций": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No transactions"
+          }
+        }
+      }
+    },
+    "низкая": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "low"
+          }
+        }
+      }
+    },
+    "Ник генерируется автоматически. Купи или заминть NFT-ник в маркете, чтобы выбрать своё имя.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The nickname is generated automatically. Buy or mint an NFT nickname in the market to choose your own name."
+          }
+        }
+      }
+    },
+    "Ник заминчен: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname minted: %@"
+          }
+        }
+      }
+    },
+    "Ник или адрес Solana…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname or Solana address…"
+          }
+        }
+      }
+    },
+    "Ник недоступен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname unavailable"
+          }
+        }
+      }
+    },
+    "Ники": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicknames"
+          }
+        }
+      }
+    },
+    "Никому не показывай эти слова": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never show these words to anyone"
+          }
+        }
+      }
+    },
+    "Никто с таким ником не найден. Возможно, он ещё не опубликовал профиль — попроси QR.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one found with that nickname. They may not have published a profile yet — ask for a QR."
+          }
+        }
+      }
+    },
+    "Никто с таким ником не найден. Возможно, он не включил поиск в Профиле («Сделать профиль доступным для поиска») — попроси его включить или добавь по QR.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one found with this nickname. They may not have enabled search in their Profile (\"Make profile searchable\") — ask them to enable it, or add them via QR."
+          }
+        }
+      }
+    },
+    "Ничего не найдено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing found"
+          }
+        }
+      }
+    },
+    "Новое сообщение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New message"
+          }
+        }
+      }
+    },
+    "новый ключ на каждое сообщение (PFS)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a new key per message (PFS)"
+          }
+        }
+      }
+    },
+    "Новый контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New contact"
+          }
+        }
+      }
+    },
+    "Новый пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New passcode"
+          }
+        }
+      }
+    },
+    "Нужно 12 или 24 слова": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 or 24 words required"
+          }
+        }
+      }
+    },
+    "Нужно минимум %@ SOL для оплаты комиссии сети. Пополни кошелёк и попробуй снова.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You need at least %@ SOL for the network fee. Top up the wallet and try again."
+          }
+        }
+      }
+    },
+    "О себе…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About you…"
+          }
+        }
+      }
+    },
+    "О сообщении": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message info"
+          }
+        }
+      }
+    },
+    "Обновить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh"
+          }
+        }
+      }
+    },
+    "обновлено %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "updated %@"
+          }
+        }
+      }
+    },
+    "Одно или несколько слов выбрано неправильно. Проверь свою запись.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One or more words are wrong. Check what you wrote down."
+          }
+        }
+      }
+    },
+    "Ок": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Опасная зона": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danger zone"
+          }
+        }
+      }
+    },
+    "Описание": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Description"
+          }
+        }
+      }
+    },
+    "Описание профиля": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile description"
+          }
+        }
+      }
+    },
+    "оплачено отправителем": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "paid by the sender"
+          }
+        }
+      }
+    },
+    "Опубликовано ✓ Ник «%@» теперь ищется": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Published ✓ Nickname \"%@\" is now searchable"
+          }
+        }
+      }
+    },
+    "Опубликовать ник в сети, чтобы тебя находили по поиску": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publish your nickname on-chain so others can find you in search"
+          }
+        }
+      }
+    },
+    "от %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from %@"
+          }
+        }
+      }
+    },
+    "Отдельный кошелёк платит комиссии за сообщения, поэтому твой основной адрес НЕ появляется в блокчейне. Нужно создать и немного пополнить.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A separate wallet pays message fees, so your main address never appears on-chain. Needs creating and a small top-up."
+          }
+        }
+      }
+    },
+    "Отдельный одноразовый кошелёк только для оплаты комиссий.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A separate throwaway wallet just for paying fees."
+          }
+        }
+      }
+    },
+    "Отключить все уведомления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute all notifications"
+          }
+        }
+      }
+    },
+    "Открыть в Solana Explorer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in Solana Explorer"
+          }
+        }
+      }
+    },
+    "Открыть в Solscan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in Solscan"
+          }
+        }
+      }
+    },
+    "Открыть камеру": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open camera"
+          }
+        }
+      }
+    },
+    "Отмена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Отправить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send"
+          }
+        }
+      }
+    },
+    "Отправить SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send SOL"
+          }
+        }
+      }
+    },
+    "Отправлено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent"
+          }
+        }
+      }
+    },
+    "Отправлено %@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent %@ SOL"
+          }
+        }
+      }
+    },
+    "Отправляется…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sending…"
+          }
+        }
+      }
+    },
+    "Оформить подписку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe"
+          }
+        }
+      }
+    },
+    "Очистить переписку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear chat"
+          }
+        }
+      }
+    },
+    "Очистить чат": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear chat"
+          }
+        }
+      }
+    },
+    "Очистить чат?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear chat?"
+          }
+        }
+      }
+    },
+    "Ошибка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error"
+          }
+        }
+      }
+    },
+    "Ошибка ключа: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key error: %@"
+          }
+        }
+      }
+    },
+    "Ошибка минта: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mint error: %@"
+          }
+        }
+      }
+    },
+    "Ошибка покупки: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase error: %@"
+          }
+        }
+      }
+    },
+    "Ошибка сервера": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server error"
+          }
+        }
+      }
+    },
+    "Ошибка сети": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network error"
+          }
+        }
+      }
+    },
+    "Ошибка сети — проверь соединение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network error — check your connection"
+          }
+        }
+      }
+    },
+    "Ошибка: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: %@"
+          }
+        }
+      }
+    },
+    "Пароли не совпадают": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passcodes don't match"
+          }
+        }
+      }
+    },
+    "Пароли не совпадают. Попробуй ещё раз.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passcodes don't match. Try again."
+          }
+        }
+      }
+    },
+    "паттерн активности скрыт автоматически": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "activity pattern hidden automatically"
+          }
+        }
+      }
+    },
+    "Перевод": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer"
+          }
+        }
+      }
+    },
+    "Перевод SOL в чате оплачивается твоим ОСНОВНЫМ кошельком — его адрес станет виден получателю и в блокчейне. Сообщения остаются приватными (stealth-адреса), но платёж — нет.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An in-chat SOL transfer is paid by your MAIN wallet — its address becomes visible to the recipient and on-chain. Messages stay private (stealth addresses), but the payment doesn't."
+          }
+        }
+      }
+    },
+    "Перевод раскроет твой адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer will reveal your address"
+          }
+        }
+      }
+    },
+    "Переводы": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfers"
+          }
+        }
+      }
+    },
+    "Перед сбросом убедись что записал seed phrase.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before resetting, make sure you wrote down the seed phrase."
+          }
+        }
+      }
+    },
+    "Перезапусти приложение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart the app"
+          }
+        }
+      }
+    },
+    "Периодически шлёт ложные (decoy) сообщения, чтобы скрыть, КОГДА ты реально пишешь. Стоит небольших сетевых комиссий.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periodically sends decoy messages to hide WHEN you actually chat. Costs small network fees."
+          }
+        }
+      }
+    },
+    "Платёж раскроет твой основной адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Payment reveals your main address"
+          }
+        }
+      }
+    },
+    "Платить комиссии этим кошельком": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay fees with this wallet"
+          }
+        }
+      }
+    },
+    "По умолчанию (Helius)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default (Helius)"
+          }
+        }
+      }
+    },
+    "Повтори новый": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat the new one"
+          }
+        }
+      }
+    },
+    "Повтори пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat passcode"
+          }
+        }
+      }
+    },
+    "Подарить NFT": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gift NFT"
+          }
+        }
+      }
+    },
+    "Подарок забран: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gift claimed: %@"
+          }
+        }
+      }
+    },
+    "Подарок отправлен: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gift sent: %@"
+          }
+        }
+      }
+    },
+    "Поделиться": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "Подключить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect"
+          }
+        }
+      }
+    },
+    "Подключить аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect account"
+          }
+        }
+      }
+    },
+    "Подключить по seed-фразе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect by seed phrase"
+          }
+        }
+      }
+    },
+    "Подписаться · %@/мес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe · %@/mo"
+          }
+        }
+      }
+    },
+    "Подписаться · $2.99/мес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe · $2.99/mo"
+          }
+        }
+      }
+    },
+    "Подписаться на PrivaMesh+": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe to PrivaMesh+"
+          }
+        }
+      }
+    },
+    "Подпись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Label"
+          }
+        }
+      }
+    },
+    "Подпись в QR не соответствует адресу — возможна подмена. Попроси новый QR.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The QR signature doesn't match the address — possible spoofing. Ask for a new QR."
+          }
+        }
+      }
+    },
+    "Подтверди личность чтобы увидеть seed phrase": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm your identity to view the seed phrase"
+          }
+        }
+      }
+    },
+    "Подтверди отправку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm sending"
+          }
+        }
+      }
+    },
+    "Подтверди отправку SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm sending SOL"
+          }
+        }
+      }
+    },
+    "Подтверди что это твой кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm this is your wallet"
+          }
+        }
+      }
+    },
+    "Подтвердить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm"
+          }
+        }
+      }
+    },
+    "Подтвердить минт ника @%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm minting nickname @%@"
+          }
+        }
+      }
+    },
+    "Подтвердить перевод %@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm sending %@ SOL"
+          }
+        }
+      }
+    },
+    "Подтвердить подарок: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm gift: %@"
+          }
+        }
+      }
+    },
+    "Подтвердить покупку: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm purchase: %@"
+          }
+        }
+      }
+    },
+    "Подтверждение не пройдено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmation failed"
+          }
+        }
+      }
+    },
+    "Подтверждено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmed"
+          }
+        }
+      }
+    },
+    "Поиск ника (напр. neo)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search nickname (e.g. neo)"
+          }
+        }
+      }
+    },
+    "Поиск по названию": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search by name"
+          }
+        }
+      }
+    },
+    "Поиск по нику": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search by nickname"
+          }
+        }
+      }
+    },
+    "Поиск чатов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search chats"
+          }
+        }
+      }
+    },
+    "Пока нет": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not yet"
+          }
+        }
+      }
+    },
+    "Пока нет контактов": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No contacts yet"
+          }
+        }
+      }
+    },
+    "Пока нет чатов — добавь контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No chats yet — add a contact"
+          }
+        }
+      }
+    },
+    "Пока ничего не продаёшь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're not selling anything yet"
+          }
+        }
+      }
+    },
+    "Показать seed phrase": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show seed phrase"
+          }
+        }
+      }
+    },
+    "Показать seed газ-кошелька": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show gas wallet seed"
+          }
+        }
+      }
+    },
+    "Покупаем…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buying…"
+          }
+        }
+      }
+    },
+    "Покупка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase"
+          }
+        }
+      }
+    },
+    "Покупка — реальный перевод SOL. Genesis-доход идёт разработчику, перепродажа — продавцу (комиссия %lld%%).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase is a real SOL transfer. Genesis revenue goes to the developer; resale to the seller (%lld%% commission)."
+          }
+        }
+      }
+    },
+    "Покупки временно недоступны": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases temporarily unavailable"
+          }
+        }
+      }
+    },
+    "Получатель": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipient"
+          }
+        }
+      }
+    },
+    "Получатель скрыт в блокчейне": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipient hidden on-chain"
+          }
+        }
+      }
+    },
+    "Получен перевод": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer received"
+          }
+        }
+      }
+    },
+    "Получено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received"
+          }
+        }
+      }
+    },
+    "Получено +%@ SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received +%@ SOL"
+          }
+        }
+      }
+    },
+    "получено по сети": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "received over the network"
+          }
+        }
+      }
+    },
+    "Получить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receive"
+          }
+        }
+      }
+    },
+    "Получить SOL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receive SOL"
+          }
+        }
+      }
+    },
+    "Пользователь найден": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User found"
+          }
+        }
+      }
+    },
+    "Пользователь не найден": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User not found"
+          }
+        }
+      }
+    },
+    "Понятно, отправить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it, send"
+          }
+        }
+      }
+    },
+    "Пополни газ-кошелёк — не хватает SOL на комиссию": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top up the gas wallet — not enough SOL for the fee"
+          }
+        }
+      }
+    },
+    "Попробовать снова": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "Поставить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    },
+    "Приватность": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        }
+      }
+    },
+    "Приватность\nпо умолчанию": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy\nby default"
+          }
+        }
+      }
+    },
+    "Приватный мессенджер, кошелёк и NFT-маркет на Solana.\nБез серверов и слежки.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A private messenger, wallet and NFT market on Solana.\nNo servers, no surveillance."
+          }
+        }
+      }
+    },
+    "Придумай новый 6-значный код": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a new 6-digit code"
+          }
+        }
+      }
+    },
+    "Придумай пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a passcode"
+          }
+        }
+      }
+    },
+    "Проверим что ты записал": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's check you wrote it down"
+          }
+        }
+      }
+    },
+    "Продать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sell"
+          }
+        }
+      }
+    },
+    "Продлится %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renews %@"
+          }
+        }
+      }
+    },
+    "Продолжить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        }
+      }
+    },
+    "Пропустить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        }
+      }
+    },
+    "Профиль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile"
+          }
+        }
+      }
+    },
+    "Профиль не получен.\nЭтот контакт добавлен без карточки профиля — попроси новый QR.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No profile received.\nThis contact was added without a profile card — ask for a new QR."
+          }
+        }
+      }
+    },
+    "Прочее": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "Публикация профиля": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile publish"
+          }
+        }
+      }
+    },
+    "Публикуем…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publishing…"
+          }
+        }
+      }
+    },
+    "Публикую…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publishing…"
+          }
+        }
+      }
+    },
+    "Разблокировать PrivaMesh": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock PrivaMesh"
+          }
+        }
+      }
+    },
+    "Реальная оплата SOL с твоего кошелька.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Real SOL payment from your wallet."
+          }
+        }
+      }
+    },
+    "Русский": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Русский"
+          }
+        }
+      }
+    },
+    "С возвращением,": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome back,"
+          }
+        }
+      }
+    },
+    "Сбросить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "Сбросить к умолчанию (Helius)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset to default (Helius)"
+          }
+        }
+      }
+    },
+    "Сбросить кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset wallet"
+          }
+        }
+      }
+    },
+    "Сбросить кошелёк?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset wallet?"
+          }
+        }
+      }
+    },
+    "Светлая": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        }
+      }
+    },
+    "Свой RPC-узел": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom RPC node"
+          }
+        }
+      }
+    },
+    "Сдвинь для подтверждения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide to confirm"
+          }
+        }
+      }
+    },
+    "Сдвинь, чтобы выставить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide to list"
+          }
+        }
+      }
+    },
+    "Сдвинь, чтобы заминтить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide to mint"
+          }
+        }
+      }
+    },
+    "Сдвинь, чтобы купить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide to buy"
+          }
+        }
+      }
+    },
+    "Сдвинь, чтобы отправить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide to send"
+          }
+        }
+      }
+    },
+    "Сделать профиль доступным для поиска": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make profile searchable"
+          }
+        }
+      }
+    },
+    "Сейчас комиссии платит основной кошелёк.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fees are currently paid by the main wallet."
+          }
+        }
+      }
+    },
+    "СЕТЬ/RPC": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NETWORK/RPC"
+          }
+        }
+      }
+    },
+    "Системная": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        }
+      }
+    },
+    "Системный": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        }
+      }
+    },
+    "Скан QR контакта": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan contact QR"
+          }
+        }
+      }
+    },
+    "Сканировать QR": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan QR"
+          }
+        }
+      }
+    },
+    "Сквозное шифрование": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End-to-end encryption"
+          }
+        }
+      }
+    },
+    "Скопировано": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        }
+      }
+    },
+    "Скопировать адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy address"
+          }
+        }
+      }
+    },
+    "Скопировать карточку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy card"
+          }
+        }
+      }
+    },
+    "Скрывает, когда ты пишешь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hides when you write"
+          }
+        }
+      }
+    },
+    "Скрыто не только содержимое — но и кто, с кем и когда переписывается.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not just the content is hidden — but who talks to whom, and when."
+          }
+        }
+      }
+    },
+    "Слишком большая цена (макс 1 000 000 SOL)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price too high (max 1,000,000 SOL)"
+          }
+        }
+      }
+    },
+    "слова через пробел": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "words separated by spaces"
+          }
+        }
+      }
+    },
+    "слово": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "word"
+          }
+        }
+      }
+    },
+    "Слово №%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Word #%lld"
+          }
+        }
+      }
+    },
+    "слово1 слово2 …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "word1 word2 …"
+          }
+        }
+      }
+    },
+    "Слои\nанонимности": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layers of\nanonymity"
+          }
+        }
+      }
+    },
+    "Сменить пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change passcode"
+          }
+        }
+      }
+    },
+    "Сначала дешёвые": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheapest first"
+          }
+        }
+      }
+    },
+    "Сначала дорогие": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most expensive first"
+          }
+        }
+      }
+    },
+    "Снято": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed"
+          }
+        }
+      }
+    },
+    "Снято с продажи": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delisted"
+          }
+        }
+      }
+    },
+    "Снять NFT-аватар": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove NFT avatar"
+          }
+        }
+      }
+    },
+    "Снять с продажи": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove listing"
+          }
+        }
+      }
+    },
+    "Создай аккаунт или восстанови существующий — займёт меньше минуты.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create an account or restore an existing one — takes under a minute."
+          }
+        }
+      }
+    },
+    "Создай свой аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create your account"
+          }
+        }
+      }
+    },
+    "Создание...": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creating..."
+          }
+        }
+      }
+    },
+    "Создать": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create"
+          }
+        }
+      }
+    },
+    "Создать NFT-ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create NFT nickname"
+          }
+        }
+      }
+    },
+    "Создать NFT-ник (%lld/%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create NFT nickname (%lld/%lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Создать NFT-ник (%1$lld/%2$lld)"
+          }
+        }
+      }
+    },
+    "Создать аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create account"
+          }
+        }
+      }
+    },
+    "Создать газ-кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create gas wallet"
+          }
+        }
+      }
+    },
+    "Создать новый аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new account"
+          }
+        }
+      }
+    },
+    "Создать свой NFT-ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create your NFT nickname"
+          }
+        }
+      }
+    },
+    "Сообщение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message"
+          }
+        }
+      }
+    },
+    "Сообщение — это транзакция в блокчейне. Стоит в ~1000 раз дешевле SMS.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A message is a blockchain transaction. ~1000× cheaper than SMS."
+          }
+        }
+      }
+    },
+    "Сообщения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages"
+          }
+        }
+      }
+    },
+    "Сообщения зашифрованы сквозным шифрованием": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages are end-to-end encrypted"
+          }
+        }
+      }
+    },
+    "Сообщения подписываются газ-кошельком. Держи на нём немного SOL.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages are signed by the gas wallet. Keep a little SOL on it."
+          }
+        }
+      }
+    },
+    "Сортировка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort"
+          }
+        }
+      }
+    },
+    "Сохранить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "средняя": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "medium"
+          }
+        }
+      }
+    },
+    "Статус": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        }
+      }
+    },
+    "Стоимость": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cost"
+          }
+        }
+      }
+    },
+    "Сумма": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount"
+          }
+        }
+      }
+    },
+    "Сумма должна быть больше 0": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount must be greater than 0"
+          }
+        }
+      }
+    },
+    "Твой NFT-аватар купили": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your NFT avatar was bought"
+          }
+        }
+      }
+    },
+    "Твой адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your address"
+          }
+        }
+      }
+    },
+    "Твой ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your nickname"
+          }
+        }
+      }
+    },
+    "Твой ник купили": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your nickname was bought"
+          }
+        }
+      }
+    },
+    "Твоя карточка — поделись с контактом": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your card — share it with a contact"
+          }
+        }
+      }
+    },
+    "Твоя подпись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your label"
+          }
+        }
+      }
+    },
+    "Твоя секретная фраза": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your secret phrase"
+          }
+        }
+      }
+    },
+    "Текущий пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current passcode"
+          }
+        }
+      }
+    },
+    "Тема": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theme"
+          }
+        }
+      }
+    },
+    "Тёмная": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark"
+          }
+        }
+      }
+    },
+    "Только буквы — цифры можно добавить по желанию (напр. Alex42)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters only — digits optional (e.g. Alex42)"
+          }
+        }
+      }
+    },
+    "Транзакции": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transactions"
+          }
+        }
+      }
+    },
+    "Транзакция не подтвердилась — попробуй ещё раз": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transaction wasn't confirmed — try again"
+          }
+        }
+      }
+    },
+    "Транзакция отправлена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transaction sent"
+          }
+        }
+      }
+    },
+    "Ты готов\nк старту": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're ready\nto start"
+          }
+        }
+      }
+    },
+    "Ты получишь": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You'll receive"
+          }
+        }
+      }
+    },
+    "Ты получишь **12 секретных слов** — единственный способ восстановить аккаунт.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You'll get **12 secret words** — the only way to recover your account."
+          }
+        }
+      }
+    },
+    "У контакта «%@» некорректный Solana-адрес получателя. Добавь его заново через поиск, а не QR.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact “%@” has an invalid Solana recipient address. Add them again via search, not QR."
+          }
+        }
+      }
+    },
+    "У тебя пока нет аватаров": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have no avatars yet"
+          }
+        }
+      }
+    },
+    "Уведомления": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        }
+      }
+    },
+    "Уведомления включены": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications on"
+          }
+        }
+      }
+    },
+    "Уведомления заглушены": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications muted"
+          }
+        }
+      }
+    },
+    "Удалить": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Удалить газ-кошелёк": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete gas wallet"
+          }
+        }
+      }
+    },
+    "Удалить газ-кошелёк?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete gas wallet?"
+          }
+        }
+      }
+    },
+    "Удалить контакт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete contact"
+          }
+        }
+      }
+    },
+    "Удалить контакт и переписку": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete contact and chat"
+          }
+        }
+      }
+    },
+    "Удалить контакт?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete contact?"
+          }
+        }
+      }
+    },
+    "Удаляются локально через %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted locally after %@"
+          }
+        }
+      }
+    },
+    "Уже у тебя в коллекции": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Already in your collection"
+          }
+        }
+      }
+    },
+    "Укажи цену": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set a price"
+          }
+        }
+      }
+    },
+    "уникальный одноразовый адрес на сообщение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a unique one-time address per message"
+          }
+        }
+      }
+    },
+    "Управление подпиской": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage subscription"
+          }
+        }
+      }
+    },
+    "Усиль защиту": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strengthen your protection"
+          }
+        }
+      }
+    },
+    "Установлено": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set"
+          }
+        }
+      }
+    },
+    "Хранение: блокчейн Solana · зашифровано · ключи не покидают устройство": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage: Solana blockchain · encrypted · keys never leave the device"
+          }
+        }
+      }
+    },
+    "Хранится только на устройстве": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stored on this device only"
+          }
+        }
+      }
+    },
+    "Хранятся на устройстве": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stored on this device"
+          }
+        }
+      }
+    },
+    "Цена": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price"
+          }
+        }
+      }
+    },
+    "Цена продажи": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sale price"
+          }
+        }
+      }
+    },
+    "Чаты": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chats"
+          }
+        }
+      }
+    },
+    "Чтение seed требует Face ID / пароль": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading the seed requires Face ID / passcode"
+          }
+        }
+      }
+    },
+    "Чтение seed-фразы и подпись требуют Face ID / пароль. Если телефон попал в чужие руки — ключи не достать.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading the seed phrase and signing require Face ID / passcode. If the phone falls into the wrong hands, the keys can't be extracted."
+          }
+        }
+      }
+    },
+    "Чтобы тебя находили по нику — включи поиск в Профиле: «Сделать профиль доступным для поиска».": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To be found by nickname, enable search in your Profile: \"Make profile searchable\"."
+          }
+        }
+      }
+    },
+    "ШИФРОВАНИЕ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ENCRYPTION"
+          }
+        }
+      }
+    },
+    "Это описание видят контакты, которые добавят тебя по QR.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This description is seen by contacts who add you via QR."
+          }
+        }
+      }
+    },
+    "Это старый QR без Solana-адреса. Попроси контакт показать новый QR (или добавь его через поиск).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is an old QR without a Solana address. Ask the contact for a new QR (or add them via search)."
+          }
+        }
+      }
+    },
+    "Это твой лот": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is your lot"
+          }
+        }
+      }
+    },
+    "Этот ник будут видеть твои контакты": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your contacts will see this nickname"
+          }
+        }
+      }
+    },
+    "Я записал слова в надёжном месте": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I've stored the words in a safe place"
+          }
+        }
+      }
+    },
+    "Язык": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        }
+      }
+    },
+    "Избранные": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favorites"
+          }
+        }
+      }
+    },
+    "Условия использования": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use"
+          }
+        }
+      }
+    },
+    "Запрещённый контент": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prohibited content"
+          }
+        }
+      }
+    },
+    "Действует политика НУЛЕВОЙ терпимости к оскорбительному, незаконному или абьюзивному контенту и поведению. Нарушители блокируются.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A ZERO-tolerance policy applies to objectionable, illegal or abusive content and behaviour. Violators are blocked."
+          }
+        }
+      }
+    },
+    "Жалобы и блокировка": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reports and blocking"
+          }
+        }
+      }
+    },
+    "Ты можешь пожаловаться на любого пользователя или сообщение и заблокировать собеседника в любой момент. Жалобы рассматриваются.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can report any user or message and block a contact at any time. Reports are reviewed."
+          }
+        }
+      }
+    },
+    "Сообщения зашифрованы end-to-end и хранятся на блокчейне. Разработчик НЕ имеет доступа к их содержимому и не может его удалить.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages are end-to-end encrypted and stored on the blockchain. The developer has NO access to their content and cannot delete it."
+          }
+        }
+      }
+    },
+    "Самостоятельное хранение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Self-custody"
+          }
+        }
+      }
+    },
+    "Ты единолично контролируешь свой seed-ключ. Потеря ключа = потеря доступа. Разработчик не может восстановить аккаунт или средства.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You solely control your seed key. Losing it means losing access. The developer cannot recover your account or funds."
+          }
+        }
+      }
+    },
+    "Ответственность": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Responsibility"
+          }
+        }
+      }
+    },
+    "Ты отвечаешь за свои сообщения и транзакции. Сетевые действия необратимы и стоят реальных комиссий.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are responsible for your messages and transactions. Network actions are irreversible and cost real fees."
+          }
+        }
+      }
+    },
+    "Принимаю": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accept"
+          }
+        }
+      }
+    },
+    "Нажимая «Принимаю», ты соглашаешься с условиями и политикой нулевой терпимости к абьюзу.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By tapping Accept you agree to the terms and the zero-tolerance policy on abuse."
+          }
+        }
+      }
+    },
+    "Заблокировать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block"
+          }
+        }
+      }
+    },
+    "Разблокировать": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unblock"
+          }
+        }
+      }
+    },
+    "Сообщения скрыты, новые не приходят": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages hidden, no new ones received"
+          }
+        }
+      }
+    },
+    "Перестать получать сообщения от контакта": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop receiving messages from this contact"
+          }
+        }
+      }
+    },
+    "Пожаловаться": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
