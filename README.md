@@ -21,6 +21,20 @@ PrivaMesh is a private messenger with **no backend of its own**. It speaks only 
 
 This is not "decentralized" as a slogan. The app literally has **one network dependency: a Solana RPC endpoint** (swappable, self-hostable). Below is exactly how that works.
 
+## Screenshots
+
+<div align="center">
+
+<img src=".github/assets/screenshots/01.png" width="30%" alt="Private by default" />
+<img src=".github/assets/screenshots/02.png" width="30%" alt="No servers" />
+<img src=".github/assets/screenshots/03.png" width="30%" alt="Hide who, when, how" />
+
+<img src=".github/assets/screenshots/04.png" width="30%" alt="No phone, no email" />
+<img src=".github/assets/screenshots/05.png" width="30%" alt="Send value in chat" />
+<img src=".github/assets/screenshots/06.png" width="30%" alt="Own your identity" />
+
+</div>
+
 ## "No servers" - concretely
 
 Every piece of *shared* state is a verifiable on-chain object. Everything private is local to the device. Nothing else exists.

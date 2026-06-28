@@ -94,7 +94,7 @@ CLARIFICATION ON CRYPTO:
   by StoreKit. NFT avatars/nicknames are cosmetic and do not unlock app features.
 
 USER-GENERATED CONTENT MODERATION (Guideline 1.2):
-- Users must accept a Terms screen with a zero-tolerance policy before using the app.
+- Terms of Use (zero-tolerance policy) and Privacy Policy are linked in the Profile tab.
 - Users can BLOCK any contact (stops receiving their messages) and REPORT any user
   (Contact profile → Report; sends a pre-filled email to privamesh@proton.me).
 - Because the app is end-to-end encrypted and serverless, moderation is client-side

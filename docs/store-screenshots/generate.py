@@ -1,137 +1,162 @@
 #!/usr/bin/env python3
 """
-Telegram-style App Store screenshots for PrivaMesh.
+Unique PrivaMesh App Store screenshots: dark brand aesthetic with a mesh-network
+motif (nodes + edges, like the logo), a neon glow behind the device, a bold
+headline with one accent word, and a feature pill.
 
-Usage:
-  - Put your raw app screenshots (from the iPhone 16 Plus simulator, Cmd+S)
-    into RAW_DIR named 1.png, 2.png, ... matching the PANELS order below.
-  - Run: python3 store_shots.py
-  - Output framed panels -> OUT_DIR (1290x2796, ready for App Store Connect).
-A screenshot may be missing; that panel is rendered with a placeholder.
+Usage: put raw app screenshots in raw/1.png..6.png, then `python3 generate.py`.
+Output -> out/1.png.. (1290x2796, ready for App Store Connect).
 """
-import os
+import os, math, random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-RAW_DIR = "/Users/roni/Documents/PrivaMesh-Release/docs/store-screenshots/raw"
-OUT_DIR = "/Users/roni/Documents/PrivaMesh-Release/docs/store-screenshots/out"
-os.makedirs(RAW_DIR, exist_ok=True)
-os.makedirs(OUT_DIR, exist_ok=True)
+BASE = os.path.dirname(os.path.abspath(__file__))
+RAW_DIR = os.path.join(BASE, "raw")
+OUT_DIR = os.path.join(BASE, "out")
+os.makedirs(RAW_DIR, exist_ok=True); os.makedirs(OUT_DIR, exist_ok=True)
 
-W, H = 1290, 2796                      # 6.7" App Store size
-HEAD_F = "/System/Library/Fonts/SFNSRounded.ttf"
-SUB_F  = "/System/Library/Fonts/Supplemental/Arial.ttf"
-BOLD_F = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+W, H = 1290, 2796
+ROUND   = "/System/Library/Fonts/SFNSRounded.ttf"
+ARIAL   = "/System/Library/Fonts/Supplemental/Arial.ttf"
+ARIALB  = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
 
-# headline, subheadline, gradient (top-left rgb, bottom-right rgb)
+BG       = (8, 12, 24)        # deep navy base
+TEAL     = (34, 197, 150)     # brand accent
+INK      = (226, 232, 240)
+GREY     = (130, 146, 170)
+
+# headline, accent_word (colored teal), subheadline, pill text, glow accent rgb
 PANELS = [
-    ("Private by default",
+    ("Private by default", "default",
      "End-to-end encrypted. A new key for every message.",
-     (34, 197, 150), (16, 138, 110)),
-    ("No servers. Seriously.",
-     "Your messages live on the blockchain - nothing to hack or shut down.",
-     (99, 102, 241), (139, 92, 246)),
-    ("Hide who, when, how",
+     "End-to-end encrypted", TEAL),
+    ("No servers. Seriously.", "servers.",
+     "Your messages live on the blockchain - nothing to shut down.",
+     "Zero backend", (56, 189, 248)),
+    ("Hide who, when, how", "Hide",
      "Stealth addresses and cover traffic mask your metadata.",
-     (20, 184, 166), (14, 165, 233)),
-    ("No phone. No email.",
+     "Metadata hidden", (139, 122, 246)),
+    ("No phone. No email.", "No phone.",
      "Your identity is a key only you hold. Find friends by nickname.",
-     (245, 158, 11), (234, 88, 12)),
-    ("Send value in chat",
+     "No tracking", (245, 158, 11)),
+    ("Send value in chat", "value",
      "A built-in Solana wallet - pay or gift right inside a conversation.",
-     (56, 189, 248), (37, 99, 235)),
-    ("Own your identity",
+     "Built-in wallet", TEAL),
+    ("Own your identity", "Own",
      "On-chain NFT avatars and nicknames - truly yours.",
-     (168, 85, 247), (236, 72, 153)),
+     "On-chain NFTs", (236, 110, 180)),
 ]
 
-def gradient(c1, c2):
-    base = Image.new("RGB", (W, H), c1)
-    top = Image.new("RGB", (W, H), c2)
-    mask = Image.new("L", (W, H))
-    md = mask.load()
-    for y in range(H):
-        for x in range(0, W, 4):
-            v = int(((x / W) + (y / H)) / 2 * 255)
-            md[x, y] = v
-            for dx in range(1, 4):
-                if x + dx < W: md[x + dx, y] = v
-    return Image.composite(top, base, mask)
+def mesh_bg(accent):
+    img = Image.new("RGB", (W, H), BG)
+    glow = Image.new("RGB", (W, H), BG)
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([W//2-700, -500, W//2+700, 900],
+               fill=tuple(min(255, int(BG[i] + (accent[i]-BG[i])*0.5)) for i in range(3)))
+    glow = glow.filter(ImageFilter.GaussianBlur(260))
+    img = Image.blend(img, glow, 0.6)
+    rnd = random.Random(7)
+    nodes = [(rnd.randint(40, W-40), rnd.randint(40, H-40)) for _ in range(46)]
+    layer = Image.new("RGBA", (W, H), (0,0,0,0))
+    ld = ImageDraw.Draw(layer)
+    for i, a in enumerate(nodes):
+        for b in nodes[i+1:]:
+            d = math.dist(a, b)
+            if d < 330:
+                al = int(38 * (1 - d/330))
+                ld.line([a, b], fill=(accent[0], accent[1], accent[2], al), width=2)
+    for (x, y) in nodes:
+        r = rnd.choice([4, 5, 7])
+        ld.ellipse([x-r, y-r, x+r, y+r], fill=(accent[0], accent[1], accent[2], 90))
+    img = Image.alpha_composite(img.convert("RGBA"), layer)
+    vg = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(vg).rectangle([0, int(H*0.55), W, H], fill=120)
+    vg = vg.filter(ImageFilter.GaussianBlur(200))
+    dark = Image.new("RGBA", (W, H), (4, 7, 16, 255))
+    img = Image.composite(dark, img, vg)
+    return img
 
 def rounded(img, rad):
-    mask = Image.new("L", img.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, img.size[0], img.size[1]], rad, fill=255)
-    out = img.convert("RGBA")
-    out.putalpha(mask)
-    return out
+    m = Image.new("L", img.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle([0,0,*img.size], rad, fill=255)
+    o = img.convert("RGBA"); o.putalpha(m); return o
 
-def wrap(draw, text, font, maxw):
-    words, lines, cur = text.split(), [], ""
-    for w in words:
-        t = (cur + " " + w).strip()
-        if draw.textlength(t, font=font) <= maxw:
-            cur = t
-        else:
-            if cur: lines.append(cur)
-            cur = w
-    if cur: lines.append(cur)
-    return lines
-
-def phone_frame(shot):
-    # device: width PW, bezel ~ B, screen rounded
-    PW = 880
-    ratio = 2796 / 1290
-    PH = int(PW * ratio)
-    B = 18
-    bezel = Image.new("RGBA", (PW, PH), (0, 0, 0, 0))
-    ImageDraw.Draw(bezel).rounded_rectangle([0, 0, PW, PH], 96, fill=(17, 24, 39, 255))
-    inner_w, inner_h = PW - 2 * B, PH - 2 * B
-    if shot is not None:
-        s = shot.convert("RGB")
-        # cover-fit to inner, top-aligned
-        sr = inner_w / s.width
-        s = s.resize((inner_w, int(s.height * sr)))
-        if s.height > inner_h: s = s.crop((0, 0, inner_w, inner_h))
-        screen = Image.new("RGB", (inner_w, inner_h), (11, 16, 32))
-        screen.paste(s, (0, 0))
+def phone(shot, accent):
+    PW = 900; PH = int(PW * (2796/1290)); B = 18
+    bez = Image.new("RGBA", (PW, PH), (0,0,0,0))
+    ImageDraw.Draw(bez).rounded_rectangle([0,0,PW,PH], 100, fill=(15,20,34,255))
+    iw, ih = PW-2*B, PH-2*B
+    if shot:
+        s = shot.convert("RGB"); r = iw/s.width
+        s = s.resize((iw, int(s.height*r)))
+        if s.height > ih: s = s.crop((0,0,iw,ih))
+        scr = Image.new("RGB", (iw, ih), BG); scr.paste(s, (0,0))
     else:
-        screen = Image.new("RGB", (inner_w, inner_h), (24, 33, 56))
-        ImageDraw.Draw(screen).text((inner_w//2, inner_h//2), "screenshot",
-                                     font=ImageFont.truetype(SUB_F, 40), fill=(120,140,170), anchor="mm")
-    bezel.paste(rounded(screen, 80), (B, B), rounded(screen, 80))
-    return bezel
+        scr = Image.new("RGB", (iw, ih), (20,28,48))
+    bez.alpha_composite(rounded(scr, 84), (B, B))
+    return bez
 
-def build(i, headline, sub, c1, c2, shot):
-    img = gradient(c1, c2).convert("RGBA")
+def build(i, headline, accent_word, sub, pill, accent):
+    img = mesh_bg(accent).convert("RGBA")
     d = ImageDraw.Draw(img)
-    # headline
-    hf = ImageFont.truetype(HEAD_F, 104)
-    sf = ImageFont.truetype(SUB_F, 50)
-    y = 230
-    for ln in wrap(d, headline, hf, W - 160):
-        d.text((W//2, y), ln, font=hf, fill=(255,255,255), anchor="ma")
-        y += 120
-    y += 18
-    for ln in wrap(d, sub, sf, W - 220):
-        d.text((W//2, y), ln, font=sf, fill=(255,255,255,225), anchor="ma")
-        y += 66
-    # phone, bottom, partly cut off
-    frame = phone_frame(shot)
-    fx = (W - frame.width)//2
-    fy = y + 70
-    # soft shadow
-    sh = Image.new("RGBA", img.size, (0,0,0,0))
-    ImageDraw.Draw(sh).rounded_rectangle([fx, fy, fx+frame.width, fy+frame.height], 96, fill=(0,0,0,90))
-    sh = sh.filter(ImageFilter.GaussianBlur(40))
-    img.alpha_composite(sh)
-    img.alpha_composite(frame, (fx, fy))
+    hf = ImageFont.truetype(ROUND, 100)
+    sf = ImageFont.truetype(ARIAL, 46)
+    pf = ImageFont.truetype(ARIALB, 34)
+    space = d.textlength(" ", font=hf)
+    parts = [(w, (w == accent_word)) for w in headline.split()]
+    # wrap headline
+    lines, cur, curw = [], [], 0.0
+    for word, acc in parts:
+        ww = d.textlength(word, font=hf)
+        if cur and curw + space + ww > W-150:
+            lines.append(cur); cur, curw = [], 0.0
+        cur.append((word, acc, ww)); curw += (space if len(cur) > 1 else 0) + ww
+    if cur: lines.append(cur)
+    y = 210
+    for line in lines:
+        total = sum(w for _,_,w in line) + space*(len(line)-1)
+        x = (W-total)//2
+        for word, acc, ww in line:
+            d.text((x, y), word, font=hf, fill=accent if acc else INK)
+            x += ww + space
+        y += 118
+    y += 14
+    words, slines, scur = sub.split(), [], ""
+    for w in words:
+        t = (scur+" "+w).strip()
+        if d.textlength(t, font=sf) <= W-220: scur = t
+        else: slines.append(scur); scur = w
+    if scur: slines.append(scur)
+    for ln in slines:
+        d.text((W//2, y), ln, font=sf, fill=GREY, anchor="ma"); y += 62
+    # phone + neon glow
+    sp = os.path.join(RAW_DIR, f"{i}.png")
+    fr = phone(Image.open(sp) if os.path.exists(sp) else None, accent)
+    fx = (W-fr.width)//2; fy = y + 90
+    glow = Image.new("RGBA", img.size, (0,0,0,0))
+    ImageDraw.Draw(glow).rounded_rectangle([fx-10, fy-10, fx+fr.width+10, fy+fr.height+10], 110,
+                                           fill=(accent[0], accent[1], accent[2], 130))
+    glow = glow.filter(ImageFilter.GaussianBlur(70))
+    img.alpha_composite(glow)
+    img.alpha_composite(fr, (fx, fy))
+    # feature pill over top of phone
+    ph = 70
+    pw = int(d.textlength(pill, font=pf)) + 52 + 38
+    px = (W-pw)//2; py = fy - ph//2
+    pi = Image.new("RGBA", (pw, ph), (0,0,0,0))
+    pd = ImageDraw.Draw(pi)
+    pd.rounded_rectangle([0,0,pw,ph], ph//2, fill=(15,22,38,255),
+                         outline=(accent[0],accent[1],accent[2],255), width=2)
+    pd.ellipse([24, ph//2-9, 42, ph//2+9], fill=accent)
+    pd.text((56, ph//2), pill, font=pf, fill=INK, anchor="lm")
+    img.alpha_composite(pi, (px, py))
     out = os.path.join(OUT_DIR, f"{i}.png")
     img.convert("RGB").save(out, "PNG")
     return out
 
 if __name__ == "__main__":
-    for idx, (hl, sub, c1, c2) in enumerate(PANELS, start=1):
-        p = os.path.join(RAW_DIR, f"{idx}.png")
-        shot = Image.open(p) if os.path.exists(p) else None
-        out = build(idx, hl, sub, c1, c2, shot)
-        print(f"panel {idx}: {'shot' if shot else 'PLACEHOLDER'} -> {out}")
-    print("\nDone. Put raw screenshots in:", RAW_DIR)
+    for idx, (hl, aw, sub, pill, acc) in enumerate(PANELS, start=1):
+        has = os.path.exists(os.path.join(RAW_DIR, f"{idx}.png"))
+        build(idx, hl, aw, sub, pill, acc)
+        print(f"panel {idx}: {'shot' if has else 'PLACEHOLDER'} -> out/{idx}.png")
+    print("Done.")
