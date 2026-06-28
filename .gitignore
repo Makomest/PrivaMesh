@@ -22,3 +22,6 @@ secrets.plist
 # Generated App Store screenshots (regenerate locally)
 docs/store-screenshots/raw/
 docs/store-screenshots/out/
+
+# Private App Store review material - never commit (contains funded test seed)
+review-private/

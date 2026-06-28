@@ -13,7 +13,6 @@ struct ContentView: View {
     @Environment(ToastManager.self) private var toast
 
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage("privamesh.eulaAccepted") private var eulaAccepted = false
 
     var body: some View {
         ZStack {
@@ -73,10 +72,8 @@ struct ContentView: View {
             .animation(.spring(response: 0.35, dampingFraction: 0.75), value: toast.isVisible)
         }
         .animation(.easeInOut(duration: 0.15), value: shouldShowPrivacyCover)
-        .fullScreenCover(isPresented: .constant(!eulaAccepted)) {
-            EULAView { eulaAccepted = true }
-        }
         .onAppear {
+            purgeStaleSecretsOnFreshInstall()
             decideInitialRoute()
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -95,6 +92,20 @@ struct ContentView: View {
     }
 
     private static let onboardingDoneKey = "privamesh.onboardingDone"
+    private static let installMarkerKey = "privamesh.installMarker"
+
+    /// iOS Keychain items SURVIVE app deletion, but UserDefaults and the app
+    /// container do not. After a delete + reinstall the stale seed + passcode are
+    /// still in the Keychain, so `WalletManager.init` reads them and the app
+    /// jumps straight to the passcode lock instead of onboarding. Detect a fresh
+    /// install via a UserDefaults marker (wiped on uninstall) and purge the
+    /// orphaned secrets so a reinstall starts clean at onboarding.
+    private func purgeStaleSecretsOnFreshInstall() {
+        guard !UserDefaults.standard.bool(forKey: Self.installMarkerKey) else { return }
+        wallet.wipe()          // clears seed/publicKey in Keychain + resets state
+        passcode.wipe()        // clears passcode hash/salt in Keychain
+        UserDefaults.standard.set(true, forKey: Self.installMarkerKey)
+    }
 
     private func decideInitialRoute() {
         guard router.route == .welcome else { return }

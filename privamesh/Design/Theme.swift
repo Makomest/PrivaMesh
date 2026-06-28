@@ -29,6 +29,9 @@ enum Theme {
     static let accentDeep = Color(red: 13/255, green: 148/255, blue: 136/255)    // teal-600
     static let cyan = Color(red: 34/255, green: 211/255, blue: 238/255)          // cyan-400
 
+    // Fixed near-black ink for QR modules — max scan contrast on white, both modes
+    static let qrInk = Color(red: 12/255, green: 18/255, blue: 32/255)
+
     // MARK: - Secondary pastels
     static let sky = Color(red: 125/255, green: 211/255, blue: 252/255)          // sky-300
     static let violet = Color(red: 196/255, green: 181/255, blue: 253/255)       // violet-300

@@ -129,8 +129,12 @@ final class MarketRegistry {
 
     private func publish(_ event: MarketEvent, keypair: KeyPair, rpc: SolanaRPCService) async throws {
         guard Self.isConfigured, let memo = event.memoString() else { return }
+        // A listing event carries the item (title, design, price, seller, buyer)
+        // and can exceed ~566 B, which fails on the default compute budget with
+        // "Program failed to complete". Raise the Memo program's compute limit.
         _ = try await MemoTransactionBuilder.send(
             from: keypair, to: Self.address, memoBase64: memo,
-            endpointURL: rpc.currentEndpoint.address, apiClient: rpc.client)
+            endpointURL: rpc.currentEndpoint.address, apiClient: rpc.client,
+            computeUnitLimit: 600_000)
     }
 }

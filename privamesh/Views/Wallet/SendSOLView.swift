@@ -32,7 +32,12 @@ struct SendSOLView: View {
 
     private var recipientValid: Bool {
         guard !recipient.isEmpty else { return false }
-        return (try? PublicKey(string: recipient)) != nil
+        // PublicKey(string:) only checks length >= 32 chars; an invalid-base58
+        // string still constructs but with empty bytes. Require a real 32-byte
+        // key so the Send button can't be enabled for a corrupt address.
+        guard let key = try? PublicKey(string: recipient),
+              key.bytes.count == PublicKey.numberOfBytes else { return false }
+        return true
     }
 
     private var hasEnoughBalance: Bool {

@@ -28,6 +28,7 @@ struct MainTabView: View {
     @Environment(AccountManager.self) private var accountManager
     @Environment(TabBarVisibility.self) private var tabBarVisibility
     @Environment(\.modelContext) private var context
+    @Environment(\.colorScheme) private var colorScheme
 
     @Query private var contacts: [Contact]
     private var activeAddress: String {
@@ -46,7 +47,8 @@ struct MainTabView: View {
     @State private var showSecuritySetup = false
 
     enum AppTab: String, Hashable, CaseIterable {
-        case home, chats, wallet, market, profile
+        // Order here drives the tab bar layout. Chats sits in the middle.
+        case home, wallet, chats, market, profile
 
         var label: String {
             switch self {
@@ -186,17 +188,38 @@ struct MainTabView: View {
     // MARK: - Custom floating tab bar
 
     private var customTabBar: some View {
-        HStack(spacing: 0) {
+        let isDark = colorScheme == .dark
+        let shape = RoundedRectangle(cornerRadius: 30, style: .continuous)
+        return HStack(spacing: 0) {
             ForEach(AppTab.allCases, id: \.self) { tab in
                 tabButton(tab)
             }
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 30, style: .continuous)
-            .stroke(Theme.glass, lineWidth: 1))
-        .shadow(color: .black.opacity(0.10), radius: 16, x: 0, y: 6)
+        // Glassmorphism: translucent blur + top sheen + soft inner-light border,
+        // adapting for both light and dark themes.
+        .background {
+            shape
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    shape.fill(
+                        LinearGradient(
+                            colors: [.white.opacity(isDark ? 0.10 : 0.55),
+                                     .white.opacity(0.0)],
+                            startPoint: .top, endPoint: .bottom)
+                    )
+                )
+                .overlay(
+                    shape.stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(isDark ? 0.28 : 0.75),
+                                     .white.opacity(isDark ? 0.04 : 0.12)],
+                            startPoint: .topLeading, endPoint: .bottomTrailing),
+                        lineWidth: 1)
+                )
+        }
+        .shadow(color: .black.opacity(isDark ? 0.40 : 0.12), radius: 18, x: 0, y: 8)
         .padding(.horizontal, 14)
         .padding(.bottom, 6)
     }

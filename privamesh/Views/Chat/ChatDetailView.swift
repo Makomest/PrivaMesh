@@ -47,6 +47,10 @@ struct ChatDetailView: View {
     @State private var showInfo           = false
     @State private var showLowBalanceAlert = false
     @State private var infoMessage: MessageInfo?
+    /// Cached sorted history. Sorting `contact.messages` is O(N log N); doing it
+    /// inside `body` re-sorts the whole history on every keystroke (the input
+    /// field lives in this view). Recompute only when the message count changes.
+    @State private var sortedCache: [ChatMessage] = []
 
     /// My main wallet address — stamped into outgoing payloads so contacts can
     /// pay me even when my on-chain fee payer is a gas wallet.
@@ -66,8 +70,8 @@ struct ChatDetailView: View {
     @State private var isSendingPhoto = false
     #endif
 
-    private var sortedMessages: [ChatMessage] {
-        contact.messages.sorted { $0.sentAt < $1.sentAt }
+    private func recomputeSorted() {
+        sortedCache = contact.messages.sorted { $0.sentAt < $1.sentAt }
     }
 
     var body: some View {
@@ -317,13 +321,12 @@ struct ChatDetailView: View {
 
     private var messageList: some View {
         ScrollViewReader { proxy in
-            // Sort once per render; change-handlers key off the raw count and the
-            // newest message (max) without re-sorting the whole history.
-            let messages = sortedMessages
+            // Use the cached sorted history (recomputed only on count change) so
+            // typing in the input field does not re-sort the whole conversation.
             ScrollView {
                 LazyVStack(spacing: 10) {
-                    if messages.isEmpty { emptyState.padding(.top, 60) }
-                    ForEach(messages) { msg in
+                    if sortedCache.isEmpty { emptyState.padding(.top, 60) }
+                    ForEach(sortedCache) { msg in
                         messageBubble(msg).id(msg.id)
                     }
                 }
@@ -333,12 +336,14 @@ struct ChatDetailView: View {
             }
             .scrollIndicators(.hidden)
             .onChange(of: contact.messages.count) {
-                if let last = contact.messages.max(by: { $0.sentAt < $1.sentAt }) {
+                recomputeSorted()
+                if let last = sortedCache.last {
                     withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
                 }
             }
             .onAppear {
-                if let last = messages.last {
+                recomputeSorted()
+                if let last = sortedCache.last {
                     proxy.scrollTo(last.id, anchor: .bottom)
                 }
             }

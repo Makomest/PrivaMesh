@@ -12,7 +12,7 @@ struct OnboardingExplainerView: View {
     @Environment(AppRouter.self) private var router
 
     @State private var currentPage = 0
-    private let totalPages = 6
+    private let totalPages = 7
 
     var body: some View {
         ZStack {
@@ -209,6 +209,25 @@ struct OnboardingExplainerView: View {
                 PointData(icon: "leaf.fill",
                           color: Color(red: 16/255, green: 185/255, blue: 129/255),
                           text: "Solana — **быстро и дёшево**: ~65 000 транзакций в секунду"),
+            ]
+        ),
+        SlideData(
+            icon: "iphone.and.arrow.forward",
+            iconColors: [Color(red: 99/255, green: 102/255, blue: 241/255),
+                         Color(red: 168/255, green: 85/255, blue: 247/255)],
+            badge: nil,
+            title: "Переписка\nтолько у тебя",
+            subtitle: "Расшифрованные сообщения хранятся только на этом телефоне — не в облаке и не на сервере.",
+            points: [
+                PointData(icon: "key.horizontal.fill",
+                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
+                          text: "**Личность и кошелёк** вернутся по 12 словам на любом устройстве"),
+                PointData(icon: "iphone.slash",
+                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
+                          text: "**История чатов не переедет** на новый телефон — копии есть только здесь"),
+                PointData(icon: "lock.shield.fill",
+                          color: Color(red: 16/255, green: 185/255, blue: 129/255),
+                          text: "**Это защита, а не баг** — даже с твоим seed никто не прочитает старую переписку"),
             ]
         ),
         SlideData(

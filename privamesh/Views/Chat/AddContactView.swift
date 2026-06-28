@@ -330,7 +330,9 @@ struct AddContactView: View {
             if myBundleBase64.isEmpty {
                 ProgressView().tint(Theme.accent).padding(40)
             } else {
-                QRCodeView(text: myBundleBase64, size: 200).padding(.vertical, 8)
+                QRCodeView(text: myBundleBase64, size: 280)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 8)
                 Button {
                     #if os(iOS)
                     UIPasteboard.general.string = myBundleBase64

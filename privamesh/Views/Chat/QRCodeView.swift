@@ -36,16 +36,15 @@ struct QRCodeView: View {
 
             if n > 0 {
                 Canvas { ctx, sz in
-                    let quiet = sz.width * 0.10
+                    let quiet = sz.width * 0.08
                     let area  = sz.width - quiet * 2
                     let cell  = area / CGFloat(n)
-                    let dot   = cell * 0.82
+                    let dot   = cell * 0.92
 
-                    let shading = GraphicsContext.Shading.linearGradient(
-                        Gradient(colors: [Theme.accent, Theme.accentDeep]),
-                        startPoint: .zero,
-                        endPoint: CGPoint(x: sz.width, y: sz.height)
-                    )
+                    // Solid, theme-independent dark ink. A gradient (or a light
+                    // accent in dark mode) lowers luminance contrast and makes the
+                    // code slow/unreliable to scan — a fixed near-black always reads.
+                    let shading = GraphicsContext.Shading.color(Theme.qrInk)
 
                     // Data modules as rounded dots (skip finder eyes + centre logo).
                     var dots = Path()
