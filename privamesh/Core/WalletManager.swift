@@ -31,6 +31,10 @@ final class WalletManager {
     init() {
         if let publicKey = (try? KeychainStorage.read(.publicKey)) ?? nil {
             state = .ready(publicKeyBase58: publicKey)
+            // One-time migration: re-store so an older install upgrades the
+            // public-key item from WhenUnlocked to AfterFirstUnlock accessibility
+            // (fixes the random "logged out at launch" when the device was locked).
+            try? KeychainStorage.save(publicKey, for: .publicKey)
         }
     }
 

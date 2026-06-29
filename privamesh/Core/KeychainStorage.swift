@@ -48,7 +48,15 @@ struct KeychainStorage {
         if requireBiometry, let acl = userPresenceACL() {
             attributes[kSecAttrAccessControl as String] = acl
         } else {
-            attributes[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+            // The public key isn't secret and is needed at launch — including a
+            // background/pre-warm launch while the device is still locked. With
+            // WhenUnlocked that read fails intermittently (errSecInteractionNotAllowed)
+            // and the app wrongly shows Welcome ("logged out"); a manual relaunch
+            // when unlocked fixes it. AfterFirstUnlock is readable whenever the
+            // device has been unlocked at least once since boot, so it doesn't.
+            attributes[kSecAttrAccessible as String] = (key == .publicKey)
+                ? kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+                : kSecAttrAccessibleWhenUnlockedThisDeviceOnly
         }
 
         let status = SecItemAdd(attributes as CFDictionary, nil)

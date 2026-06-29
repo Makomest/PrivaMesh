@@ -133,6 +133,14 @@ struct ContentView: View {
         case .background:
             passcode.noteBackgrounded()
         case .active:
+            // Self-heal a transient Keychain read failure at launch: if the app
+            // came up with no wallet (e.g. pre-warmed while the device was locked)
+            // but one is actually stored, reload + re-route instead of waiting for
+            // a manual relaunch.
+            if case .noWallet = wallet.state {
+                wallet.reloadFromKeychain()
+                decideInitialRoute()
+            }
             if passcode.shouldRelockOnForeground() {
                 passcode.lock()
                 router.go(to: .passcodeEnter)
