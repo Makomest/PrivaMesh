@@ -61,6 +61,7 @@ struct privameshApp: App {
         sub.onPackPurchased = { [weak quotaSvc] messages in quotaSvc?.creditPack(messages) }
         sub.onPackReceipt = { [weak relaySvc] jws in await relaySvc?.creditPack(jws: jws) }
         relaySvc.receiptProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
+        relaySvc.activeAccountProvider = { [weak accounts] in accounts?.activePublicKey ?? "" }
         messageSender.relay = relaySvc
         coverTraffic.quota = quotaSvc
         onChainDiscovery.relay = relaySvc

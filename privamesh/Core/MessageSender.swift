@@ -40,14 +40,15 @@ final class MessageSender {
     // see the real nick + NFT avatar without exchanging QR.
     private var senderNick: String?
     private var senderAvatarSeed: String?
-    private var senderWallet: String?
     private var senderIsPremium = false
 
-    func setSenderProfile(nick: String?, avatarSeed: String?, wallet: String? = nil,
-                          isPremium: Bool = false) {
+    // NOTE: the sender's real wallet address is intentionally NOT stamped. In-chat
+    // payments were removed, so it served no purpose and leaked the sender's real
+    // Solana address to every contact — defeating the on-chain sender anonymity
+    // (ephemeral per-message signer + app-paid fee payer).
+    func setSenderProfile(nick: String?, avatarSeed: String?, isPremium: Bool = false) {
         senderNick = nick
         senderAvatarSeed = avatarSeed
-        senderWallet = wallet
         senderIsPremium = isPremium
     }
 
@@ -55,7 +56,7 @@ final class MessageSender {
         var p = payload
         p.senderNick = senderNick
         p.senderAvatarSeed = senderAvatarSeed
-        p.senderWallet = senderWallet
+        p.senderWallet = nil               // never leak the real wallet address
         p.senderIsPremium = senderIsPremium ? true : nil
         return p
     }

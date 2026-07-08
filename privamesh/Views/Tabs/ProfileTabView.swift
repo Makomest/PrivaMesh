@@ -36,6 +36,7 @@ struct ProfileTabView: View {
     @State private var showLangRestart = false
     @State private var showRPCEditor = false
     @State private var coverEnabled = false
+    @AppStorage("privamesh.shareVerifiedBadge") private var shareVerifiedBadge = true
     @State private var seedLockEnabled = false
     @State private var notifMuteAll = false
     @State private var notifPreview = true
@@ -510,6 +511,10 @@ struct ProfileTabView: View {
             toggleRow(icon: "theatermasks.fill", title: "Маскирующий трафик",
                       subtitle: String(localized: "Скрывает, КОГДА ты пишешь. Тратит ~\(CoverTrafficService.approxPerHour) сообщений в час из твоего баланса."),
                       isOn: $coverEnabled)
+            cardDivider
+            toggleRow(icon: "checkmark.seal.fill", title: "Галочка верификации контактам",
+                      subtitle: "Показывать контактам, что у тебя PrivaMesh+.",
+                      isOn: $shareVerifiedBadge)
             cardDivider
             if SeedLock.isAvailable {
                 toggleRow(icon: "key.viewfinder", title: "Защита seed по Face ID",

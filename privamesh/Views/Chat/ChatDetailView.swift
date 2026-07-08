@@ -41,6 +41,8 @@ struct ChatDetailView: View {
     // One-time privacy consent: an in-chat SOL transfer is paid by the MAIN
     // wallet, revealing its address to the recipient + on-chain observers.
     @AppStorage("privamesh.solRevealConsent") private var solRevealConsent = false
+    // Whether to reveal the PrivaMesh+ verification badge to contacts (metadata).
+    @AppStorage("privamesh.shareVerifiedBadge") private var shareVerifiedBadge = true
     @State private var showSolPrivacyAlert = false
     @State private var pendingSolAmount: Decimal?
     @State private var showGiftSheet   = false
@@ -122,8 +124,7 @@ struct ChatDetailView: View {
             markMessagesRead()
             sender.setSenderProfile(nick: nicknameManager.nickname,
                                     avatarSeed: avatars.activeDesign?.id,
-                                    wallet: walletAddress,
-                                    isPremium: subscription.isSubscribed)
+                                    isPremium: subscription.isSubscribed && shareVerifiedBadge)
             if !contact.isSelf, let keypair = try? await wallet.currentKeyPair() {
                 await rpc.refreshFee(senderKeyPair: keypair)
             }
