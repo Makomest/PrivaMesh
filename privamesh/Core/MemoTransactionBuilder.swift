@@ -88,6 +88,65 @@ enum MemoTransactionBuilder {
         return try await sendRawTransaction(serialized: serialized, endpointURL: endpointURL)
     }
 
+    /// Build a message tx whose network fee is paid by the app treasury (the
+    /// relay co-signs as fee payer). The sender partial-signs locally — proving
+    /// memo authorship and sourcing the 0-lamport marker — while the treasury
+    /// signature (fee payer) is added by the relay before submission. Returns the
+    /// partially-signed transaction as base64. Users therefore never hold or
+    /// spend SOL; access is metered via Apple IAP (see MessageQuotaService).
+    static func buildSponsoredMessageBase64(
+        to recipientAddress: String,
+        memoBase64: String,
+        treasury: PublicKey,
+        endpointURL: String,
+        computeUnitLimit: UInt32? = nil
+    ) async throws -> String {
+        let memoProgram = try PublicKey(string: memoProgramId)
+        let recipient   = try PublicKey(string: recipientAddress)
+        guard recipient.bytes.count == PublicKey.numberOfBytes else {
+            throw rpcFail(method: "build", "адрес получателя не является валидным Solana-адресом (\(recipientAddress))")
+        }
+        // Per-message EPHEMERAL signer — a fresh throwaway keypair, never the real
+        // wallet. The 0-lamport transfer needs no funds, and authorship is proven
+        // by the encrypted Double Ratchet payload, not the on-chain signature. So
+        // the sender's real address NEVER appears on-chain (only this random key +
+        // the treasury fee payer + the recipient's one-time address).
+        let ephemeral = try await KeyPair(network: .mainnetBeta)
+
+        let transferInstruction = SystemProgram.transferInstruction(
+            from: ephemeral.publicKey, to: recipient, lamports: lamportsPerMessage)
+        let memoInstruction = TransactionInstruction(
+            keys: [AccountMeta(publicKey: ephemeral.publicKey, isSigner: true, isWritable: false)],
+            programId: memoProgram, data: Array(memoBase64.utf8))
+
+        let blockhash = try await fetchLatestBlockhash(endpointURL: endpointURL)
+        var transaction = Transaction(
+            instructions: try priorityInstructions(computeUnitLimit: computeUnitLimit) + [transferInstruction, memoInstruction],
+            recentBlockhash: blockhash,
+            feePayer: treasury)                            // app treasury pays the fee
+        try transaction.partialSign(signers: [ephemeral])  // ephemeral fills its slots
+        // requiredAllSignatures:false → leaves the treasury (fee-payer) slot empty
+        // for the relay to fill.
+        return try transaction.serialize(requiredAllSignatures: false).bytes.toBase64()
+    }
+
+    /// Build an arbitrary instruction list as a treasury-sponsored, partially
+    /// signed transaction (fee payer = treasury; the given signers sign locally,
+    /// the relay adds the treasury signature). Returns base64. Used for sponsored
+    /// NFT nickname mints.
+    static func buildSponsoredInstructionsBase64(
+        _ instructions: [TransactionInstruction],
+        signers: [KeyPair],
+        treasury: PublicKey,
+        endpointURL: String
+    ) async throws -> String {
+        let blockhash = try await fetchLatestBlockhash(endpointURL: endpointURL)
+        var transaction = Transaction(instructions: instructions,
+                                      recentBlockhash: blockhash, feePayer: treasury)
+        try transaction.partialSign(signers: signers)
+        return try transaction.serialize(requiredAllSignatures: false).bytes.toBase64()
+    }
+
     /// Plain SOL transfer over the same robust raw-URLSession path (confirmed
     /// commitment) — avoids SolanaSwift's client which throws blockhashNotFound.
     static func sendSOL(

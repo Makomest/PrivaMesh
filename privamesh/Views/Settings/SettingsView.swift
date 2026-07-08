@@ -55,19 +55,19 @@ struct SettingsView: View {
             .onAppear {
                 biometryEnabled = biometry.isEnabled
             }
-            .alert("Сбросить кошелёк?", isPresented: $showingResetAlert) {
+            .alert("Сбросить аккаунт?", isPresented: $showingResetAlert) {
                 Button("Отмена", role: .cancel) {}
                 Button("Сбросить", role: .destructive) {
                     resetWallet()
                 }
             } message: {
-                Text("Кошелёк и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда.")
+                Text("Аккаунт и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда.")
             }
         }
     }
 
     private var walletSection: some View {
-        Section("Кошелёк") {
+        Section("Баланс") {
             if let publicKey {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Адрес")
@@ -167,7 +167,7 @@ struct SettingsView: View {
             Button(role: .destructive) {
                 showingResetAlert = true
             } label: {
-                Label("Сбросить кошелёк", systemImage: "trash")
+                Label("Сбросить аккаунт", systemImage: "trash")
             }
         } header: {
             Text("Опасная зона")

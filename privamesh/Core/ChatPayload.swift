@@ -35,6 +35,10 @@ struct ChatPayload: Codable {
     /// inside the E2E-encrypted payload so it works even when the on-chain fee
     /// payer is a throwaway gas wallet. Lets the recipient pay the real wallet.
     var senderWallet: String?
+    /// Whether the sender has an active PrivaMesh+ membership, so the recipient
+    /// can show the verification checkmark. Self-declared (carried in the E2E
+    /// payload); a cosmetic badge, not a cryptographic proof.
+    var senderIsPremium: Bool?
 
     static func text(_ content: String) -> ChatPayload {
         ChatPayload(kind: .text, body: content, photoKey: nil)

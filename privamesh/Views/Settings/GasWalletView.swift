@@ -44,7 +44,7 @@ struct GasWalletView: View {
             }
             .scrollIndicators(.hidden)
         }
-        .navigationTitle("Газ-кошелёк")
+        .navigationTitle("Газовый баланс")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -52,11 +52,11 @@ struct GasWalletView: View {
         .task { await loadBalance() }
         .sheet(isPresented: $showSeed) { seedSheet }
         .sheet(isPresented: $showImport) { importSheet }
-        .alert("Удалить газ-кошелёк?", isPresented: $showRemoveAlert) {
+        .alert("Удалить газовый баланс?", isPresented: $showRemoveAlert) {
             Button("Отмена", role: .cancel) {}
             Button("Удалить", role: .destructive) {
                 gasWallet.remove()
-                toast.show("Газ-кошелёк удалён. Выведи остаток заранее.")
+                toast.show("Газовый баланс удалён. Выведи остаток заранее.")
             }
         } message: {
             Text("Seed удалится с устройства. Сначала выведи остаток SOL — иначе он потеряется.")
@@ -72,9 +72,9 @@ struct GasWalletView: View {
                     .shadow(color: Theme.accent.opacity(0.4), radius: 10, y: 4)
                 Image(systemName: "fuelpump.fill").font(.system(size: 26)).foregroundStyle(.white)
             }
-            Text("Газ-кошелёк для комиссий")
+            Text("Газовый баланс для комиссий")
                 .font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
-            Text("Комиссии сообщений платит этот кошелёк — твой основной адрес не появляется в блокчейне для переписки. Пополняй его из НЕсвязанного источника (биржа, другой кошелёк), иначе связь восстановится on-chain.")
+            Text("Опционально. Комиссии сообщений платит этот отдельный баланс — твой основной адрес не появляется в блокчейне для переписки. Пополняй его из НЕсвязанного источника (биржа, другой адрес), иначе связь восстановится on-chain.")
                 .font(.system(size: 12)).foregroundStyle(Theme.slate500)
                 .multilineTextAlignment(.center)
         }
@@ -91,13 +91,13 @@ struct GasWalletView: View {
                     enabled = gasWallet.isEnabled
                     busy = false
                     await loadBalance()
-                    toast.show("Газ-кошелёк создан")
+                    toast.show("Газовый баланс создан")
                 }
             } label: {
                 HStack(spacing: 8) {
                     if busy { ProgressView().tint(.white) }
                     else { Image(systemName: "plus.circle.fill") }
-                    Text("Создать газ-кошелёк").font(.system(size: 16, weight: .semibold))
+                    Text("Создать газовый баланс").font(.system(size: 16, weight: .semibold))
                 }
                 .foregroundStyle(.white).frame(maxWidth: .infinity).padding(.vertical, 15)
                 .background(Theme.accentGradient).clipShape(Capsule())
@@ -113,7 +113,7 @@ struct GasWalletView: View {
             }
             .buttonStyle(.plain)
 
-            Text("Отдельный одноразовый кошелёк только для оплаты комиссий.")
+            Text("Отдельный одноразовый баланс только для оплаты комиссий.")
                 .font(.system(size: 11)).foregroundStyle(Theme.slate400)
                 .multilineTextAlignment(.center).padding(.top, 2)
         }
@@ -145,14 +145,14 @@ struct GasWalletView: View {
     private var toggleCard: some View {
         VStack(alignment: .leading, spacing: 6) {
             Toggle(isOn: $enabled) {
-                Label("Платить комиссии этим кошельком", systemImage: "fuelpump.fill")
+                Label("Платить комиссии этим балансом", systemImage: "fuelpump.fill")
                     .font(.system(size: 15)).foregroundStyle(Theme.slate800)
             }
             .tint(Theme.accent)
             .onChange(of: enabled) { _, v in gasWallet.isEnabled = v }
             Text(enabled
-                 ? "Сообщения подписываются газ-кошельком. Держи на нём немного SOL."
-                 : "Сейчас комиссии платит основной кошелёк.")
+                 ? "Сообщения подписываются газовым балансом. Держи на нём немного SOL."
+                 : "Сейчас комиссии платит основной баланс.")
                 .font(.system(size: 11)).foregroundStyle(Theme.slate400)
         }
         .padding(16).glassCard()
@@ -161,11 +161,11 @@ struct GasWalletView: View {
     private var manageCard: some View {
         VStack(spacing: 0) {
             Button { showSeed = true } label: {
-                row(icon: "key.fill", title: "Показать seed газ-кошелька", tint: Theme.accentDeep)
+                row(icon: "key.fill", title: "Показать seed газового баланса", tint: Theme.accentDeep)
             }.buttonStyle(.plain)
             Divider().padding(.leading, 52).background(Theme.glassStroke)
             Button { showRemoveAlert = true } label: {
-                row(icon: "trash", title: "Удалить газ-кошелёк", tint: Theme.negative)
+                row(icon: "trash", title: "Удалить газовый баланс", tint: Theme.negative)
             }.buttonStyle(.plain)
         }
         .glassCard()
@@ -199,7 +199,7 @@ struct GasWalletView: View {
                     .padding(20).glassCard().padding(20)
                 }
             }
-            .navigationTitle("Seed газ-кошелька")
+            .navigationTitle("Seed газового баланса")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Готово") { showSeed = false } } }
         }
     }
@@ -223,7 +223,7 @@ struct GasWalletView: View {
                                     enabled = gasWallet.isEnabled
                                     importText = ""; showImport = false
                                     await loadBalance()
-                                    toast.show("Газ-кошелёк импортирован")
+                                    toast.show("Газовый баланс импортирован")
                                 } catch { toast.show("Не удалось импортировать seed") }
                             }
                         } label: {
@@ -237,7 +237,7 @@ struct GasWalletView: View {
                     .padding(20)
                 }
             }
-            .navigationTitle("Импорт газ-кошелька")
+            .navigationTitle("Импорт газового баланса")
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Отмена") { showImport = false } } }
         }
     }

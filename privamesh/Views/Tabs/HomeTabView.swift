@@ -21,6 +21,7 @@ struct HomeTabView: View {
     @Environment(GasWalletService.self) private var gasWallet
     @Environment(NicknameManager.self) private var nicknameManager
     @Environment(SubscriptionManager.self) private var subscription
+    @Environment(MessageQuotaService.self) private var quota
     @Environment(AvatarService.self) private var avatars
     @Environment(ToastManager.self) private var toast
 
@@ -30,6 +31,7 @@ struct HomeTabView: View {
     @State private var activityTab: ActivityTab = .chats
     @State private var txPage = 0
     @State private var showAddContact = false
+    @State private var showPaywall = false
     private static let txPageSize = 5
 
     enum ActivityTab { case chats, tx }
@@ -77,9 +79,7 @@ struct HomeTabView: View {
                         brandRow.padding(.bottom, 16)
                         greetingRow.padding(.bottom, 16)
                         identityHaloCard.padding(.bottom, 12)
-                        balanceCard.padding(.bottom, 12)
-                        gasTracker.padding(.bottom, 12)
-                        actionButtons.padding(.bottom, 16)
+                        quotaCard.padding(.bottom, 16)
                         activitySection
                     }
                     .padding(.horizontal, 20)
@@ -94,6 +94,7 @@ struct HomeTabView: View {
             .navigationBarHidden(true)
             #endif
             .sheet(isPresented: $showAddContact) { AddContactView() }
+            .sheet(isPresented: $showPaywall) { QuotaPaywallSheet() }
         }
     }
 
@@ -199,6 +200,40 @@ struct HomeTabView: View {
         .background(Theme.glass)
         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
         .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge).stroke(Theme.glassStroke, lineWidth: 1))
+    }
+
+    // MARK: - Message quota card
+
+    private var quotaCard: some View {
+        Button { showPaywall = true } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle().fill(Theme.accentGradient).frame(width: 44, height: 44).opacity(0.9)
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size: 18, weight: .semibold)).foregroundStyle(.white)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Осталось сообщений")
+                        .font(.system(size: 12)).foregroundStyle(Theme.slate500)
+                    Text("\(quota.remaining)")
+                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.slate800)
+                        .contentTransition(.numericText())
+                }
+                Spacer()
+                HStack(spacing: 4) {
+                    Text(subscription.isSubscribed ? "Ещё" : "Купить")
+                        .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.accentDeep)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.slate400)
+                }
+            }
+            .padding(16)
+            .background(Theme.glass)
+            .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
+            .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge).stroke(Theme.glassStroke, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Balance card
@@ -318,22 +353,19 @@ struct HomeTabView: View {
 
     private var activitySection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .bottom, spacing: 0) {
-                tabButton("Недавние чаты", tab: .chats).frame(maxWidth: .infinity)
-                tabButton("Недавние транзакции", tab: .tx).frame(maxWidth: .infinity)
+            HStack {
+                Text("Недавние чаты")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.slate800)
+                Spacer()
             }
+            .padding(.bottom, 8)
             .overlay(alignment: .bottom) {
-                Rectangle()
-                    .fill(Theme.glassStroke)
-                    .frame(height: 1)
+                Rectangle().fill(Theme.glassStroke).frame(height: 1)
             }
             .padding(.bottom, 4)
 
-            if activityTab == .chats {
-                recentChats
-            } else {
-                recentTransactions
-            }
+            recentChats
         }
     }
 
@@ -404,10 +436,14 @@ struct HomeTabView: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                HStack {
+                HStack(spacing: 4) {
                     Text(contact.primaryName)
                         .font(.system(size: 14, weight: unread > 0 ? .semibold : .regular))
                         .foregroundStyle(Theme.slate800)
+                    if !contact.isSelf, contact.profile?.isPremium == true {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 10)).foregroundStyle(Theme.accent)
+                    }
                     Spacer()
                     if let last = contact.lastMessage {
                         Text(last.sentAt.formatted(.relative(presentation: .named)))

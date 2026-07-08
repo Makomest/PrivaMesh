@@ -31,10 +31,13 @@ struct ChatDetailView: View {
     @Environment(MarketService.self)         private var market
     @Environment(BiometryService.self)       private var biometry
     @Environment(NicknameManager.self)       private var nicknameManager
+    @Environment(MessageQuotaService.self)   private var quota
+    @Environment(SubscriptionManager.self)   private var subscription
 
     @State private var sendSOLService = SendSOLService()
     @State private var showPhotoPicker = false
     @State private var showSOLSheet    = false
+    @State private var showQuotaPaywall = false
     // One-time privacy consent: an in-chat SOL transfer is paid by the MAIN
     // wallet, revealing its address to the recipient + on-chain observers.
     @AppStorage("privamesh.solRevealConsent") private var solRevealConsent = false
@@ -90,12 +93,6 @@ struct ChatDetailView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             inputBar
         }
-        .alert("Недостаточно SOL", isPresented: $showLowBalanceAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            let feeStr = (rpc.estimatedFeeSOL as NSDecimalNumber).stringValue
-            Text("Нужно минимум \(feeStr) SOL для оплаты комиссии сети. Пополни кошелёк и попробуй снова.")
-        }
         #if os(iOS)
         .navigationBarHidden(true)
         #endif
@@ -103,30 +100,12 @@ struct ChatDetailView: View {
             MessageInfoSheet(msg: info.msg, solPrice: solPrice)
                 .presentationDetents([.medium])
         }
-        .sheet(isPresented: $showSOLSheet) {
-            SendSOLInChatSheet(balanceSOL: balance.balanceSOL, consented: solRevealConsent,
-                               feeSOL: rpc.liveFeeSOL) { amount in
-                Task { await sendSOL(amount) }
-            }
-            .presentationDetents([.medium])
-        }
-        .alert("Перевод раскроет твой адрес", isPresented: $showSolPrivacyAlert) {
-            Button("Отмена", role: .cancel) { pendingSolAmount = nil }
-            Button("Понятно, отправить") {
-                solRevealConsent = true
-                if let amt = pendingSolAmount { pendingSolAmount = nil; Task { await sendSOL(amt) } }
-            }
-        } message: {
-            Text("Перевод SOL в чате оплачивается твоим ОСНОВНЫМ кошельком — его адрес станет виден получателю и в блокчейне. Сообщения остаются приватными (stealth-адреса), но платёж — нет.")
-        }
-        .sheet(isPresented: $showGiftSheet) {
-            GiftPickerSheet { item in
-                Task { await giftItem(item) }
-            }
-            .presentationDetents([.large])
-        }
         .sheet(isPresented: $showContactProfile) {
             ContactProfileView(contact: contact)
+        }
+        .sheet(isPresented: $showQuotaPaywall) {
+            QuotaPaywallSheet()
+                .presentationDetents([.large])
         }
         .onAppear {
             tabBarVisibility.hidden = true
@@ -143,7 +122,8 @@ struct ChatDetailView: View {
             markMessagesRead()
             sender.setSenderProfile(nick: nicknameManager.nickname,
                                     avatarSeed: avatars.activeDesign?.id,
-                                    wallet: walletAddress)
+                                    wallet: walletAddress,
+                                    isPremium: subscription.isSubscribed)
             if !contact.isSelf, let keypair = try? await wallet.currentKeyPair() {
                 await rpc.refreshFee(senderKeyPair: keypair)
             }
@@ -154,7 +134,7 @@ struct ChatDetailView: View {
     /// Block a send (and warn) when the gas wallet is active but underfunded.
     private func gasFundsOK() async -> Bool {
         if await gasWallet.needsTopUp(rpc: rpc) {
-            toast.show("Пополни газ-кошелёк — не хватает SOL на комиссию")
+            toast.show("Пополни газовый баланс — не хватает SOL на комиссию")
             return false
         }
         return true
@@ -207,10 +187,16 @@ struct ChatDetailView: View {
             }
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(LocalizedStringKey(contact.isSelf ? "Избранное" : contact.primaryName))
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Theme.slate800)
-                    .lineLimit(1)
+                HStack(spacing: 4) {
+                    Text(LocalizedStringKey(contact.isSelf ? "Избранное" : contact.primaryName))
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(Theme.slate800)
+                        .lineLimit(1)
+                    if !contact.isSelf, contact.profile?.isPremium == true {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 12)).foregroundStyle(Theme.accent)
+                    }
+                }
                 if !contact.isSelf && !contact.myNote.isEmpty {
                     HStack(spacing: 4) {
                         Image(systemName: "note.text").font(.system(size: 9))
@@ -525,21 +511,6 @@ struct ChatDetailView: View {
 
     private var inputBar: some View {
         HStack(spacing: 8) {
-            #if os(iOS)
-            if !contact.isSelf {
-                Menu {
-                    Button { showSOLSheet = true } label: { Label("Отправить SOL", systemImage: "dollarsign.circle") }
-                    Button { showGiftSheet = true } label: { Label("Подарить NFT", systemImage: "gift") }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20))
-                        .foregroundStyle(Theme.accentDeep)
-                        .frame(width: 40, height: 40)
-                        .background(Color.white.opacity(0.70))
-                        .clipShape(Circle())
-                }
-            }
-            #endif
 
             HStack(spacing: 0) {
                 TextField(contact.isSelf ? LocalizedStringKey("Заметка…") : LocalizedStringKey("Сообщение"), text: $inputText, axis: .vertical)
@@ -612,12 +583,9 @@ struct ChatDetailView: View {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
 
-        // All messages go through blockchain — check balance. When the gas
-        // wallet pays fees, the main balance is irrelevant for messages.
-        if !gasWallet.isActive, let bal = balance.balanceSOL, bal < minBalanceSOL {
-            showLowBalanceAlert = true
-            return
-        }
+        // Metered messaging: network fees are sponsored by the app, so access is
+        // gated by the Apple IAP allowance, not the user's SOL balance.
+        guard quota.canSend else { showQuotaPaywall = true; return }
 
         guard let keypair = try? await wallet.currentKeyPair() else { return }
         guard await gasFundsOK() else { return }
@@ -629,56 +597,18 @@ struct ChatDetailView: View {
         isSending = true
         await sender.send(text: text, to: contact, senderKeyPair: payer,
                           identity: identity, rpc: rpc, context: context)
-        if case let .failure(message) = sender.state {
-            toast.show(message)
+        switch sender.state {
+        case .failure(let message):
+            if sender.lastFailureIsQuota { showQuotaPaywall = true } else { toast.show(message) }
+        case .success:
+            quota.consume()   // charge one message only on success
+        default:
+            break
         }
         isSending = false
     }
 
-    // MARK: - SOL / gifts
-
-    private func sendSOL(_ amount: Decimal) async {
-        guard amount > 0 else { return }
-        // First in-chat SOL transfer: require one-time consent that it reveals
-        // the main wallet address. Afterwards a passive reminder in the sheet.
-        guard solRevealConsent else {
-            pendingSolAmount = amount
-            showSolPrivacyAlert = true
-            return
-        }
-        guard await gasFundsOK() else { return }
-        guard await biometry.confirm(reason: "Подтвердить перевод \(amount) SOL") else { return }
-        guard let keypair = try? await wallet.currentKeyPair() else { return }
-        // The real SOL transfer is genuine value — always from the main wallet,
-        // to their real wallet (payTo), not a gas-wallet contact id.
-        await sendSOLService.send(from: keypair, to: contact.payTo, amountSOL: amount, rpc: rpc)
-        guard case let .success(signature) = sendSOLService.state else {
-            if case let .failure(msg) = sendSOLService.state { toast.show(msg) }
-            return
-        }
-        // The chat note is just a message — route it through the gas wallet.
-        let payer = await gasWallet.feePayer(fallback: keypair)
-        await sender.sendSOLNote(amount: NSDecimalNumber(decimal: amount).doubleValue,
-                                 signature: signature, to: contact, senderKeyPair: payer,
-                                 identity: identity, rpc: rpc, context: context)
-        toast.show(String(localized: "Отправлено \(amount) SOL"))
-    }
-
-    private func giftItem(_ item: MarketItem) async {
-        guard await gasFundsOK() else { return }
-        guard await biometry.confirm(reason: "Подтвердить подарок: \(item.name)") else { return }
-        guard let keypair = try? await wallet.currentKeyPair() else { return }
-        // Remove from my collection (sim ownership transfer).
-        switch item.kind {
-        case .avatar:   avatars.sell(item.ref)            // leaves my collection
-        case .nickname: market.giveAwayNickname(item.ref)
-        }
-        let payer = await gasWallet.feePayer(fallback: keypair)
-        await sender.sendGift(itemKind: item.kind.rawValue, ref: item.ref, name: item.name,
-                              rarity: item.rarity, to: contact, senderKeyPair: payer,
-                              identity: identity, rpc: rpc, context: context)
-        toast.show(String(localized: "Подарок отправлен: \(item.name)"))
-    }
+    // MARK: - Gifts (display / claim only — sending value was removed)
 
     private func claimGift(_ msg: ChatMessage) {
         guard !msg.giftClaimed, let ref = msg.giftRef, let kind = msg.giftKind else { return }
@@ -690,6 +620,7 @@ struct ChatDetailView: View {
 
     #if os(iOS)
     private func sendPhoto(_ item: PhotosPickerItem) async {
+        guard quota.canSend else { selectedPhoto = nil; showQuotaPaywall = true; return }
         guard let data = try? await item.loadTransferable(type: Data.self),
               let image = UIImage(data: data),
               let keypair = try? await wallet.currentKeyPair() else {
@@ -701,6 +632,7 @@ struct ChatDetailView: View {
         let payer = await gasWallet.feePayer(fallback: keypair)
         await sender.sendPhoto(image: image, to: contact, senderKeyPair: payer,
                                identity: identity, rpc: rpc, context: context)
+        if case .success = sender.state { quota.consume() }
         isSendingPhoto = false
     }
     #endif
@@ -799,7 +731,7 @@ private struct SendSOLInChatSheet: View {
     }
 }
 
-// MARK: - Gift picker sheet
+// MARK: - Gift picker sheet (NFT nicknames only)
 
 private struct GiftPickerSheet: View {
     let onPick: (MarketItem) -> Void
@@ -812,9 +744,10 @@ private struct GiftPickerSheet: View {
             ZStack {
                 PastelBackground()
                 ScrollView {
-                    let items = market.myCollection
+                    // Only nicknames — NFT avatars were removed before release.
+                    let items = market.myCollection.filter { $0.kind == .nickname }
                     if items.isEmpty {
-                        Text("Нет NFT для подарка.\nКупи аватар или ник в маркете.")
+                        Text("Нет NFT-ников для подарка.\nЗаминть свой NFT-ник в профиле.")
                             .font(.system(size: 14)).foregroundStyle(Theme.slate500)
                             .multilineTextAlignment(.center).padding(.top, 60)
                     } else {
@@ -822,18 +755,12 @@ private struct GiftPickerSheet: View {
                             ForEach(items) { item in
                                 Button { onPick(item); dismiss() } label: {
                                     VStack(spacing: 8) {
-                                        Group {
-                                            if item.kind == .avatar {
-                                                NFTAvatarView(seed: item.ref, size: 80)
-                                            } else {
-                                                ZStack {
-                                                    Circle().fill(LinearGradient(colors: [Theme.accent, Theme.accentDeep],
-                                                        startPoint: .topLeading, endPoint: .bottomTrailing))
-                                                    Text("@").font(.system(size: 40, weight: .bold, design: .rounded))
-                                                        .foregroundStyle(.white)
-                                                }.frame(width: 80, height: 80)
-                                            }
-                                        }
+                                        ZStack {
+                                            Circle().fill(LinearGradient(colors: [Theme.accent, Theme.accentDeep],
+                                                startPoint: .topLeading, endPoint: .bottomTrailing))
+                                            Text("@").font(.system(size: 40, weight: .bold, design: .rounded))
+                                                .foregroundStyle(.white)
+                                        }.frame(width: 80, height: 80)
                                         Text(item.name).font(.system(size: 13, weight: .semibold))
                                             .foregroundStyle(Theme.slate700).lineLimit(1)
                                     }
@@ -850,7 +777,7 @@ private struct GiftPickerSheet: View {
                     }
                 }
             }
-            .navigationTitle("Подарить NFT")
+            .navigationTitle("Подарить NFT-ник")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif

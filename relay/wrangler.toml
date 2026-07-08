@@ -1,0 +1,30 @@
+name = "privamesh-relay"
+main = "src/index.ts"
+compatibility_date = "2024-11-06"
+compatibility_flags = ["nodejs_compat"]
+
+# Quota store. Create with:  wrangler kv namespace create QUOTA
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "QUOTA"
+id = "f781d41203a24a66adf9abb3b2eff0b1"
+
+[vars]
+# Solana RPC endpoint. Set as a SECRET (contains an API key), NOT here:
+#   wrangler secret put RPC_URL
+# (kept out of [vars] so the key is never committed to git.)
+# Apple bundle id, checked against the receipt.
+BUNDLE_ID = "com.privamesh"
+# Monthly allowances per subscription product (must match the app).
+PLUS_MONTHLY = "1200"
+PRO_MONTHLY = "2000"
+# Treasury safety limits (raise once App Attest lands / traffic grows).
+DAILY_TX_CAP = "1000"   # global sponsored tx/day (worst-case abuse ≈0.006 SOL/day)
+RATE_PER_MIN = "10"     # per-account /send per minute
+# DEV ONLY: skip Apple cert-chain pinning so LOCAL StoreKit test receipts pass.
+# Set to "1" ONLY for local StoreKit testing; keep off (remove) in production.
+# DEV_SKIP_PINNING = "1"
+
+# Secrets (set with `wrangler secret put <NAME>`, never commit):
+#   TREASURY_SECRET   base58-encoded 64-byte Solana secret key of the gas treasury
+#   APPLE_ROOT_CA_G3  (optional) PEM of Apple Root CA - G3 for JWS chain pinning

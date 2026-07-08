@@ -48,6 +48,25 @@ struct privameshApp: App {
         let avatarService = AvatarService()
         _avatars = State(initialValue: avatarService)
         _market  = State(initialValue: MarketService(avatars: avatarService))
+
+        // Metered messaging: quota mirrors the user's Apple IAP allowance and is
+        // fed by the store. Subscription tier drives the monthly bucket; pack
+        // purchases credit non-expiring messages.
+        let sub = SubscriptionManager()
+        let quotaSvc = MessageQuotaService()
+        let accounts = accountManager
+        let relaySvc = RelayService()
+        quotaSvc.tierProvider = { [weak sub] in sub?.tier ?? .none }
+        quotaSvc.isFirstAccountActive = { [weak accounts] in accounts?.isFirstAccountActive ?? true }
+        sub.onPackPurchased = { [weak quotaSvc] messages in quotaSvc?.creditPack(messages) }
+        sub.onPackReceipt = { [weak relaySvc] jws in await relaySvc?.creditPack(jws: jws) }
+        relaySvc.receiptProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
+        messageSender.relay = relaySvc
+        coverTraffic.quota = quotaSvc
+        onChainDiscovery.relay = relaySvc
+        _subscription = State(initialValue: sub)
+        _quota        = State(initialValue: quotaSvc)
+        _relay        = State(initialValue: relaySvc)
     }
 
     /// Apply data-protection to the SwiftData SQLite store and its WAL/SHM sidecars.
@@ -75,10 +94,11 @@ struct privameshApp: App {
     @State private var polling = PollingService()
     @State private var coverTraffic = CoverTrafficService()
     @State private var gasWallet = GasWalletService()
-    @State private var marketRegistry = MarketRegistry()
     @State private var tabBarVisibility = TabBarVisibility()
     @State private var onChainDiscovery = OnChainDiscovery()
     @State private var subscription = SubscriptionManager()
+    @State private var quota = MessageQuotaService()
+    @State private var relay = RelayService()
     @State private var accountManager = AccountManager()
     @State private var sns = SNSService()
     @State private var solPrice = SOLPriceService()
@@ -107,10 +127,11 @@ struct privameshApp: App {
                 .environment(polling)
                 .environment(coverTraffic)
                 .environment(gasWallet)
-                .environment(marketRegistry)
                 .environment(tabBarVisibility)
                 .environment(onChainDiscovery)
                 .environment(subscription)
+                .environment(quota)
+                .environment(relay)
                 .environment(accountManager)
                 .environment(sns)
                 .environment(solPrice)

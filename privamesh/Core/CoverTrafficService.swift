@@ -19,9 +19,18 @@ final class CoverTrafficService {
     private static let enabledKey = "privamesh.coverTraffic.enabled"
 
     /// Randomized gap between decoy attempts (seconds). Wide + jittered so the
-    /// timing carries no signal.
-    private static let minGap: UInt64 = 45
-    private static let maxGap: UInt64 = 180
+    /// timing carries no signal. Sized for the metered model: ~6.5 min average →
+    /// roughly 9 decoy messages per hour of active use, each billed to the user's
+    /// message balance.
+    private static let minGap: UInt64 = 180
+    private static let maxGap: UInt64 = 600
+
+    /// Approximate decoys per active hour, for the settings description.
+    static let approxPerHour = 9
+
+    /// Message quota. Each decoy is a real sponsored message and is charged to the
+    /// user's balance; decoys pause when the balance runs out. Set by the app root.
+    weak var quota: MessageQuotaService?
 
     var isEnabled: Bool {
         get { UserDefaults.standard.bool(forKey: Self.enabledKey) }
@@ -70,10 +79,13 @@ final class CoverTrafficService {
         }
         guard let contact = eligible.randomElement(),
               let keyPair = try? await wallet.currentKeyPair() else { return }
-        // Don't burn failed txs when the gas wallet can't cover a fee.
-        if await gasWallet.needsTopUp(rpc: rpc) { return }
+        // Each decoy is a real sponsored message — pause when the balance is empty
+        // so cover traffic never fails or silently eats a paid allowance the user
+        // expects for real messages.
+        if let quota, !quota.canSend { return }
         let payer = await gasWallet.feePayer(fallback: keyPair)
         await sender.sendCover(to: contact, senderKeyPair: payer,
                                identity: identity, rpc: rpc, context: context)
+        if case .success = sender.state { quota?.consume() }
     }
 }

@@ -38,19 +38,6 @@ struct SecuritySetupView: View {
                                 isOn: $seedLockOn)
                         }
 
-                        toggleCard(
-                            icon: "theatermasks.fill", color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                            title: "Маскирующий трафик",
-                            desc: "Периодически шлёт ложные (decoy) сообщения, чтобы скрыть, КОГДА ты реально пишешь. Стоит небольших сетевых комиссий.",
-                            isOn: $coverOn)
-
-                        linkCard(
-                            icon: "fuelpump.fill", color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                            title: "Газ-кошелёк",
-                            desc: "Отдельный кошелёк платит комиссии за сообщения, поэтому твой основной адрес НЕ появляется в блокчейне. Нужно создать и немного пополнить.") {
-                                GasWalletView()
-                            }
-
                         Text("Всё можно включить/выключить позже в Профиле → Приватность.")
                             .font(.system(size: 12)).foregroundStyle(Theme.slate400)
                             .multilineTextAlignment(.center).padding(.horizontal, 24).padding(.top, 4)

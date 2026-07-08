@@ -60,7 +60,7 @@ struct SeedPhraseRevealView: View {
         } else {
             PasscodeKeypadView(
                 title: "Введи пароль",
-                subtitle: "Подтверди что это твой кошелёк",
+                subtitle: "Подтверди что это твой аккаунт",
                 errorMessage: passcodeError
             ) { code in
                 authWithPasscode(code)

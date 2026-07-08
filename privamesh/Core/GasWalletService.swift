@@ -127,7 +127,7 @@ final class GasWalletService {
         let phrase = revealSeed()
         guard !phrase.isEmpty else {
             throw NSError(domain: "GasWalletService", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "Газ-кошелёк не создан"])
+                          userInfo: [NSLocalizedDescriptionKey: "Газовый баланс не создан"])
         }
         let kp = try await KeyPair(phrase: phrase, network: .mainnetBeta, derivablePath: .default)
         cached = kp

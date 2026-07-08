@@ -32,7 +32,7 @@ struct AccountSwitcherView: View {
                             accountRow(account)
                         }
                     } footer: {
-                        Text("Каждый аккаунт — отдельный кошелёк со своим балансом, ником и чатами.")
+                        Text("Каждый аккаунт — отдельный баланс, ник и чаты.")
                             .font(.system(size: 11)).foregroundStyle(Theme.slate400)
                     }
 
@@ -45,7 +45,7 @@ struct AccountSwitcherView: View {
                                 row(icon: "square.and.arrow.down.fill", "Подключить по seed-фразе")
                             }.disabled(busy)
                         } footer: {
-                            Text("До \(AccountManager.maxAccounts) аккаунтов на устройстве. Каждый — отдельный кошелёк со своим балансом, ником и чатами.")
+                            Text("До \(AccountManager.maxAccounts) аккаунтов на устройстве. Каждый — отдельный баланс, ник и чаты.")
                                 .font(.system(size: 11)).foregroundStyle(Theme.slate400)
                         }
                     } else if !subscription.isSubscribed {

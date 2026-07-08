@@ -25,7 +25,7 @@ struct PrivacyPolicyView: View {
                     )
                     policySection(
                         title: "Solana Blockchain",
-                        body: "Messages are transmitted as encrypted memo fields on Solana transactions. The ciphertext is permanently stored on the Solana blockchain and visible to anyone — however, only the intended recipient can decrypt the content. Transactions reference only wallet addresses, never personal identifiers."
+                        body: "Messages are transmitted as encrypted memo fields on Solana transactions. The ciphertext is permanently stored on the Solana blockchain and visible to anyone — however, only the intended recipient can decrypt the content. Transactions reference only Solana account addresses, never personal identifiers."
                     )
                     policySection(
                         title: "Arweave / Irys (Photo Sharing)",

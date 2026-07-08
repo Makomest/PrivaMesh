@@ -74,6 +74,53 @@ enum OnChainNFT {
         return mint.base58EncodedString
     }
 
+    /// Build a treasury-sponsored mint: the rent for the mint + token accounts and
+    /// the network fee are paid by the treasury (fee payer + createAccount source),
+    /// while the owner keeps mint/account authority. The owner + the two new-account
+    /// keypairs sign locally; the relay adds the treasury signature and submits.
+    /// Returns (partiallySignedTxBase64, mintAddress).
+    static func buildSponsoredMint(
+        designId: String, keypair: KeyPair, treasury: PublicKey, rpc: SolanaRPCService
+    ) async throws -> (tx: String, mint: String) {
+        let owner = keypair.publicKey
+        let tokenProgram = TokenProgram.id
+        let mintKP = try await KeyPair(network: .mainnetBeta)
+        let mint = mintKP.publicKey
+        let tokenKP = try await KeyPair(network: .mainnetBeta)
+        let tokenAcc = tokenKP.publicKey
+
+        let mintRent:  UInt64 = 1_461_600
+        let tokenRent: UInt64 = 2_039_280
+
+        let memoProgram = try PublicKey(string: MemoTransactionBuilder.memoProgramId)
+        let memoIx = TransactionInstruction(
+            keys: [AccountMeta(publicKey: owner, isSigner: true, isWritable: false)],
+            programId: memoProgram,
+            data: Array("\(memoPrefix)\(designId)".utf8))
+
+        let instructions: [TransactionInstruction] = [
+            // Rent funded by the TREASURY, not the owner — the user holds no SOL.
+            SystemProgram.createAccountInstruction(
+                from: treasury, toNewPubkey: mint, lamports: mintRent,
+                space: mintAccountSpan, programId: tokenProgram),
+            TokenProgram.initializeMintInstruction(
+                mint: mint, decimals: 0, authority: owner, freezeAuthority: nil),
+            SystemProgram.createAccountInstruction(
+                from: treasury, toNewPubkey: tokenAcc, lamports: tokenRent,
+                space: tokenAccountSpan, programId: tokenProgram),
+            TokenProgram.initializeAccountInstruction(
+                account: tokenAcc, mint: mint, owner: owner),
+            TokenProgram.mintToInstruction(
+                mint: mint, destination: tokenAcc, authority: owner, amount: 1),
+            memoIx,
+        ]
+
+        let txB64 = try await MemoTransactionBuilder.buildSponsoredInstructionsBase64(
+            instructions, signers: [keypair, mintKP, tokenKP],
+            treasury: treasury, endpointURL: rpc.currentEndpoint.address)
+        return (txB64, mint.base58EncodedString)
+    }
+
     // MARK: - Read
 
     /// Design ids the wallet owns on-chain. getTokenAccountsByOwner → supply-1

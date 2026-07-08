@@ -310,6 +310,7 @@ final class PollingService {
             var snap = contact.profile ?? ProfileSnapshot()
             snap.nickname = nick
             if let seed = payload.senderAvatarSeed { snap.activeAvatarSeed = seed }
+            snap.isPremium = payload.senderIsPremium ?? false
             contact.profileData = try? JSONEncoder().encode(snap)
             // Auto-created contacts (no bundle, generated name) adopt the real nick.
             if contact.prekeyBundleBase64.isEmpty { contact.displayName = nick }

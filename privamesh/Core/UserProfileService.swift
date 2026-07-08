@@ -19,6 +19,8 @@ struct ProfileSnapshot: Codable, Hashable {
     var nicknames: [String] = []
     var avatars: [SnapAvatar] = []
     var listings: [SnapListing] = []
+    /// Sender's PrivaMesh+ membership, learned from stamped messages (cosmetic).
+    var isPremium: Bool = false
 
     struct SnapAvatar: Codable, Hashable {
         let seed: String

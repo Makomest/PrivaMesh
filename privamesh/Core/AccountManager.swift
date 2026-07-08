@@ -40,11 +40,27 @@ final class AccountManager {
 
     private static let storageKey = "privamesh.accounts.v2"
     private static let activeKey  = "privamesh.activeAccountPubkey"
+    private static let firstKey   = "privamesh.firstAccountPubkey"
 
     private(set) var accounts: [WalletAccount] = []
     private(set) var activePublicKey: String = ""
 
+    /// The very first account ever registered on this device. Only this account
+    /// is eligible for the free message tier — additional accounts get none, so
+    /// creating extra accounts can't farm free messages.
+    private(set) var firstAccountId: String = ""
+
     var activeAccount: WalletAccount? { accounts.first { $0.id == activePublicKey } }
+
+    /// Whether the active account is the device's first (free-tier-eligible) one.
+    var isFirstAccountActive: Bool { !firstAccountId.isEmpty && activePublicKey == firstAccountId }
+
+    /// Record the first account once, so it's stable across account add/remove.
+    private func markFirstIfNeeded(_ publicKey: String) {
+        guard firstAccountId.isEmpty, !publicKey.isEmpty else { return }
+        firstAccountId = publicKey
+        UserDefaults.standard.set(publicKey, forKey: Self.firstKey)
+    }
 
     init() { load() }
 
@@ -89,6 +105,7 @@ final class AccountManager {
         storeSeed(cleaned, for: pub)
         let account = WalletAccount(publicKeyBase58: pub, name: name ?? "Аккаунт \(accounts.count + 1)")
         accounts.append(account)
+        markFirstIfNeeded(pub)
         save()
         return account
     }
@@ -112,6 +129,7 @@ final class AccountManager {
             storeSeed(phrase, for: publicKey)
             let n = accounts.isEmpty ? name : "Аккаунт \(accounts.count + 1)"
             accounts.append(WalletAccount(publicKeyBase58: publicKey, name: n))
+            markFirstIfNeeded(publicKey)
             save()
         }
         if activePublicKey != publicKey { setActive(publicKey) }
@@ -168,5 +186,8 @@ final class AccountManager {
             accounts = saved
         }
         activePublicKey = UserDefaults.standard.string(forKey: Self.activeKey) ?? accounts.first?.id ?? ""
+        firstAccountId = UserDefaults.standard.string(forKey: Self.firstKey) ?? ""
+        // Grandfather existing installs: treat the earliest known account as first.
+        if firstAccountId.isEmpty, let first = accounts.first?.id { markFirstIfNeeded(first) }
     }
 }

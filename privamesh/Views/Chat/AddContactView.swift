@@ -510,7 +510,7 @@ struct AddContactView: View {
             // wallet signature binding the bundle to the address, else it could
             // be an impersonation. (QR add is trusted in-person and is lenient.)
             guard bundle.isBoundTo(address: result.address) else {
-                errorMessage = "Не удалось подтвердить подлинность контакта (нет валидной подписи кошелька). Возможна подмена — добавь его по QR лично."
+                errorMessage = "Не удалось подтвердить подлинность контакта (нет валидной подписи аккаунта). Возможна подмена — добавь его по QR лично."
                 showError = true
                 return
             }

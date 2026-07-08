@@ -39,6 +39,11 @@ final class OnChainDiscovery {
 
     // MARK: - Publish
 
+    /// Sponsoring relay. When configured, the publish fee is paid by the app
+    /// treasury (and metered as one message), so the user needs no SOL. Set by
+    /// the app root.
+    weak var relay: RelayService?
+
     /// Last publish outcome, surfaced in the UI so failures aren't silent.
     var lastPublishError: String?
     var lastPublishedSig: String?
@@ -84,10 +89,20 @@ final class OnChainDiscovery {
             let e = "Не удалось закодировать запись"; lastPublishError = e; return e
         }
         do {
-            let sig = try await MemoTransactionBuilder.send(
-                from: keypair, to: Self.address, memoBase64: memo,
-                endpointURL: rpc.currentEndpoint.address, apiClient: rpc.client,
-                computeUnitLimit: 600_000)   // big memo → raise Memo program budget
+            // Sponsored path (treasury pays, metered) when the relay is set; the
+            // record is self-authenticating (wallet-signed bundle inside), so an
+            // ephemeral on-chain signer is fine. Fall back to the direct path.
+            let sig: String
+            if let relay, relay.isConfigured {
+                sig = try await relay.sendMessage(
+                    to: Self.address, memoBase64: memo,
+                    endpointURL: rpc.currentEndpoint.address, computeUnitLimit: 600_000)
+            } else {
+                sig = try await MemoTransactionBuilder.send(
+                    from: keypair, to: Self.address, memoBase64: memo,
+                    endpointURL: rpc.currentEndpoint.address, apiClient: rpc.client,
+                    computeUnitLimit: 600_000)   // big memo → raise Memo program budget
+            }
             UserDefaults.standard.set(nick + "|" + (avatarSeed ?? ""), forKey: Self.publishedKey + address)
             lastPublishedSig = sig
             lastPublishError = nil

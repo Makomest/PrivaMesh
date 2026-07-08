@@ -5,6 +5,7 @@
 
     },
     " за транзакцию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -67,7 +68,19 @@
         }
       }
     },
+    "**10 бесплатных сообщений** каждый месяц — сразу, без оплаты" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**10 free messages** every month — instantly, no payment"
+          }
+        }
+      }
+    },
     "**Double Ratchet** — новый ключ для каждого сообщения" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -78,6 +91,7 @@
       }
     },
     "**Face ID на seed** — ключи в Keychain под биометрией" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -87,7 +101,19 @@
         }
       }
     },
+    "**PrivaMesh+** — от $5.99/мес: больше сообщений, галочка, 3 аккаунта" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**PrivaMesh+** — from $5.99/mo: more messages, checkmark, 3 accounts"
+          }
+        }
+      }
+    },
     "**Stealth адреса** — одноразовый адрес на каждую транзакцию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -98,6 +124,7 @@
       }
     },
     "**Без телефона и email** — только seed phrase = твоя личность" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -108,6 +135,7 @@
       }
     },
     "**Вместо абонплаты** серверам, которые следят за тобой" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -118,6 +146,7 @@
       }
     },
     "**Восстанавливается** на любом устройстве только по 12 словам" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -128,6 +157,7 @@
       }
     },
     "**Газ-кошелёк** — комиссии платит отдельный кошелёк, твой адрес скрыт" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -137,7 +167,30 @@
         }
       }
     },
+    "**Газовый баланс** — комиссии платит отдельный баланс, твой адрес скрыт" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Gas balance** — a separate balance pays the fees, your address stays hidden"
+          }
+        }
+      }
+    },
+    "**Газовый баланс** (опционально) — отдельный баланс платит комиссии за тебя, скрывая твой основной адрес в блокчейне" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Gas balance** (optional) — a separate balance pays fees for you, hiding your main address on-chain"
+          }
+        }
+      }
+    },
     "**Запиши их на бумаге** и храни в надёжном месте. Не делай скриншот." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -148,6 +201,7 @@
       }
     },
     "**История чатов не переедет** на новый телефон — копии есть только здесь" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -158,6 +212,7 @@
       }
     },
     "**Исчезающие сообщения** — авто-удаление локальных копий" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -167,7 +222,30 @@
         }
       }
     },
+    "**Комиссии платит приложение** — в блокчейне виден общий оплатитель, не твой адрес" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**The app pays the fees** — the chain shows a shared payer, not your address"
+          }
+        }
+      }
+    },
+    "**Личность и баланс** вернутся по 12 словам на любом устройстве" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Your identity and balance** come back from 12 words on any device"
+          }
+        }
+      }
+    },
     "**Личность и кошелёк** вернутся по 12 словам на любом устройстве" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -177,7 +255,19 @@
         }
       }
     },
+    "**Личность** вернётся по 12 словам на любом устройстве" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Your identity** is restored from your 12 words on any device"
+          }
+        }
+      }
+    },
     "**Маскирующий трафик** — ложные сообщения прячут, когда ты пишешь" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -188,6 +278,7 @@
       }
     },
     "**Мы не сможем помочь** если ты потеряешь слова. Нет серверов, нет аккаунтов на наших серверах." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -198,6 +289,7 @@
       }
     },
     "**Нет центрального сервера** — некого взломать или принудить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -208,6 +300,7 @@
       }
     },
     "**Никакой регистрации** — seed phrase = твой аккаунт навсегда" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -218,6 +311,7 @@
       }
     },
     "**Никому не показывай** эти слова. Любой кто их увидит — получит доступ к твоему аккаунту." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -227,7 +321,19 @@
         }
       }
     },
+    "**Пакеты сообщений** — разовая покупка без подписки" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Message packs** — one-time purchase, no subscription"
+          }
+        }
+      }
+    },
     "**Подпись контактов** — защита от подмены собеседника (MITM)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -238,6 +344,7 @@
       }
     },
     "**Полная децентрализация** — не блокируется, не цензурируется" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -247,7 +354,19 @@
         }
       }
     },
+    "**Пополни баланс SOL** во вкладке «Баланс» — без него сообщения не отправить (~**$0.0003** за сообщение)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Top up your SOL balance** in the “Balance” tab — without it you can’t send messages (~**$0.0003** per message)"
+          }
+        }
+      }
+    },
     "**Раздельные ключи аккаунтов** — твои аккаунты не связать между собой" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -258,6 +377,7 @@
       }
     },
     "**Сообщения хранятся на блокчейне** Solana — зашифрованными" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -268,6 +388,7 @@
       }
     },
     "**Уникальный ник** генерируется автоматически из твоего ключа" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -278,6 +399,7 @@
       }
     },
     "**Это защита, а не баг** — даже с твоим seed никто не прочитает старую переписку" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -309,6 +431,7 @@
       }
     },
     "%.1f с" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -328,12 +451,18 @@
         }
       }
     },
-    "%@ SOL%@" : {
+    "%@ SOL%@ за транзакцию" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ SOL%2$@ per transaction"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ SOL%2$@"
+            "value" : "%1$@ SOL%2$@ за транзакцию"
           }
         }
       }
@@ -344,6 +473,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ s"
+          }
+        }
+      }
+    },
+    "%@/мес" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@/mo"
           }
         }
       }
@@ -372,6 +511,7 @@
       }
     },
     "%lld NFT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -401,7 +541,28 @@
         }
       }
     },
+    "%lld сообщений" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld messages"
+          }
+        }
+      }
+    },
+    "%lld сообщений в месяц" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld messages per month"
+          }
+        }
+      }
+    },
     "%lld цифр для входа в приложение" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -464,6 +625,7 @@
 
     },
     "~**$0.0003** за сообщение = $0.30 за 1000 сообщений" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -483,13 +645,8 @@
         }
       }
     },
-    "−%@ SOL" : {
-
-    },
-    "∞" : {
-
-    },
     "≈ $%.4f · %d лампортов" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -519,7 +676,18 @@
         }
       }
     },
+    "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит 1 сообщение." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Your profile is already searchable. No need to tap again — each publish costs 1 message."
+          }
+        }
+      }
+    },
     "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит комиссию." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -574,6 +742,7 @@
       }
     },
     "1 день" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -584,6 +753,7 @@
       }
     },
     "1 неделя" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -594,6 +764,7 @@
       }
     },
     "1 час" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -627,6 +798,7 @@
 
     },
     "Cover-трафик:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -637,6 +809,7 @@
       }
     },
     "Double Ratchet:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -675,6 +848,7 @@
 
     },
     "NFT-аватары" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -685,6 +859,7 @@
       }
     },
     "NFT-аватары и ники" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -784,6 +959,7 @@
       }
     },
     "QR / Бандл" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -823,11 +999,22 @@
 
     },
     "Seed газ-кошелька" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gas wallet seed"
+          }
+        }
+      }
+    },
+    "Seed газового баланса" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance seed"
           }
         }
       }
@@ -854,6 +1041,7 @@
       }
     },
     "Seed-фраза аккаунта не найдена" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -873,6 +1061,7 @@
 
     },
     "Solana — **быстро и дёшево**: ~65 000 транзакций в секунду" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -906,6 +1095,7 @@
       }
     },
     "Stealth-адреса:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -938,6 +1128,7 @@
 
     },
     "Аватары" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -988,6 +1179,7 @@
       }
     },
     "адрес получателя не является валидным Solana-адресом (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -998,6 +1190,7 @@
       }
     },
     "Адрес скопирован" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1018,11 +1211,22 @@
       }
     },
     "Аккаунт 1" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Account 1"
+          }
+        }
+      }
+    },
+    "Аккаунт и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your account and passcode will be deleted from this device. Recovery is only possible with the seed phrase. Without it — lost forever."
           }
         }
       }
@@ -1038,6 +1242,7 @@
       }
     },
     "Активен" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1053,6 +1258,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "active"
+          }
+        }
+      }
+    },
+    "Активна" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        }
+      }
+    },
+    "Активна · осталось %lld дн." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active · %lld days left"
           }
         }
       }
@@ -1078,6 +1303,7 @@
       }
     },
     "Базовый аватар" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1103,6 +1329,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SOL balance"
+          }
+        }
+      }
+    },
+    "Баланс недоступен" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balance unavailable"
           }
         }
       }
@@ -1139,6 +1376,7 @@
       }
     },
     "Без сортировки" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1159,6 +1397,7 @@
       }
     },
     "Безлимит лотов на продаже" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1169,6 +1408,7 @@
       }
     },
     "Безлимит лотов на продаже (без премиума — до 3)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1189,6 +1429,7 @@
       }
     },
     "Бесплатно — до %lld лотов. PrivaMesh+ — без лимита." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1218,6 +1459,16 @@
         }
       }
     },
+    "Больше сообщений" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More Messages"
+          }
+        }
+      }
+    },
     "Будешь разблокировать приложение биометрией вместо ввода пароля каждый раз." : {
       "localizations" : {
         "en" : {
@@ -1229,6 +1480,7 @@
       }
     },
     "В QR некорректный Solana-адрес получателя." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1259,6 +1511,7 @@
       }
     },
     "Ваш лот" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1279,6 +1532,7 @@
       }
     },
     "Введи действующий пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1309,6 +1563,7 @@
       }
     },
     "Введи новый пароль ещё раз" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1319,6 +1574,7 @@
       }
     },
     "Введи пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1328,7 +1584,19 @@
         }
       }
     },
+    "Введи пароль приложения" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your app passcode"
+          }
+        }
+      }
+    },
     "Введи пароль чтобы подписать транзакцию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1359,6 +1627,7 @@
       }
     },
     "Введи те же %lld цифр ещё раз" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1369,6 +1638,7 @@
       }
     },
     "Вернул базовый аватар" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1399,6 +1669,7 @@
       }
     },
     "Включить %@ для PrivaMesh" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1419,6 +1690,7 @@
       }
     },
     "Войти в аккаунт" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1459,6 +1731,7 @@
       }
     },
     "Восстановление..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1469,6 +1742,7 @@
       }
     },
     "Время доставки" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1490,6 +1764,7 @@
       }
     },
     "Все RPC-эндпоинты отклонили транзакцию:\n" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1580,6 +1855,7 @@
       }
     },
     "Выбери предмет" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1600,6 +1876,7 @@
       }
     },
     "Выкл" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1610,6 +1887,7 @@
       }
     },
     "высокая" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1620,6 +1898,7 @@
       }
     },
     "Выставить на продажу: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1630,6 +1909,7 @@
       }
     },
     "Выставить предмет на продажу" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1640,6 +1920,7 @@
       }
     },
     "Выставлено на продажу" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1670,6 +1951,7 @@
       }
     },
     "Газ-кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1680,6 +1962,7 @@
       }
     },
     "Газ-кошелёк для комиссий" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1690,6 +1973,7 @@
       }
     },
     "Газ-кошелёк импортирован" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1700,6 +1984,7 @@
       }
     },
     "Газ-кошелёк не создан" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1710,6 +1995,7 @@
       }
     },
     "Газ-кошелёк создан" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1720,6 +2006,7 @@
       }
     },
     "Газ-кошелёк удалён. Выведи остаток заранее." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1729,7 +2016,71 @@
         }
       }
     },
+    "Газовый баланс" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance"
+          }
+        }
+      }
+    },
+    "Газовый баланс для комиссий" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance for fees"
+          }
+        }
+      }
+    },
+    "Газовый баланс импортирован" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance imported"
+          }
+        }
+      }
+    },
+    "Газовый баланс создан" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance created"
+          }
+        }
+      }
+    },
+    "Газовый баланс удалён. Выведи остаток заранее." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas balance deleted. Withdraw the remaining balance first."
+          }
+        }
+      }
+    },
+    "Галочка верификации на аккаунте" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verification checkmark on your account"
+          }
+        }
+      }
+    },
     "Галочка верификации у профиля" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1817,6 +2168,7 @@
       }
     },
     "Дешёвые" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1827,6 +2179,7 @@
       }
     },
     "до" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1836,7 +2189,18 @@
         }
       }
     },
+    "До %lld аккаунтов на устройстве. Каждый — отдельный баланс, ник и чаты." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to %lld accounts on this device. Each has its own balance, nickname and chats."
+          }
+        }
+      }
+    },
     "До %lld аккаунтов на устройстве. Каждый — отдельный кошелёк со своим балансом, ником и чатами." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1846,8 +2210,17 @@
         }
       }
     },
+    "До 3 NFT-ников — минт бесплатно" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to 3 NFT nicknames — minting is free"
+          }
+        }
+      }
+    },
     "До 3 аккаунтов на устройстве" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1899,6 +2272,7 @@
       }
     },
     "Добавь описание профиля" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1919,6 +2293,7 @@
       }
     },
     "Дорогие" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1938,7 +2313,18 @@
         }
       }
     },
+    "Достигнут лимит NFT-ников (%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NFT nickname limit reached (%lld)"
+          }
+        }
+      }
+    },
     "Доступ к seed-фразе" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1949,6 +2335,7 @@
       }
     },
     "Доступ к аккаунту" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1970,11 +2357,22 @@
       }
     },
     "Ежемесячно · авто-продление" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Monthly · auto-renew"
+          }
+        }
+      }
+    },
+    "Ещё" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
           }
         }
       }
@@ -2002,6 +2400,7 @@
       }
     },
     "Жми ♥ на лотах в маркете" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2051,7 +2450,18 @@
         }
       }
     },
+    "Загрузка предложений…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading offers…"
+          }
+        }
+      }
+    },
     "Загрузка…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2102,6 +2512,7 @@
       }
     },
     "заметки" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2111,8 +2522,25 @@
         }
       }
     },
-    "Заминчено %lld/%lld. На остальные не хватает SOL — пополни кошелёк." : {
+    "Заминчено %lld/%lld. На остальные не хватает SOL — пополни баланс." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minted %1$lld/%2$lld. Not enough SOL for the rest — top up your balance."
+          }
+        }
+      }
+    },
+    "Заминчено %lld/%lld. На остальные не хватает SOL — пополни кошелёк." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minted %1$lld/%2$lld. Not enough SOL for the rest — top up your wallet."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
@@ -2163,6 +2591,7 @@
       }
     },
     "Зачем\nплатить?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2183,6 +2612,7 @@
       }
     },
     "зашифровано" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2193,6 +2623,7 @@
       }
     },
     "Защита\nна устройстве" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2203,6 +2634,7 @@
       }
     },
     "Защита seed по Face ID" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2243,6 +2675,7 @@
       }
     },
     "Избранные" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2263,6 +2696,7 @@
       }
     },
     "Изменить пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2293,11 +2727,22 @@
       }
     },
     "Импорт газ-кошелька" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import gas wallet"
+          }
+        }
+      }
+    },
+    "Импорт газового баланса" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import gas balance"
           }
         }
       }
@@ -2343,6 +2788,7 @@
       }
     },
     "Имя отправителя в пуше" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2353,6 +2799,7 @@
       }
     },
     "Иначе — «Зашифрованное сообщение»" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2363,6 +2810,7 @@
       }
     },
     "Инвентарь пуст" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2403,6 +2851,7 @@
       }
     },
     "Ищем…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2413,6 +2862,7 @@
       }
     },
     "Каждое сообщение защищено военным уровнем шифрования — ещё до отправки." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2422,7 +2872,18 @@
         }
       }
     },
+    "Каждый аккаунт — отдельный баланс, ник и чаты." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each account has its own balance, nickname and chats."
+          }
+        }
+      }
+    },
     "Каждый аккаунт — отдельный кошелёк со своим балансом, ником и чатами." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2485,6 +2946,7 @@
       }
     },
     "Ключи и переписка защищены даже если телефон попал в чужие руки." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2495,6 +2957,7 @@
       }
     },
     "Коллекции" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2504,7 +2967,29 @@
         }
       }
     },
+    "Комиссии сети мы оплачиваем за тебя. Никакой криптовалюты — только сообщения." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We cover network fees for you. No cryptocurrency — just messages."
+          }
+        }
+      }
+    },
+    "Комиссии сети оплачиваются за вас. Подписка продлевается автоматически, отмена в любой момент в настройках Apple ID." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network fees are covered for you. The subscription renews automatically; cancel anytime in your Apple ID settings."
+          }
+        }
+      }
+    },
     "Комиссии сообщений платит этот кошелёк — твой основной адрес не появляется в блокчейне для переписки. Пополняй его из НЕсвязанного источника (биржа, другой кошелёк), иначе связь восстановится on-chain." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2526,6 +3011,7 @@
       }
     },
     "Комиссия маркета %lld%%" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2628,6 +3114,7 @@
       }
     },
     "Кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2638,6 +3125,7 @@
       }
     },
     "Кошелёк и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2648,6 +3136,7 @@
       }
     },
     "Кошелёк недоступен" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2658,6 +3147,7 @@
       }
     },
     "Купи уникальный аватар в маркете" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2678,6 +3168,7 @@
       }
     },
     "Купить можно в маркете — загрузить своё фото нельзя." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2688,6 +3179,7 @@
       }
     },
     "Куплено (локально). Ончейн-минт не удался: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2698,6 +3190,7 @@
       }
     },
     "Куплено за %@ SOL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2708,6 +3201,7 @@
       }
     },
     "Куплено: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2717,12 +3211,43 @@
         }
       }
     },
+    "Лимит" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit"
+          }
+        }
+      }
+    },
     "Лимит %lld лотов. Оформи PrivaMesh+ для безлимита." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limit %lld lots. Get PrivaMesh+ for unlimited."
+          }
+        }
+      }
+    },
+    "Лимит достигнут: можно создать максимум %lld NFT-ника" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit reached: you can create at most %lld NFT nicknames"
+          }
+        }
+      }
+    },
+    "Лимит сообщений исчерпан. Оформите подписку или купите пакет." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're out of messages. Subscribe or buy a pack."
           }
         }
       }
@@ -2759,6 +3284,7 @@
       }
     },
     "Лот сохранён, но публикация не удалась: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2789,6 +3315,7 @@
       }
     },
     "Маскирующий трафик" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2809,6 +3336,7 @@
       }
     },
     "Минт NFT-ников — функция PrivaMesh+" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2818,7 +3346,18 @@
         }
       }
     },
+    "Минт NFT-ников в блокчейн (портируемость по seed)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint NFT nicknames on-chain (seed-portable)"
+          }
+        }
+      }
+    },
     "Минт NFT-ников/аватаров в блокчейн (портируемость по seed)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2828,7 +3367,19 @@
         }
       }
     },
+    "Минт своих NFT-ников (до 3)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint your own NFT nicknames (up to 3)"
+          }
+        }
+      }
+    },
     "Минт своих NFT-ников (до 3) и продажа" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2838,7 +3389,24 @@
         }
       }
     },
+    "Минт создаёт NFT в сети Solana — комиссия оплачивается приложением. Ник станет твоим.\nЗаминчено: %lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minting creates an NFT on Solana — the fee is paid by the app. The nickname becomes yours.\nMinted: %lld/%lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Минт создаёт NFT в сети Solana — комиссия оплачивается приложением. Ник станет твоим.\nЗаминчено: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "Минт создаёт NFT в сети Solana — оплачивается сетевая комиссия. Ник станет твоим и его можно продать.\nЗаминчено: %lld/%lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2854,7 +3422,25 @@
         }
       }
     },
+    "Минт создаёт NFT в сети Solana — оплачивается сетевая комиссия. Ник станет твоим.\nЗаминчено: %lld/%lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minting creates an NFT on Solana — a network fee applies. The nickname becomes yours.\nMinted: %1$lld/%2$lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Минт создаёт NFT в сети Solana — оплачивается сетевая комиссия. Ник станет твоим.\nЗаминчено: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "Минт…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2865,6 +3451,7 @@
       }
     },
     "Мои аватары" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2875,6 +3462,7 @@
       }
     },
     "Мои лоты на продаже" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2885,6 +3473,7 @@
       }
     },
     "Мы физически не можем прочитать твои сообщения, удалить их или передать кому-либо." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2895,7 +3484,6 @@
       }
     },
     "Нажимая «Принимаю», ты соглашаешься с условиями и политикой нулевой терпимости к абьюзу." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2916,6 +3504,7 @@
       }
     },
     "Найти" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2956,6 +3545,7 @@
       }
     },
     "Не беспокоить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2986,6 +3576,7 @@
       }
     },
     "не продаётся" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2996,6 +3587,7 @@
       }
     },
     "Не сейчас" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3016,6 +3608,7 @@
       }
     },
     "Не удалось загрузить историю" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3026,6 +3619,7 @@
       }
     },
     "Не удалось импортировать seed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3036,6 +3630,7 @@
       }
     },
     "Не удалось обновить баланс" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3056,6 +3651,7 @@
       }
     },
     "Не удалось подключить: проверь seed-фразу" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3065,7 +3661,19 @@
         }
       }
     },
+    "Не удалось подтвердить подлинность контакта (нет валидной подписи аккаунта). Возможна подмена — добавь его по QR лично." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t verify the contact’s authenticity (no valid account signature). Possible spoofing — add them via QR in person."
+          }
+        }
+      }
+    },
     "Не удалось подтвердить подлинность контакта (нет валидной подписи кошелька). Возможна подмена — добавь его по QR лично." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3076,6 +3684,7 @@
       }
     },
     "Не удалось прочитать seed phrase" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3096,6 +3705,7 @@
       }
     },
     "Не удалось сохранить пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3116,6 +3726,7 @@
       }
     },
     "невалидный URL эндпоинта: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3126,6 +3737,7 @@
       }
     },
     "Невалидный адрес" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3136,6 +3748,7 @@
       }
     },
     "Неверный URL — нужен https://" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3146,6 +3759,7 @@
       }
     },
     "Неверный пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3156,6 +3770,7 @@
       }
     },
     "Недавние транзакции" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3176,6 +3791,7 @@
       }
     },
     "Недостаточно SOL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3186,7 +3802,14 @@
       }
     },
     "недостаточно SOL (нужно ≈ %@ на предмет + резерв)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not enough SOL (need ≈ %@ per item + reserve)"
+          }
+        }
+      }
     },
     "недостаточно SOL (нужно ≈ %@ на предмет)" : {
       "extractionState" : "stale",
@@ -3199,7 +3822,19 @@
         }
       }
     },
+    "Недостаточно SOL для публикации (на балансе %@). Пополни баланс." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough SOL to publish (balance %@). Top up your balance."
+          }
+        }
+      }
+    },
     "Недостаточно SOL для публикации (на балансе %@). Пополни кошелёк." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3210,6 +3845,7 @@
       }
     },
     "Недостаточно SOL: нужно ≈ %@ (включая резерв ~0.0009 на rent), на балансе %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3219,8 +3855,25 @@
         }
       }
     },
-    "Недостаточно SOL: нужно ≈ %@ на 1 предмет (с резервом на ренту кошелька), на балансе %@. Пополни кошелёк." : {
+    "Недостаточно SOL: нужно ≈ %@ на 1 предмет (с резервом на ренту аккаунта), на балансе %@. Пополни баланс." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough SOL: need ≈ %1$@ for 1 item (incl. account rent reserve), balance %2$@. Top up your balance."
+          }
+        }
+      }
+    },
+    "Недостаточно SOL: нужно ≈ %@ на 1 предмет (с резервом на ренту кошелька), на балансе %@. Пополни кошелёк." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough SOL: need ≈ %1$@ for 1 item (incl. wallet rent reserve), balance %2$@. Top up your wallet."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
@@ -3241,6 +3894,7 @@
       }
     },
     "Недостаточно баланса с учётом комиссии" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3251,6 +3905,7 @@
       }
     },
     "Некорректная цена лота" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3261,6 +3916,7 @@
       }
     },
     "некорректный Solana-адрес получателя (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3271,6 +3927,7 @@
       }
     },
     "некорректный адрес (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3281,6 +3938,7 @@
       }
     },
     "некорректный адрес реестра (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3290,7 +3948,18 @@
         }
       }
     },
+    "Некорректный ответ сервиса доставки." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid response from the delivery service."
+          }
+        }
+      }
+    },
     "Неожиданный ответ сервера" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3301,6 +3970,7 @@
       }
     },
     "неожиданный ответ: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3341,7 +4011,19 @@
         }
       }
     },
+    "Нет NFT для подарка.\nЗаминть свой NFT-ник в профиле." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No NFT to gift.\nMint your own NFT nickname in your profile."
+          }
+        }
+      }
+    },
     "Нет NFT для подарка.\nКупи аватар или ник в маркете." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3351,7 +4033,18 @@
         }
       }
     },
+    "Нет NFT-ников для подарка.\nЗаминть свой NFT-ник в профиле." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No NFT nicknames to gift.\nMint your own NFT nickname in your profile."
+          }
+        }
+      }
+    },
     "Нет избранного" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3372,6 +4065,7 @@
       }
     },
     "Нет переводов" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3382,6 +4076,7 @@
       }
     },
     "Нет предметов для продажи.\nКупи что-нибудь в маркете." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3392,6 +4087,7 @@
       }
     },
     "Нет серверов.\nСерьёзно." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3412,6 +4108,7 @@
       }
     },
     "Нет сообщений-транзакций" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3422,6 +4119,7 @@
       }
     },
     "Нет транзакций" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3432,6 +4130,7 @@
       }
     },
     "низкая" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3441,7 +4140,18 @@
         }
       }
     },
+    "Ник генерируется автоматически. Заминть свой NFT-ник, чтобы выбрать собственное имя." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The nickname is generated automatically. Mint your own NFT nickname to choose your own name."
+          }
+        }
+      }
+    },
     "Ник генерируется автоматически. Купи или заминть NFT-ник в маркете, чтобы выбрать своё имя." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3472,6 +4182,7 @@
       }
     },
     "Ник недоступен" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3482,6 +4193,7 @@
       }
     },
     "Ники" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3513,6 +4225,7 @@
       }
     },
     "Никто с таким ником не найден. Возможно, он не включил поиск в Профиле («Сделать профиль доступным для поиска») — попроси его включить или добавь по QR." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3523,6 +4236,7 @@
       }
     },
     "Ничего не найдено" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3543,6 +4257,7 @@
       }
     },
     "новый ключ на каждое сообщение (PFS)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3553,6 +4268,7 @@
       }
     },
     "Новый контакт" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3563,6 +4279,7 @@
       }
     },
     "Новый пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3573,6 +4290,7 @@
       }
     },
     "Нужно 12 или 24 слова" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3582,7 +4300,19 @@
         }
       }
     },
+    "Нужно минимум %@ SOL для оплаты комиссии сети. Пополни баланс и попробуй снова." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You need at least %@ SOL to cover the network fee. Top up your balance and try again."
+          }
+        }
+      }
+    },
     "Нужно минимум %@ SOL для оплаты комиссии сети. Пополни кошелёк и попробуй снова." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3633,6 +4363,7 @@
       }
     },
     "Одно или несколько слов выбрано неправильно. Проверь свою запись." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3703,11 +4434,63 @@
       }
     },
     "Опубликовать ник в сети, чтобы тебя находили по поиску" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Publish your nickname on-chain so others can find you in search"
+          }
+        }
+      }
+    },
+    "Опубликовать ник в сети, чтобы тебя находили по поиску. Стоит 1 сообщение." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publish your nickname on-chain so people can find you. Costs 1 message."
+          }
+        }
+      }
+    },
+    "Опционально. Комиссии сообщений платит этот отдельный баланс — твой основной адрес не появляется в блокчейне для переписки. Пополняй его из НЕсвязанного источника (биржа, другой адрес), иначе связь восстановится on-chain." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional. Message fees are paid from this separate balance — your main address does not appear on-chain for messaging. Fund it from an UNLINKED source (an exchange, another address), otherwise the link can be reconstructed on-chain."
+          }
+        }
+      }
+    },
+    "Опционально. Отдельный баланс платит комиссии за сообщения, поэтому твой основной адрес НЕ появляется в блокчейне. Нужно создать и немного пополнить." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional. A separate balance pays message fees, so your main address does NOT appear on-chain. Create it and top it up a little."
+          }
+        }
+      }
+    },
+    "Осталось сообщений" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages left"
+          }
+        }
+      }
+    },
+    "Осталось: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remaining: %lld"
           }
         }
       }
@@ -3734,6 +4517,7 @@
       }
     },
     "Отдельный кошелёк платит комиссии за сообщения, поэтому твой основной адрес НЕ появляется в блокчейне. Нужно создать и немного пополнить." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3743,7 +4527,18 @@
         }
       }
     },
+    "Отдельный одноразовый баланс только для оплаты комиссий." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A separate one-time balance just for paying fees."
+          }
+        }
+      }
+    },
     "Отдельный одноразовый кошелёк только для оплаты комиссий." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3754,6 +4549,7 @@
       }
     },
     "Отключить все уведомления" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3834,6 +4630,7 @@
       }
     },
     "Отправлено %@ SOL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3844,6 +4641,7 @@
       }
     },
     "Отправляем…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3913,7 +4711,24 @@
         }
       }
     },
+    "Ошибка доставки (%lld). %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delivery error (%lld). %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Ошибка доставки (%1$lld). %2$@"
+          }
+        }
+      }
+    },
     "Ошибка ключа: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3934,6 +4749,7 @@
       }
     },
     "Ошибка покупки: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3966,6 +4782,7 @@
       }
     },
     "Ошибка сети — проверь соединение" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3986,6 +4803,7 @@
       }
     },
     "Пароли не совпадают" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3996,6 +4814,7 @@
       }
     },
     "Пароли не совпадают. Попробуй ещё раз." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4006,6 +4825,7 @@
       }
     },
     "паттерн активности скрыт автоматически" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4026,7 +4846,19 @@
         }
       }
     },
+    "Перевод SOL в чате оплачивается твоим ОСНОВНЫМ балансом — его адрес станет виден получателю и в блокчейне. Сообщения остаются приватными (stealth-адреса), но платёж — нет." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A SOL transfer in chat is paid from your MAIN balance — its address becomes visible to the recipient and on-chain. Messages stay private (stealth addresses), but the payment does not."
+          }
+        }
+      }
+    },
     "Перевод SOL в чате оплачивается твоим ОСНОВНЫМ кошельком — его адрес станет виден получателю и в блокчейне. Сообщения остаются приватными (stealth-адреса), но платёж — нет." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4037,6 +4869,7 @@
       }
     },
     "Перевод раскроет твой адрес" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4047,6 +4880,7 @@
       }
     },
     "Переводы" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4077,6 +4911,7 @@
       }
     },
     "Переписка\nтолько у тебя" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4087,6 +4922,7 @@
       }
     },
     "Перестать получать сообщения от контакта" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4097,6 +4933,7 @@
       }
     },
     "Периодически шлёт ложные (decoy) сообщения, чтобы скрыть, КОГДА ты реально пишешь. Стоит небольших сетевых комиссий." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4116,7 +4953,18 @@
         }
       }
     },
+    "Платить комиссии этим балансом" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pay fees from this balance"
+          }
+        }
+      }
+    },
     "Платить комиссии этим кошельком" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4137,6 +4985,7 @@
       }
     },
     "Повтори новый" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4147,6 +4996,7 @@
       }
     },
     "Повтори пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4156,12 +5006,33 @@
         }
       }
     },
+    "Повторить" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        }
+      }
+    },
     "Подарить NFT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gift NFT"
+          }
+        }
+      }
+    },
+    "Подарить NFT-ник" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gift an NFT nickname"
           }
         }
       }
@@ -4177,6 +5048,7 @@
       }
     },
     "Подарок отправлен: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4217,6 +5089,7 @@
       }
     },
     "Подключить по seed-фразе" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4227,6 +5100,7 @@
       }
     },
     "Подписаться · %@/мес" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4237,6 +5111,7 @@
       }
     },
     "Подписаться · $2.99/мес" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4257,7 +5132,30 @@
         }
       }
     },
+    "Подписка" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subscription"
+          }
+        }
+      }
+    },
+    "Подписка %@/мес. Оплата спишется с Apple ID при подтверждении. Продлевается автоматически, если не отключить за 24 ч до конца периода. Управление и отмена — в настройках Apple ID." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subscription %@/mo. Payment is charged to your Apple ID at confirmation. It renews automatically unless turned off at least 24 h before the end of the period. Manage or cancel in your Apple ID settings."
+          }
+        }
+      }
+    },
     "Подпись" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4268,6 +5166,7 @@
       }
     },
     "Подпись в QR не соответствует адресу — возможна подмена. Попроси новый QR." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4288,6 +5187,7 @@
       }
     },
     "Подтверди отправку" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4298,6 +5198,7 @@
       }
     },
     "Подтверди отправку SOL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4307,7 +5208,19 @@
         }
       }
     },
+    "Подтверди что это твой аккаунт" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm this is your account"
+          }
+        }
+      }
+    },
     "Подтверди что это твой кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4338,6 +5251,7 @@
       }
     },
     "Подтвердить перевод %@ SOL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4348,6 +5262,7 @@
       }
     },
     "Подтвердить подарок: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4358,6 +5273,7 @@
       }
     },
     "Подтвердить покупку: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4368,6 +5284,7 @@
       }
     },
     "Подтверждение не пройдено" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4378,6 +5295,7 @@
       }
     },
     "Подтверждено" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4398,6 +5316,7 @@
       }
     },
     "Поиск ника (напр. neo)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4408,6 +5327,7 @@
       }
     },
     "Поиск по названию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4418,6 +5338,7 @@
       }
     },
     "Поиск по нику" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4458,6 +5379,7 @@
       }
     },
     "Пока нет чатов — добавь контакт" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4468,6 +5390,7 @@
       }
     },
     "Пока ничего не продаёшь" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4488,6 +5411,7 @@
       }
     },
     "Показать seed газ-кошелька" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4497,7 +5421,18 @@
         }
       }
     },
+    "Показать seed газового баланса" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show gas balance seed"
+          }
+        }
+      }
+    },
     "Покупаем…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4508,6 +5443,7 @@
       }
     },
     "Покупка" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4518,6 +5454,7 @@
       }
     },
     "Покупка — реальный перевод SOL. Genesis-доход идёт разработчику, перепродажа — продавцу (комиссия %lld%%)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4528,6 +5465,7 @@
       }
     },
     "Покупки временно недоступны" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4538,6 +5476,7 @@
       }
     },
     "Политика конфиденциальности" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4548,6 +5487,7 @@
       }
     },
     "Получатель" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4638,6 +5578,7 @@
       }
     },
     "Пользователь не найден" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4648,6 +5589,7 @@
       }
     },
     "Понятно, отправить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4657,12 +5599,35 @@
         }
       }
     },
+    "Пополни\nбаланс" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top up\nyour balance"
+          }
+        }
+      }
+    },
     "Пополни газ-кошелёк — не хватает SOL на комиссию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Top up the gas wallet — not enough SOL for the fee"
+          }
+        }
+      }
+    },
+    "Пополни газовый баланс — не хватает SOL на комиссию" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top up your gas balance — not enough SOL for the fee"
           }
         }
       }
@@ -4678,11 +5643,22 @@
       }
     },
     "Поставить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "List"
+          }
+        }
+      }
+    },
+    "Предложения недоступны" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offers unavailable"
           }
         }
       }
@@ -4699,6 +5675,7 @@
       }
     },
     "Приватность\nпо умолчанию" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4708,7 +5685,40 @@
         }
       }
     },
+    "Приватный мессенджер и кошелёк на Solana.\nБез серверов и слежки." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A private messenger and wallet on Solana.\nNo servers, no tracking."
+          }
+        }
+      }
+    },
+    "Приватный мессенджер на Solana.\nБаланс — только чтобы пополнять SOL для отправки сообщений." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A private messenger on Solana.\nThe balance is just for topping up SOL to send messages."
+          }
+        }
+      }
+    },
+    "Приватный мессенджер на Solana.\nБез телефона и email — только твой ключ." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A private messenger on Solana.\nNo phone or email — just your key."
+          }
+        }
+      }
+    },
     "Приватный мессенджер, кошелёк и NFT-маркет на Solana.\nБез серверов и слежки." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4730,6 +5740,7 @@
       }
     },
     "Придумай пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4740,7 +5751,6 @@
       }
     },
     "Принимаю" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4760,7 +5770,18 @@
         }
       }
     },
+    "Проверь соединение и повтори." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your connection and try again."
+          }
+        }
+      }
+    },
     "Продать" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4800,6 +5821,17 @@
         }
       }
     },
+    "Просто\nпиши" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Just\nmessage"
+          }
+        }
+      }
+    },
     "Профиль" : {
       "localizations" : {
         "en" : {
@@ -4811,11 +5843,22 @@
       }
     },
     "Профиль не получен.\nЭтот контакт добавлен без карточки профиля — попроси новый QR." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No profile received.\nThis contact was added without a profile card — ask for a new QR."
+          }
+        }
+      }
+    },
+    "Профиль недоступен" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile unavailable"
           }
         }
       }
@@ -4841,6 +5884,7 @@
       }
     },
     "Публикуем…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4871,6 +5915,7 @@
       }
     },
     "Разблокировать PrivaMesh" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4880,7 +5925,19 @@
         }
       }
     },
+    "Разовые пакеты" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-Time Packs"
+          }
+        }
+      }
+    },
     "Расшифрованные сообщения хранятся только на этом телефоне — не в облаке и не на сервере." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4891,6 +5948,7 @@
       }
     },
     "Реальная оплата SOL с твоего кошелька." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4941,6 +5999,26 @@
         }
       }
     },
+    "Сбросить аккаунт" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset account"
+          }
+        }
+      }
+    },
+    "Сбросить аккаунт?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset account?"
+          }
+        }
+      }
+    },
     "Сбросить к умолчанию (Helius)" : {
       "localizations" : {
         "en" : {
@@ -4952,6 +6030,7 @@
       }
     },
     "Сбросить кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4962,6 +6041,7 @@
       }
     },
     "Сбросить кошелёк?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4992,6 +6072,7 @@
       }
     },
     "Сдвинь для подтверждения" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5002,6 +6083,7 @@
       }
     },
     "Сдвинь, чтобы выставить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5012,6 +6094,7 @@
       }
     },
     "Сдвинь, чтобы заминтить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5022,6 +6105,7 @@
       }
     },
     "Сдвинь, чтобы купить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5032,6 +6116,7 @@
       }
     },
     "Сдвинь, чтобы отправить" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5051,7 +6136,18 @@
         }
       }
     },
+    "Сейчас комиссии платит основной баланс." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fees are currently paid from the main balance."
+          }
+        }
+      }
+    },
     "Сейчас комиссии платит основной кошелёк." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5061,7 +6157,18 @@
         }
       }
     },
+    "Сервис доставки не настроен." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delivery service is not configured."
+          }
+        }
+      }
+    },
     "СЕТЬ/RPC" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5152,6 +6259,7 @@
       }
     },
     "Скрывает, когда ты пишешь" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5161,7 +6269,18 @@
         }
       }
     },
+    "Скрывает, КОГДА ты пишешь. Тратит ~%lld сообщений в час из твоего баланса." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hides WHEN you type. Uses ~%lld messages per hour from your balance."
+          }
+        }
+      }
+    },
     "Скрыто не только содержимое — но и кто, с кем и когда переписывается." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5172,6 +6291,7 @@
       }
     },
     "Слишком большая цена (макс 1 000 000 SOL)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5222,6 +6342,7 @@
       }
     },
     "Слои\nанонимности" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5242,6 +6363,7 @@
       }
     },
     "Сначала дешёвые" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5252,6 +6374,7 @@
       }
     },
     "Сначала дорогие" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5262,6 +6385,7 @@
       }
     },
     "Снято" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5272,6 +6396,7 @@
       }
     },
     "Снято с продажи" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5282,6 +6407,7 @@
       }
     },
     "Снять NFT-аватар" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5292,6 +6418,7 @@
       }
     },
     "Снять с продажи" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5302,6 +6429,7 @@
       }
     },
     "Создай аккаунт или восстанови существующий — займёт меньше минуты." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5322,6 +6450,7 @@
       }
     },
     "Создание..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5379,6 +6508,7 @@
       }
     },
     "Создать газ-кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5388,7 +6518,18 @@
         }
       }
     },
+    "Создать газовый баланс" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create gas balance"
+          }
+        }
+      }
+    },
     "Создать новый аккаунт" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5399,6 +6540,7 @@
       }
     },
     "Создать свой NFT-ник" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5419,6 +6561,7 @@
       }
     },
     "Сообщение — это транзакция в блокчейне. Стоит в ~1000 раз дешевле SMS." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5429,11 +6572,22 @@
       }
     },
     "Сообщения" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Messages"
+          }
+        }
+      }
+    },
+    "Сообщения закончились" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Out of Messages"
           }
         }
       }
@@ -5460,6 +6614,7 @@
       }
     },
     "Сообщения подписываются газ-кошельком. Держи на нём немного SOL." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5469,7 +6624,18 @@
         }
       }
     },
+    "Сообщения подписываются газовым балансом. Держи на нём немного SOL." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages are signed with the gas balance. Keep a little SOL on it."
+          }
+        }
+      }
+    },
     "Сообщения скрыты, новые не приходят" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5480,6 +6646,7 @@
       }
     },
     "Сортировка" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5500,6 +6667,7 @@
       }
     },
     "средняя" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5510,6 +6678,7 @@
       }
     },
     "Статус" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5520,6 +6689,7 @@
       }
     },
     "Стоимость" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5530,6 +6700,7 @@
       }
     },
     "Сумма" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5540,6 +6711,7 @@
       }
     },
     "Сумма должна быть больше 0" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5620,6 +6792,7 @@
       }
     },
     "Текущий пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5670,6 +6843,7 @@
       }
     },
     "Транзакция не подтвердилась — попробуй ещё раз" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5690,6 +6864,7 @@
       }
     },
     "Ты готов\nк старту" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5733,6 +6908,7 @@
       }
     },
     "Ты получишь" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5743,6 +6919,7 @@
       }
     },
     "Ты получишь **12 секретных слов** — единственный способ восстановить аккаунт." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5763,6 +6940,7 @@
       }
     },
     "У тебя пока нет аватаров" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5784,6 +6962,7 @@
       }
     },
     "Уведомления включены" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5794,6 +6973,7 @@
       }
     },
     "Уведомления заглушены" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5814,6 +6994,7 @@
       }
     },
     "Удалить газ-кошелёк" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5824,11 +7005,32 @@
       }
     },
     "Удалить газ-кошелёк?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete gas wallet?"
+          }
+        }
+      }
+    },
+    "Удалить газовый баланс" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete gas balance"
+          }
+        }
+      }
+    },
+    "Удалить газовый баланс?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete gas balance?"
           }
         }
       }
@@ -5874,6 +7076,7 @@
       }
     },
     "Уже у тебя в коллекции" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5884,6 +7087,7 @@
       }
     },
     "Укажи цену" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5894,6 +7098,7 @@
       }
     },
     "уникальный одноразовый адрес на сообщение" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5934,6 +7139,7 @@
       }
     },
     "Установлено" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5974,6 +7180,7 @@
       }
     },
     "Цена" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5984,6 +7191,7 @@
       }
     },
     "Цена продажи" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6004,6 +7212,7 @@
       }
     },
     "Чтение seed требует Face ID / пароль" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6014,6 +7223,7 @@
       }
     },
     "Чтение seed-фразы и подпись требуют Face ID / пароль. Если телефон попал в чужие руки — ключи не достать." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6034,11 +7244,23 @@
       }
     },
     "ШИФРОВАНИЕ" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ENCRYPTION"
+          }
+        }
+      }
+    },
+    "Это в первую очередь мессенджер. Баланс нужен только чтобы пополнить SOL и отправлять сообщения — каждое сообщение это транзакция в блокчейне." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is first and foremost a messenger. The balance is only needed to top up SOL and send messages — each message is a blockchain transaction."
           }
         }
       }
@@ -6054,6 +7276,7 @@
       }
     },
     "Это старый QR без Solana-адреса. Попроси контакт показать новый QR (или добавь его через поиск)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6064,6 +7287,7 @@
       }
     },
     "Это твой лот" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

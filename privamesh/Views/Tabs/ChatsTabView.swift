@@ -328,6 +328,10 @@ struct ChatsTabView: View {
                     Text(LocalizedStringKey(contact.isSelf ? "Избранное" : primary))
                         .font(.system(size: 15, weight: contact.isSelf ? .medium : .regular))
                         .foregroundStyle(Theme.slate800)
+                    if !contact.isSelf, profile?.isPremium == true {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 11)).foregroundStyle(Theme.accent)
+                    }
                     if let saved = secondary {
                         Text("· \(saved)")
                             .font(.system(size: 12))

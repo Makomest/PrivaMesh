@@ -27,16 +27,28 @@ final class MessageSender {
 
     var state: State = .idle
 
+    /// Sponsoring relay. When configured, message fees are paid by the app
+    /// treasury and submitted via the relay instead of the user's wallet.
+    /// Set by the app root; nil falls back to the direct (user-pays) path.
+    var relay: RelayService?
+
+    /// True when the last failure was the relay rejecting for quota — lets the UI
+    /// present the paywall instead of a generic error (client mirror can drift).
+    private(set) var lastFailureIsQuota = false
+
     // Sender's public identity, stamped onto outgoing payloads so recipients
     // see the real nick + NFT avatar without exchanging QR.
     private var senderNick: String?
     private var senderAvatarSeed: String?
     private var senderWallet: String?
+    private var senderIsPremium = false
 
-    func setSenderProfile(nick: String?, avatarSeed: String?, wallet: String? = nil) {
+    func setSenderProfile(nick: String?, avatarSeed: String?, wallet: String? = nil,
+                          isPremium: Bool = false) {
         senderNick = nick
         senderAvatarSeed = avatarSeed
         senderWallet = wallet
+        senderIsPremium = isPremium
     }
 
     private func stamp(_ payload: ChatPayload) -> ChatPayload {
@@ -44,6 +56,7 @@ final class MessageSender {
         p.senderNick = senderNick
         p.senderAvatarSeed = senderAvatarSeed
         p.senderWallet = senderWallet
+        p.senderIsPremium = senderIsPremium ? true : nil
         return p
     }
 
@@ -76,6 +89,7 @@ final class MessageSender {
         context: ModelContext
     ) async {
         state = .sending
+        lastFailureIsQuota = false
         let startedAt = Date()
 
         // Show message immediately; update id/status once blockchain confirms
@@ -113,6 +127,7 @@ final class MessageSender {
                     rpc: rpc
                 )
             } catch {
+                if case RelayService.RelayError.quotaExceeded = error { lastFailureIsQuota = true }
                 throw Self.tag(error, stage: "СЕТЬ/RPC")
             }
 
@@ -449,6 +464,16 @@ final class MessageSender {
         guard let recipientKey = try? PublicKey(string: recipientAddress),
               recipientKey.bytes.count == PublicKey.numberOfBytes else {
             throw SendError.invalidRecipientAddress(name: recipientAddress)
+        }
+
+        // Sponsored path: the app treasury pays the fee via the relay, so the
+        // user needs no SOL. Used whenever the relay is configured.
+        if let relay, relay.isConfigured {
+            return try await relay.sendMessage(
+                to: recipientAddress,
+                memoBase64: memoBase64,
+                endpointURL: rpc.currentEndpoint.address,
+                computeUnitLimit: 600_000)
         }
 
         // Try every endpoint, collecting each failure. Throwing only the LAST

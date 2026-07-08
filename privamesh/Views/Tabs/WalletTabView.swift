@@ -71,7 +71,7 @@ struct WalletTabView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Кошелёк")
+                Text("Баланс")
                     .font(.system(size: 26, weight: .semibold, design: .rounded))
                     .foregroundStyle(Theme.slate800)
                 HStack(spacing: 4) {
@@ -166,18 +166,18 @@ struct WalletTabView: View {
     }
 
     private var actionButtons: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             NavigationLink {
                 SendSOLView()
             } label: {
-                actionPill(icon: "arrow.up.right", text: "Отправить")
+                actionButton(icon: "arrow.up.right", text: "Отправить", filled: true)
             }
             .buttonStyle(.plain)
 
             Button {
                 showReceive = true
             } label: {
-                actionPill(icon: "arrow.down.left", text: "Получить")
+                actionButton(icon: "arrow.down.left", text: "Получить", filled: false)
             }
             .buttonStyle(.plain)
             .sheet(isPresented: $showReceive) {
@@ -186,18 +186,27 @@ struct WalletTabView: View {
         }
     }
 
-    private func actionPill(icon: String, text: String) -> some View {
-        VStack(spacing: 6) {
+    /// Prominent pill actions: Send is the primary (filled gradient), Receive is
+    /// the secondary (glass). Icon + label sit side by side.
+    private func actionButton(icon: String, text: String, filled: Bool) -> some View {
+        HStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.system(size: 20))
-                .foregroundStyle(Theme.accentDeep)
-                .frame(width: 48, height: 48)
-                .glassEffect(.regular, in: .rect(cornerRadius: Theme.radiusMedium))
+                .font(.system(size: 16, weight: .semibold))
             Text(LocalizedStringKey(text))
-                .font(.system(size: 11))
-                .foregroundStyle(Theme.slate500)
+                .font(.system(size: 16, weight: .semibold))
         }
+        .foregroundStyle(filled ? Color.white : Theme.accentDeep)
         .frame(maxWidth: .infinity)
+        .padding(.vertical, 15)
+        .background {
+            if filled {
+                Capsule().fill(Theme.accentGradient)
+                    .shadow(color: Theme.accent.opacity(0.35), radius: 10, x: 0, y: 5)
+            } else {
+                Capsule().fill(Theme.glass)
+                    .overlay(Capsule().stroke(Theme.accent.opacity(0.45), lineWidth: 1.5))
+            }
+        }
     }
 
     @ViewBuilder

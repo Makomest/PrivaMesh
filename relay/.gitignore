@@ -1,0 +1,9 @@
+# Dependencies + build output — never commit
+node_modules/
+dist/
+
+# Wrangler local state + secrets
+.wrangler/
+.dev.vars
+.dev.vars.*
+*.log

@@ -48,14 +48,12 @@ struct MainTabView: View {
 
     enum AppTab: String, Hashable, CaseIterable {
         // Order here drives the tab bar layout. Chats sits in the middle.
-        case home, wallet, chats, market, profile
+        case home, chats, profile
 
         var label: String {
             switch self {
             case .home: return String(localized: "Главная")
             case .chats: return String(localized: "Чаты")
-            case .wallet: return String(localized: "Кошелёк")
-            case .market: return String(localized: "Маркет")
             case .profile: return String(localized: "Профиль")
             }
         }
@@ -65,8 +63,6 @@ struct MainTabView: View {
             switch self {
             case .home: return "house"
             case .chats: return "message"
-            case .wallet: return "wallet.bifold"
-            case .market: return "at"
             case .profile: return "gearshape"
             }
         }
@@ -75,8 +71,6 @@ struct MainTabView: View {
             switch self {
             case .home: return "house.fill"
             case .chats: return "message.fill"
-            case .wallet: return "wallet.bifold.fill"
-            case .market: return "at"
             case .profile: return "gearshape.fill"
             }
         }
@@ -170,7 +164,7 @@ struct MainTabView: View {
             await onChainDiscovery.publishIfNeeded(
                 nickname: nicknameManager.nickname, address: address,
                 signedBundleBase64: signed.base64Encoded,
-                avatarSeed: avatars.activeDesign?.id, keypair: keypair, rpc: rpc)
+                avatarSeed: nil, keypair: keypair, rpc: rpc)
         }
     }
 
@@ -179,8 +173,6 @@ struct MainTabView: View {
         switch tab {
         case .home:    HomeTabView()
         case .chats:   ChatsTabView()
-        case .wallet:  WalletTabView()
-        case .market:  MarketTabView()
         case .profile: ProfileTabView()
         }
     }

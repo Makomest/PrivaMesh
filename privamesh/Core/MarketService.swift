@@ -97,8 +97,8 @@ final class MarketService {
 
     /// Free accounts can list up to this many lots; premium is unlimited.
     static let freeListingLimit = 3
-    /// Premium accounts can mint up to this many custom NFT nicknames.
-    static let maxMintsPremium = 3
+    /// Each account can mint up to this many custom NFT nicknames.
+    static let maxMints = 3
 
     /// Nickname handles available to buy (first collection).
     let nicknameCatalog: [MarketItem]
@@ -304,10 +304,12 @@ final class MarketService {
         persist()
     }
 
-    // MARK: - Minting (premium)
+    // MARK: - Minting
 
-    func canMint(isPremium: Bool) -> Bool {
-        isPremium && mintedNicknames.count < Self.maxMintsPremium
+    /// Minting a custom NFT nickname is available to everyone (pays only the
+    /// Solana network fee — no IAP). Capped at `maxMints` per account.
+    func canMint() -> Bool {
+        mintedNicknames.count < Self.maxMints
     }
 
     /// Is this handle free to mint? Checks the catalog and everything known

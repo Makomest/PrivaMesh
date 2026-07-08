@@ -4,7 +4,66 @@
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "A1000001-0001-0001-0001-000000000100",
+      "localizations" : [
+        {
+          "description" : "100 сообщений. Комиссии сети оплачиваются за вас.",
+          "displayName" : "100 сообщений",
+          "locale" : "ru"
+        },
+        {
+          "description" : "100 messages. Network fees are covered for you.",
+          "displayName" : "100 Messages",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.privamesh.msgs.100",
+      "referenceName" : "100 Messages Pack",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "A1000001-0001-0001-0001-000000000500",
+      "localizations" : [
+        {
+          "description" : "500 сообщений. Комиссии сети оплачиваются за вас.",
+          "displayName" : "500 сообщений",
+          "locale" : "ru"
+        },
+        {
+          "description" : "500 messages. Network fees are covered for you.",
+          "displayName" : "500 Messages",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.privamesh.msgs.500",
+      "referenceName" : "500 Messages Pack",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "A1000001-0001-0001-0001-000000001500",
+      "localizations" : [
+        {
+          "description" : "1500 сообщений. Комиссии сети оплачиваются за вас.",
+          "displayName" : "1500 сообщений",
+          "locale" : "ru"
+        },
+        {
+          "description" : "1500 messages. Network fees are covered for you.",
+          "displayName" : "1500 Messages",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.privamesh.msgs.1500",
+      "referenceName" : "1500 Messages Pack",
+      "type" : "Consumable"
+    }
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,
@@ -27,21 +86,56 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "2.99",
+          "displayPrice" : "5.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6BF640CE-F90C-43A1-81CB-5F30769FA355",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Премиум-членство PrivaMesh+: минт NFT-ников, безлимит лотов, галочка, до 3 аккаунтов",
-              "displayName" : "PrivaMesh+",
+              "description" : "1200 сообщений в месяц, галочка верификации, до 3 аккаунтов. Комиссии сети оплачиваются за вас.",
+              "displayName" : "PrivaMesh+ Starter",
               "locale" : "ru"
+            },
+            {
+              "description" : "1,200 messages per month, verification checkmark, up to 3 accounts. Network fees are covered for you.",
+              "displayName" : "PrivaMesh+ Starter",
+              "locale" : "en_US"
             }
           ],
           "productID" : "com.privamesh.plus.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "PrivaMesh Plus Monthly",
+          "subscriptionGroupID" : "29F93ACF-247E-4E22-A154-4511ED1689E3",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6BF640CE-F90C-43A1-81CB-5F30769FA366",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "2000 сообщений в месяц, галочка верификации, до 3 аккаунтов, бесплатный NFT-ник, приоритет. Комиссии сети оплачиваются за вас.",
+              "displayName" : "PrivaMesh+ Pro",
+              "locale" : "ru"
+            },
+            {
+              "description" : "2000 messages per month, verification checkmark, up to 3 accounts, free NFT nickname, priority. Network fees covered.",
+              "displayName" : "PrivaMesh+ Pro",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.privamesh.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "PrivaMesh Pro Monthly",
           "subscriptionGroupID" : "29F93ACF-247E-4E22-A154-4511ED1689E3",
           "type" : "RecurringSubscription"
         }

@@ -35,15 +35,6 @@ struct ContactProfileView: View {
                         if !contact.isSelf { muteCard }
                         if !contact.isSelf { safetyCard }
                         disappearCard
-                        if let p = profile {
-                            if !p.avatars.isEmpty { inventorySection("NFT-аватары", avatars: p.avatars, profile: p) }
-                            if !p.nicknames.isEmpty { nicknamesSection(p) }
-                            if p.avatars.isEmpty && p.nicknames.isEmpty {
-                                emptyNote("Инвентарь пуст")
-                            }
-                        } else {
-                            emptyNote("Профиль не получен.\nЭтот контакт добавлен без карточки профиля — попроси новый QR.")
-                        }
                     }
                     .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 40)
                 }
@@ -229,8 +220,14 @@ struct ContactProfileView: View {
                         .overlay(Circle().stroke(Color.white.opacity(0.8), lineWidth: 2)).clipShape(Circle())
                 }
             }
-            Text(contact.primaryName)
-                .font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
+            HStack(spacing: 6) {
+                Text(contact.primaryName)
+                    .font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
+                if !contact.isSelf, profile?.isPremium == true {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 16)).foregroundStyle(Theme.accent)
+                }
+            }
             if let saved = contact.secondaryName {
                 Text("в контактах: \(saved)")
                     .font(.system(size: 12)).foregroundStyle(Theme.slate500)
@@ -250,21 +247,9 @@ struct ContactProfileView: View {
 
     // MARK: - Sections
 
-    private func inventorySection(_ title: String, avatars: [ProfileSnapshot.SnapAvatar], profile: ProfileSnapshot) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            sectionTitle(title)
-            LazyVGrid(columns: cols, spacing: 12) {
-                ForEach(avatars, id: \.seed) { a in
-                    itemTile(art: AnyView(NFTAvatarView(seed: a.seed, size: 80)),
-                             name: a.name, price: profile.price(forRef: a.seed))
-                }
-            }
-        }
-    }
-
     private func nicknamesSection(_ profile: ProfileSnapshot) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("Ники")
+            sectionTitle("NFT-ники")
             LazyVGrid(columns: cols, spacing: 12) {
                 ForEach(profile.nicknames, id: \.self) { handle in
                     itemTile(art: AnyView(
@@ -273,24 +258,16 @@ struct ContactProfileView: View {
                                 startPoint: .topLeading, endPoint: .bottomTrailing))
                             Text("@").font(.system(size: 36, weight: .bold, design: .rounded)).foregroundStyle(.white)
                         }.frame(width: 80, height: 80)),
-                        name: handle, price: profile.price(forRef: handle))
+                        name: handle)
                 }
             }
         }
     }
 
-    private func itemTile(art: AnyView, name: String, price: Double?) -> some View {
+    private func itemTile(art: AnyView, name: String) -> some View {
         VStack(spacing: 8) {
             art
             Text(name).font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.slate700).lineLimit(1)
-            if let price {
-                Text("\(price == price.rounded() ? "\(Int(price))" : String(format: "%.2g", price)) SOL")
-                    .font(.system(size: 11, weight: .bold)).foregroundStyle(.white)
-                    .padding(.horizontal, 8).padding(.vertical, 2)
-                    .background(Theme.accentGradient).clipShape(Capsule())
-            } else {
-                Text("не продаётся").font(.system(size: 10)).foregroundStyle(Theme.slate400)
-            }
         }
         .padding(12).frame(maxWidth: .infinity)
         .background(Theme.glass)

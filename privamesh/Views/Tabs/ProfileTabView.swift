@@ -18,7 +18,7 @@ struct ProfileTabView: View {
     @Environment(AppRouter.self) private var router
     @Environment(NicknameManager.self) private var nicknameManager
     @Environment(SubscriptionManager.self) private var subscription
-    @Environment(AvatarService.self) private var avatars
+    @Environment(MessageQuotaService.self) private var quota
     @Environment(UserProfileService.self) private var userProfile
     @Environment(MarketService.self) private var market
     @Environment(AccountManager.self) private var accountManager
@@ -51,7 +51,6 @@ struct ProfileTabView: View {
     @State private var showResetAlert = false
     @State private var showPaywall = false
     @State private var showManageSubscriptions = false
-    @State private var showAvatarStore = false
     @State private var showAccounts = false
 
     private var publicKey: String? {
@@ -69,7 +68,6 @@ struct ProfileTabView: View {
                         profileHeader
                         if subscription.isSubscribed { premiumStatusCard } else { premiumUpsellCard }
                         descriptionCard
-                        avatarCard
                         nicknameCard
                         discoveryCard
                         secureOnChainCard
@@ -101,7 +99,7 @@ struct ProfileTabView: View {
             #if os(iOS)
             .toolbar(.hidden, for: .navigationBar)
             #endif
-            .alert("Сбросить кошелёк?", isPresented: $showResetAlert) {
+            .alert("Сбросить аккаунт?", isPresented: $showResetAlert) {
                 Button("Отмена", role: .cancel) {}
                 Button("Сбросить", role: .destructive) {
                     // Full wipe — leave no seeds, keys, or chats behind.
@@ -121,10 +119,7 @@ struct ProfileTabView: View {
                 Text("Все данные удалятся с устройства. Восстановить можно только seed phrase.")
             }
             .sheet(isPresented: $showPaywall) {
-                PrivaMeshPlusPaywall(subscription: subscription)
-            }
-            .sheet(isPresented: $showAvatarStore) {
-                AvatarStoreView()
+                QuotaPaywallSheet()
             }
             .sheet(isPresented: $showAccounts) {
                 AccountSwitcherView()
@@ -193,8 +188,6 @@ struct ProfileTabView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    upsellFeature(icon: "sparkles", "Минт своих NFT-ников (до 3) и продажа")
-                    upsellFeature(icon: "infinity", "Безлимит лотов на продаже")
                     upsellFeature(icon: "checkmark.seal.fill", "Галочка верификации у профиля")
                     upsellFeature(icon: "person.2.fill", "До 3 аккаунтов на устройстве")
                 }
@@ -300,46 +293,6 @@ struct ProfileTabView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Avatar card
-
-    private var avatarCard: some View {
-        Button { showAvatarStore = true } label: {
-            HStack(spacing: 14) {
-                Group {
-                    if let active = avatars.activeDesign {
-                        NFTAvatarView(seed: active.id, size: 48)
-                    } else {
-                        Image(systemName: "square.grid.2x2.fill")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Theme.accentDeep)
-                            .frame(width: 48, height: 48)
-                            .background(Theme.accent.opacity(0.12))
-                            .clipShape(Circle())
-                    }
-                }
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("NFT-аватары")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Theme.slate800)
-                    Text(avatars.activeDesign?.name
-                         ?? "Купи уникальный аватар в маркете")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Theme.slate500)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(Theme.slate400)
-            }
-            .padding(16)
-            .background(Theme.glass)
-            .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
-            .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge)
-                .stroke(Theme.glassStroke, lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-    }
-
     // MARK: - Profile header
 
     private var profileHeader: some View {
@@ -350,13 +303,9 @@ struct ProfileTabView: View {
                     .frame(width: 80, height: 80)
                     .blur(radius: 14)
                     .opacity(0.4)
-                if let active = avatars.activeDesign {
-                    NFTAvatarView(seed: active.id, size: 72)
-                } else {
-                    MeshAvatarView(id: publicKey ?? "", size: 72)
-                        .overlay(Circle().stroke(Color.white.opacity(0.80), lineWidth: 2))
-                        .clipShape(Circle())
-                }
+                MeshAvatarView(id: publicKey ?? "", size: 72)
+                    .overlay(Circle().stroke(Color.white.opacity(0.80), lineWidth: 2))
+                    .clipShape(Circle())
             }
 
             VStack(spacing: 4) {
@@ -429,7 +378,7 @@ struct ProfileTabView: View {
                     Image(systemName: "info.circle")
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.slate400)
-                    Text("Ник генерируется автоматически. Купи или заминть NFT-ник в маркете, чтобы выбрать своё имя.")
+                    Text("Ник генерируется автоматически. Заминть свой NFT-ник, чтобы выбрать собственное имя.")
                         .font(.system(size: 12))
                         .foregroundStyle(Theme.slate400)
                 }
@@ -446,33 +395,33 @@ struct ProfileTabView: View {
                 .buttonStyle(.plain)
             }
 
-            // Mint a custom NFT nickname (premium).
-            if subscription.isSubscribed {
-                Divider().background(Theme.glassStroke)
-                Button { showMint = true } label: {
-                    HStack {
-                        Label("Создать NFT-ник (\(market.mintedNicknames.count)/\(MarketService.maxMintsPremium))",
-                              systemImage: "sparkles")
-                            .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.accentDeep)
-                        Spacer()
-                        Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
+            // Mint a custom NFT nickname — a premium perk. The network fee + rent
+            // are sponsored by the app (relay), so the subscriber spends no crypto.
+            // Capped at maxMints per account (also enforced by the relay).
+            Divider().background(Theme.glassStroke)
+            let mintLimitReached = market.mintedNicknames.count >= MarketService.maxMints
+            Button {
+                if !subscription.isSubscribed { showPaywall = true }
+                else if !mintLimitReached { showMint = true }
+            } label: {
+                HStack {
+                    Label("Создать NFT-ник (\(market.mintedNicknames.count)/\(MarketService.maxMints))",
+                          systemImage: "sparkles")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(mintLimitReached ? Theme.slate400 : Theme.accentDeep)
+                    Spacer()
+                    if mintLimitReached {
+                        Text("Лимит").font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Theme.slate400)
+                    } else if !subscription.isSubscribed {
+                        Text("Premium").font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Theme.accent)
                     }
+                    Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
                 }
-                .buttonStyle(.plain)
-            } else {
-                Divider().background(Theme.glassStroke)
-                Button { showPaywall = true } label: {
-                    HStack {
-                        Label("Создать свой NFT-ник", systemImage: "sparkles")
-                            .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.slate500)
-                        Spacer()
-                        Text("PrivaMesh+").font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(.white).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(Theme.accentGradient).clipShape(Capsule())
-                    }
-                }
-                .buttonStyle(.plain)
             }
+            .buttonStyle(.plain)
+            .disabled(subscription.isSubscribed && mintLimitReached)
         }
         .padding(16)
         .background(Theme.glass)
@@ -543,7 +492,7 @@ struct ProfileTabView: View {
         Button {
             showResetAlert = true
         } label: {
-            settingsRow(icon: "trash.fill", title: "Сбросить кошелёк", color: Theme.negative)
+            settingsRow(icon: "trash.fill", title: "Сбросить аккаунт", color: Theme.negative)
         }
         .background(Theme.glass)
         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
@@ -555,18 +504,18 @@ struct ProfileTabView: View {
 
     private var privacyCard: some View {
         cardChrome {
-            NavigationLink { GasWalletView() } label: {
-                settingsRow(icon: "fuelpump.fill", title: "Газ-кошелёк для комиссий", color: Theme.accentDeep)
-            }
-            cardDivider
+            // Optional decoy traffic. Each decoy is a real sponsored message and is
+            // billed to the user's message balance — the subtitle makes the cost
+            // explicit so enabling it is an informed choice.
             toggleRow(icon: "theatermasks.fill", title: "Маскирующий трафик",
-                      subtitle: "Скрывает, когда ты пишешь", isOn: $coverEnabled)
+                      subtitle: String(localized: "Скрывает, КОГДА ты пишешь. Тратит ~\(CoverTrafficService.approxPerHour) сообщений в час из твоего баланса."),
+                      isOn: $coverEnabled)
+            cardDivider
             if SeedLock.isAvailable {
-                cardDivider
                 toggleRow(icon: "key.viewfinder", title: "Защита seed по Face ID",
                           subtitle: "Чтение seed требует Face ID / пароль", isOn: $seedLockEnabled)
+                cardDivider
             }
-            cardDivider
             HStack {
                 Image(systemName: "lock.shield.fill").font(.system(size: 16))
                     .foregroundStyle(Theme.accentDeep).frame(width: 28)
@@ -626,7 +575,7 @@ struct ProfileTabView: View {
                         .foregroundStyle(Theme.accentDeep).frame(width: 28)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Сделать профиль доступным для поиска").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                        Text(publishStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Опубликовать ник в сети, чтобы тебя находили по поиску"))
+                        Text(publishStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Опубликовать ник в сети, чтобы тебя находили по поиску. Стоит 1 сообщение."))
                             .font(.system(size: 11)).foregroundStyle(Theme.slate500).lineLimit(3)
                     }
                     Spacer()
@@ -644,21 +593,16 @@ struct ProfileTabView: View {
         guard let address = publicKey else { return }
         // Already published this nick+avatar → no tx (each publish burns a fee).
         if onChainDiscovery.alreadyPublished(nickname: nicknameManager.nickname,
-                                             address: address, avatarSeed: avatars.activeDesign?.id) {
-            publishStatus = String(localized: "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит комиссию.")
+                                             address: address, avatarSeed: nil) {
+            publishStatus = String(localized: "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит 1 сообщение.")
             return
         }
+        // Publishing is a sponsored on-chain memo — it costs one message.
+        guard quota.canSend else { showPaywall = true; return }
         publishing = true; defer { publishing = false }
         publishStatus = String(localized: "Публикую…")
         guard let keypair = try? await wallet.currentKeyPair() else {
-            publishStatus = String(localized: "Кошелёк недоступен"); return
-        }
-        // Need a fee + keep the wallet rent-exempt (~0.00089 SOL) after.
-        if let lamports = try? await rpc.client.getBalance(account: address, commitment: "confirmed"),
-           lamports < 1_000_000 {
-            let have = Double(lamports) / 1_000_000_000
-            publishStatus = String(localized: "Недостаточно SOL для публикации (на балансе \(String(format: "%.4f", have))). Пополни кошелёк.")
-            return
+            publishStatus = String(localized: "Профиль недоступен"); return
         }
         guard let bundle = try? messagingIdentity.prekeyBundle() else {
             publishStatus = String(localized: "Нет ключей профиля"); return
@@ -667,10 +611,11 @@ struct ProfileTabView: View {
         let err = await onChainDiscovery.publish(
             nickname: nicknameManager.nickname, address: address,
             signedBundleBase64: signed.base64Encoded,
-            avatarSeed: avatars.activeDesign?.id, keypair: keypair, rpc: rpc)
+            avatarSeed: nil, keypair: keypair, rpc: rpc)
         if let err {
             publishStatus = String(localized: "Ошибка: \(err)")
         } else {
+            quota.consume()   // publishing costs one message
             publishStatus = String(localized: "Опубликовано ✓ Ник «\(nicknameManager.nickname)» теперь ищется")
         }
     }
@@ -685,7 +630,7 @@ struct ProfileTabView: View {
                         .foregroundStyle(Theme.accentDeep).frame(width: 28)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Защитить коллекцию on-chain").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                        Text(secureStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Минт NFT-ников/аватаров в блокчейн (портируемость по seed)"))
+                        Text(secureStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Минт NFT-ников в блокчейн (портируемость по seed)"))
                             .font(.system(size: 11)).foregroundStyle(Theme.slate500).lineLimit(2)
                     }
                     Spacer()
@@ -709,8 +654,7 @@ struct ProfileTabView: View {
         // items before the scan sees them. Persisted per account.
         let securedKey = "privamesh.securedOnChain.\(address)"
         var secured = Set(UserDefaults.standard.stringArray(forKey: securedKey) ?? [])
-        var todo = avatars.ownedDesigns.map(\.id)
-        todo += market.ownedNicknames.map { "nick:\($0)" }
+        let todo = market.ownedNicknames.map { "nick:\($0)" }
         let missing = todo.filter { !onChain.contains($0) && !secured.contains($0) }
         guard !missing.isEmpty else {
             secureStatus = String(localized: "✓ Коллекция уже защищена on-chain. Повторно нажимать не нужно — каждый минт стоит комиссию.")
@@ -731,7 +675,7 @@ struct ProfileTabView: View {
             if affordable == 0 {
                 let have = Double(lamports) / 1_000_000_000
                 let need = perMint + Double(walletRentReserve) / 1_000_000_000
-                secureStatus = String(localized: "Недостаточно SOL: нужно ≈ \(String(format: "%.4f", need)) на 1 предмет (с резервом на ренту кошелька), на балансе \(String(format: "%.4f", have)). Пополни кошелёк.")
+                secureStatus = String(localized: "Недостаточно SOL: нужно ≈ \(String(format: "%.4f", need)) на 1 предмет (с резервом на ренту аккаунта), на балансе \(String(format: "%.4f", have)). Пополни баланс.")
                 return
             }
         }
@@ -757,7 +701,7 @@ struct ProfileTabView: View {
             }
         }
         if firstErr == nil && affordable < missing.count {
-            secureStatus = String(localized: "Заминчено \(ok)/\(missing.count). На остальные не хватает SOL — пополни кошелёк.")
+            secureStatus = String(localized: "Заминчено \(ok)/\(missing.count). На остальные не хватает SOL — пополни баланс.")
         } else {
             secureStatus = firstErr == nil
                 ? String(localized: "Заминчено on-chain: \(ok)")
@@ -949,140 +893,6 @@ private struct NicknameEditorSheet: View {
     }
 }
 
-// MARK: - PrivaMesh+ Paywall sheet
-
-private struct PrivaMeshPlusPaywall: View {
-    let subscription: SubscriptionManager
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        ZStack {
-            PastelBackground()
-            VStack(spacing: 0) {
-                Spacer()
-
-                VStack(spacing: 20) {
-                    ZStack {
-                        Circle()
-                            .fill(Theme.accentGradient)
-                            .frame(width: 80, height: 80)
-                            .blur(radius: 20)
-                            .opacity(0.4)
-                        PrivaLogo(size: 64)
-                    }
-
-                    VStack(spacing: 6) {
-                        HStack(spacing: 6) {
-                            Text("PrivaMesh")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundStyle(Theme.slate800)
-                            Text("+")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundStyle(Theme.accentDeep)
-                        }
-                        Text("Ежемесячно · авто-продление")
-                            .font(.system(size: 15))
-                            .foregroundStyle(Theme.slate500)
-                    }
-                }
-
-                VStack(spacing: 12) {
-                    featureRow(icon: "sparkles", color: Theme.accent,
-                               text: "Минт своих NFT-ников (до 3) и продажа")
-                    featureRow(icon: "infinity", color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                               text: "Безлимит лотов на продаже (без премиума — до 3)")
-                    featureRow(icon: "checkmark.seal.fill", color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                               text: "Галочка верификации у профиля")
-                    featureRow(icon: "person.2.fill", color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                               text: "До 3 аккаунтов на устройстве")
-                }
-                .padding(20)
-                .background(Theme.glass)
-                .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
-                .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge)
-                    .stroke(Theme.glassStroke, lineWidth: 1))
-                .padding(.horizontal, 24)
-                .padding(.top, 32)
-
-                Spacer()
-
-                VStack(spacing: 12) {
-                    if let product = subscription.product {
-                        Button {
-                            Task { await subscription.purchase() }
-                        } label: {
-                            HStack {
-                                if subscription.isLoading { ProgressView().tint(.white) }
-                                Text("Подписаться · \(product.displayPrice)/мес")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Theme.accentGradient)
-                            .clipShape(Capsule())
-                            .shadow(color: Theme.accent.opacity(0.4), radius: 10, x: 0, y: 5)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(subscription.isLoading)
-                    } else {
-                        Button {
-                            Task { await subscription.loadProduct(); await subscription.purchase() }
-                        } label: {
-                            HStack {
-                                if subscription.isLoading { ProgressView().tint(.white) }
-                                Text(LocalizedStringKey(subscription.isLoading ? "Загрузка…" : "Подписаться · $2.99/мес"))
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Theme.accentGradient)
-                            .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(subscription.isLoading)
-                    }
-
-                    Button {
-                        Task { await subscription.restorePurchases() }
-                    } label: {
-                        Text("Восстановить покупки")
-                            .font(.system(size: 14))
-                            .foregroundStyle(Theme.slate400)
-                    }
-                    .buttonStyle(.plain)
-
-                    Button { dismiss() } label: {
-                        Text("Не сейчас")
-                            .font(.system(size: 14))
-                            .foregroundStyle(Theme.slate400)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 48)
-            }
-        }
-        .task { if subscription.product == nil { await subscription.loadProduct() } }
-        .onChange(of: subscription.isSubscribed) { _, subscribed in
-            if subscribed { dismiss() }
-        }
-    }
-
-    private func featureRow(icon: String, color: Color, text: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 18))
-                .foregroundStyle(color)
-                .frame(width: 28)
-            Text(LocalizedStringKey(text))
-                .font(.system(size: 14))
-                .foregroundStyle(Theme.slate700)
-            Spacer()
-        }
-    }
-}
 
 // MARK: - NFT nickname picker
 
