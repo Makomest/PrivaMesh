@@ -236,119 +236,6 @@ struct HomeTabView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Balance card
-
-    private var balanceCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Баланс SOL")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Theme.slate500)
-                Spacer()
-                if let change = price.change24h {
-                    HStack(spacing: 3) {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .font(.system(size: 10))
-                        Text(String(format: "%+.1f%% (24h)", change))
-                            .font(.system(size: 11))
-                    }
-                    .foregroundStyle(change >= 0 ? Theme.positive : Theme.negative)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background((change >= 0 ? Theme.positive : Theme.negative).opacity(0.12))
-                    .clipShape(Capsule())
-                }
-                Button {
-                    withAnimation { balanceVisible.toggle() }
-                } label: {
-                    Image(systemName: balanceVisible ? "eye.slash" : "eye")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Theme.slate400)
-                }
-                .buttonStyle(.plain)
-                .padding(.leading, 6)
-            }
-
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                if balanceVisible {
-                    Text(balanceText)
-                        .font(.system(size: 32, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Theme.slate800)
-                        .contentTransition(.numericText())
-                    Text("SOL")
-                        .font(.system(size: 15))
-                        .foregroundStyle(Theme.slate500)
-                    if let usd = usdText {
-                        Text(usd)
-                            .font(.system(size: 13))
-                            .foregroundStyle(Theme.slate400)
-                    }
-                } else {
-                    Text("••••••")
-                        .font(.system(size: 32, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Theme.slate400)
-                }
-                Spacer()
-                if case .loading = balance.state {
-                    ProgressView().tint(Theme.accent)
-                }
-            }
-
-            if let priceStr = solPriceText {
-                Text(priceStr)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Theme.slate400)
-            }
-
-            if case let .error(msg) = balance.state {
-                Text(LocalizedStringKey(msg)).font(.caption2).foregroundStyle(Theme.negative).lineLimit(1)
-            }
-        }
-        .padding(16)
-        .background(Theme.glass)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge).stroke(Theme.glassStroke, lineWidth: 1))
-    }
-
-    // MARK: - Actions
-
-    private var actionButtons: some View {
-        HStack(spacing: 12) {
-            NavigationLink { SendSOLView() } label: {
-                actionBtn(icon: "arrow.up.right", label: "Отправить")
-            }
-            .buttonStyle(.plain)
-
-            Button {
-                #if os(iOS)
-                if let pk = publicKey {
-                    UIPasteboard.general.string = pk
-                    toast.show("Адрес скопирован")
-                }
-                #endif
-            } label: {
-                actionBtn(icon: "arrow.down.left", label: "Получить")
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
-    private func actionBtn(icon: String, label: String) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.system(size: 20))
-                .foregroundStyle(Theme.accentDeep)
-            Text(LocalizedStringKey(label))
-                .font(.system(size: 11))
-                .foregroundStyle(Theme.slate600)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
-        .background(Theme.glass)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.radiusMedium))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusMedium).stroke(Theme.glassStroke, lineWidth: 1))
-    }
-
     // MARK: - Activity section
 
     private var activitySection: some View {
@@ -481,34 +368,6 @@ struct HomeTabView: View {
         .contentShape(Rectangle())
     }
 
-    // MARK: - Recent transactions
-
-    @ViewBuilder
-    private var recentTransactions: some View {
-        // Home shows only real money in/out — message txs (encrypted memos) live
-        // in the Wallet tab's full history.
-        let all = txHistory.transactions.filter { !$0.isMessage }
-        if all.isEmpty {
-            emptyRow(icon: "arrow.left.arrow.right.circle", text: "Нет транзакций")
-        } else {
-            let pageCount = max(1, Int(ceil(Double(all.count) / Double(Self.txPageSize))))
-            let start = min(txPage, pageCount - 1) * Self.txPageSize
-            let paged = Array(all[start..<min(start + Self.txPageSize, all.count)])
-            VStack(spacing: 0) {
-                ForEach(Array(paged.enumerated()), id: \.element.id) { idx, tx in
-                    TransactionRowView(tx: tx)
-                    if idx < paged.count - 1 {
-                        Divider().background(Theme.slate300.opacity(0.4)).padding(.leading, 52)
-                    }
-                }
-            }
-            .background(Theme.glass)
-            .clipShape(RoundedRectangle(cornerRadius: Theme.radiusMedium))
-            .overlay(RoundedRectangle(cornerRadius: Theme.radiusMedium).stroke(Theme.glassStroke, lineWidth: 1))
-            PageBar(page: $txPage, pageCount: pageCount)
-        }
-    }
-
     // MARK: - Empty row
 
     private func emptyRow(icon: String, text: String, tappable: Bool = false) -> some View {
@@ -545,34 +404,6 @@ struct HomeTabView: View {
         _ = await (balanceRefresh, priceRefresh, feeRefresh, txRefresh)
     }
 
-    // MARK: - Network gas tracker
-
-    private var gasTracker: some View {
-        let feeSOL = NSDecimalNumber(decimal: rpc.liveFeeSOL).doubleValue
-        let usd = price.usdValue(sol: rpc.liveFeeSOL)
-        let busy = rpc.networkPriorityMicroLamports
-        let level: (String, Color) = busy > 50_000 ? ("высокая", Theme.negative)
-            : busy > 5_000 ? ("средняя", Color(red: 245/255, green: 158/255, blue: 11/255))
-            : ("низкая", Theme.positive)
-        return HStack(spacing: 12) {
-            Image(systemName: "fuelpump.fill").font(.system(size: 15))
-                .foregroundStyle(level.1).frame(width: 24)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Комиссия сети Solana").font(.system(size: 13, weight: .medium)).foregroundStyle(Theme.slate700)
-                Text("\(String(format: "%.6f", feeSOL)) SOL\(usd != nil ? " · ≈ $\(String(format: "%.4f", usd!))" : "") за транзакцию")
-                    .font(.system(size: 11)).foregroundStyle(Theme.slate400)
-            }
-            Spacer()
-            Text(LocalizedStringKey(level.0)).font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(level.1)
-                .padding(.horizontal, 8).padding(.vertical, 3)
-                .background(level.1.opacity(0.12), in: Capsule())
-        }
-        .padding(14)
-        .background(Theme.glass)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.radiusMedium))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusMedium).stroke(Theme.glassStroke, lineWidth: 1))
-    }
 }
 
 #if os(iOS)

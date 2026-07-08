@@ -78,10 +78,11 @@ struct MintNicknameSheet: View {
                             .foregroundStyle(available ? Theme.positive : Theme.negative)
                     }
 
-                    // Real network fee for the mint tx.
+                    // Sponsored: the app pays the network fee, so the user never
+                    // spends crypto. Minting is included in PrivaMesh+ (up to 3).
                     HStack(spacing: 6) {
-                        Image(systemName: "fuelpump.fill").font(.system(size: 11)).foregroundStyle(Theme.slate400)
-                        Text("Комиссия сети: \(feeText)")
+                        Image(systemName: "gift.fill").font(.system(size: 11)).foregroundStyle(Theme.accent)
+                        Text("Бесплатно · входит в PrivaMesh+")
                             .font(.system(size: 13)).foregroundStyle(Theme.slate600)
                     }
 

@@ -1999,6 +1999,17 @@
         }
       }
     },
+    "Галочка верификации контактам": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verification badge to contacts"
+          }
+        }
+      }
+    },
     "Галочка верификации на аккаунте": {
       "localizations": {
         "en": {
@@ -5361,6 +5372,17 @@
         }
       }
     },
+    "Показывать контактам, что у тебя PrivaMesh+.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show contacts that you have PrivaMesh+."
+          }
+        }
+      }
+    },
     "Покупаем…": {
       "extractionState": "stale",
       "localizations": {
@@ -7257,22 +7279,42 @@
         }
       }
     },
-    "Галочка верификации контактам": {
+    "1 сообщение": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verification badge to contacts"
+            "value": "1 message"
           }
         }
       }
     },
-    "Показывать контактам, что у тебя PrivaMesh+.": {
+    "бесплатно": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Show contacts that you have PrivaMesh+."
+            "value": "free"
+          }
+        }
+      }
+    },
+    "Комиссия сети оплачена приложением": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network fee paid by the app"
+          }
+        }
+      }
+    },
+    "Бесплатно · входит в PrivaMesh+": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free · included in PrivaMesh+"
           }
         }
       }

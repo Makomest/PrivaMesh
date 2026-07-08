@@ -99,26 +99,15 @@ struct MessageInfoSheet: View {
 
     // MARK: - Values
 
+    // Cost is expressed in messages, not SOL: the user pays via Apple IAP, and
+    // the network fee is sponsored by the app. Outgoing = 1 message; incoming
+    // cost you nothing.
     private var costValue: String {
-        guard let lamports = msg.feeLamports else {
-            return msg.isOutgoing ? "—" : String(localized: "оплачено отправителем")
-        }
-        let sol = Decimal(lamports) / Decimal(1_000_000_000)
-        let f = NumberFormatter()
-        f.minimumFractionDigits = 0
-        f.maximumFractionDigits = 9
-        let solStr = f.string(from: NSDecimalNumber(decimal: sol)) ?? "\(sol)"
-        return "\(solStr) SOL"
+        msg.isOutgoing ? String(localized: "1 сообщение") : String(localized: "бесплатно")
     }
 
     private var costSubtitle: String? {
-        guard let lamports = msg.feeLamports else { return nil }
-        let sol = Decimal(lamports) / Decimal(1_000_000_000)
-        if let usd = solPrice.usdValue(sol: sol) {
-            let usdStr = String(format: "%.4f", usd)
-            return String(localized: "≈ $\(usdStr) · \(lamports) лампортов")
-        }
-        return String(localized: "\(lamports) лампортов")
+        msg.isOutgoing ? String(localized: "Комиссия сети оплачена приложением") : nil
     }
 
     private var deliveryValue: String {
