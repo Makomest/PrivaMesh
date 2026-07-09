@@ -12,6 +12,7 @@ import UIKit
 struct ImportWalletView: View {
     @Environment(AppRouter.self) private var router
     @Environment(WalletManager.self) private var wallet
+    @Environment(\.modelContext) private var context
 
     @State private var words: [String] = Array(repeating: "", count: 12)
     @FocusState private var focusedField: Int?
@@ -242,6 +243,11 @@ struct ImportWalletView: View {
             do {
                 try await wallet.importWallet(phrase: cleaned)
                 await MainActor.run {
+                    // App Review demo: restoring the demo seed pre-populates
+                    // sample contacts + chats so every feature is verifiable.
+                    if DemoContent.isDemoPhrase(cleaned), case let .ready(pk) = wallet.state {
+                        DemoContent.populate(ownerAddress: pk, context: context)
+                    }
                     isImporting = false
                     router.go(to: .passcodeSetup)
                 }
