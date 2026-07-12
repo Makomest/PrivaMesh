@@ -55,11 +55,23 @@ struct QuotaPaywallSheet: View {
                 .buttonStyle(.plain)
                 .padding(.top, 4)
 
-                Text("Комиссии сети оплачиваются за вас. Подписка продлевается автоматически, отмена в любой момент в настройках Apple ID.")
+                Text("PrivaMesh+ — авто-возобновляемая подписка (1 месяц). Оплата списывается с Apple ID, продлевается автоматически; отмена в любой момент в настройках Apple ID минимум за 24 часа до конца периода. Комиссии сети оплачиваются за вас.")
                     .font(.system(size: 11))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Theme.slate400)
                     .padding(.horizontal, 8)
+
+                // Required for auto-renewable subscriptions (Guideline 3.1.2):
+                // functional links to Privacy Policy and Terms of Use (EULA).
+                HStack(spacing: 6) {
+                    Link("Политика конфиденциальности", destination: URL(string: "https://makomest.github.io/PrivaMesh/privacy-policy.html")!)
+                    Text("·").foregroundStyle(Theme.slate400)
+                    Link("Условия использования (EULA)", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                }
+                .font(.system(size: 11, weight: .medium))
+                .tint(Theme.accentDeep)
+                .multilineTextAlignment(.center)
+                .padding(.top, 2)
             }
             .padding(24)
         }
