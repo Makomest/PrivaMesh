@@ -2,8 +2,8 @@
 //  MessageInfoSheet.swift
 //  privamesh
 //
-//  Long-press a message to see what it cost, how long it took to land on
-//  Solana, and a link to open the transaction in a block explorer.
+//  Long-press a message to see what it cost, how long it took to deliver, and
+//  its delivery status.
 //
 
 import SwiftUI
@@ -13,15 +13,10 @@ struct MessageInfoSheet: View {
     let solPrice: SOLPriceService
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
 
-    /// A real Solana signature only exists once the tx confirmed.
+    /// A delivery signature only exists once the message confirmed.
     private var hasSignature: Bool {
         msg.status == "sent" || msg.status == "received"
-    }
-
-    private var explorerURL: URL? {
-        URL(string: "https://solscan.io/tx/\(msg.id)")
     }
 
     var body: some View {

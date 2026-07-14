@@ -13,7 +13,7 @@ struct PrivacyPolicyView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     policySection(
                         title: "Overview",
-                        body: "PrivaMesh is a self-custodial, decentralized messaging application. We do not operate servers, collect personal data, or have access to your messages or wallet."
+                        body: "PrivaMesh is a private, end-to-end encrypted messenger. We do not operate account servers, collect personal data, or have access to your messages."
                     )
                     policySection(
                         title: "Data We Do Not Collect",
@@ -24,16 +24,12 @@ struct PrivacyPolicyView: View {
                         body: "Your recovery phrase, passcode hash, and cryptographic identity keys are stored exclusively in the iOS Keychain on your device. Messages and contacts are stored in the local SwiftData database. Nothing leaves your device except encrypted messages sent over our relay."
                     )
                     policySection(
-                        title: "Solana Blockchain",
-                        body: "Messages are transmitted as encrypted memo fields on Solana transactions. The ciphertext is permanently stored on the Solana blockchain and visible to anyone — however, only the intended recipient can decrypt the content. Transactions reference only Solana account addresses, never personal identifiers."
-                    )
-                    policySection(
-                        title: "Arweave / Irys (Photo Sharing)",
-                        body: "When you send a photo, it is encrypted on-device with AES-256-GCM before upload. The encrypted bytes are stored permanently on Arweave. Only the recipient receives the decryption key (via the encrypted Solana memo). No cleartext photo ever leaves your device."
+                        title: "Message Delivery",
+                        body: "Messages are delivered as encrypted ciphertext over a public, decentralized transport. The ciphertext is visible on the transport but is unreadable without the recipient's keys, and it references only single-use delivery addresses, never personal identifiers. This delivered data is immutable and outside our control; we cannot delete it."
                     )
                     policySection(
                         title: "Encryption",
-                        body: "All messages use the Double Ratchet protocol (as used in Signal) with X3DH key agreement. Keys are derived per-session and rotated with every message. PrivaMesh has no ability to read your messages."
+                        body: "All messages use the Double Ratchet protocol — the same family used by leading secure messengers — with X3DH key agreement. Keys are derived per-session and rotated with every message. PrivaMesh has no ability to read your messages."
                     )
                     policySection(
                         title: "StoreKit (PrivaMesh+)",
@@ -45,7 +41,7 @@ struct PrivacyPolicyView: View {
                     )
                     policySection(
                         title: "Contact",
-                        body: "Questions: privacy@privamesh.xyz"
+                        body: "Questions: privamesh@proton.me"
                     )
                     Text("Last updated: June 2026")
                         .font(.system(size: 11))

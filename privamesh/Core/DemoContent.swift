@@ -68,7 +68,7 @@ enum DemoContent {
             messages: [
                 ("Hey! Have you tried PrivaMesh?", false, 240),
                 ("Yes — no phone number, no email. Just a key 🔐", true, 236),
-                ("And the fees are paid for us, no crypto needed.", false, 232),
+                ("And it's free to start — no sign-up at all.", false, 232),
                 ("Exactly. I just message, that's it.", true, 230),
             ])
 
