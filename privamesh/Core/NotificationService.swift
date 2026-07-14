@@ -57,19 +57,19 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
     }
 
     func notifyIncomingTransaction(amountSOL: Double?) {
-        let body = amountSOL.map { String(localized: "Получено +\(String(format: "%.4f", $0)) SOL") }
-            ?? String(localized: "Получен перевод")
-        post(title: String(localized: "Входящая транзакция"), body: body)
+        _ = amountSOL
+        post(title: String(localized: "Входящая транзакция"),
+             body: String(localized: "Получен перевод"))
     }
 
     func notifyNicknameSold(nickname: String, priceSOL: Double) {
         post(title: String(localized: "Твой ник купили"),
-             body: String(localized: "«\(nickname)» продан за \(formatSOL(priceSOL))"))
+             body: String(localized: "«\(nickname)» продан"))
     }
 
     func notifyAvatarSold(name: String, priceSOL: Double) {
-        post(title: String(localized: "Твой NFT-аватар купили"),
-             body: String(localized: "«\(name)» продан за \(formatSOL(priceSOL))"))
+        post(title: String(localized: "Твой аватар купили"),
+             body: String(localized: "«\(name)» продан"))
     }
 
     // MARK: - Internals

@@ -34,23 +34,14 @@ struct ChatDetailView: View {
     @Environment(MessageQuotaService.self)   private var quota
     @Environment(SubscriptionManager.self)   private var subscription
 
-    @State private var sendSOLService = SendSOLService()
     @State private var showPhotoPicker = false
-    @State private var showSOLSheet    = false
     @State private var showQuotaPaywall = false
-    // One-time privacy consent: an in-chat SOL transfer is paid by the MAIN
-    // wallet, revealing its address to the recipient + on-chain observers.
-    @AppStorage("privamesh.solRevealConsent") private var solRevealConsent = false
     // Whether to reveal the PrivaMesh+ verification badge to contacts (metadata).
     @AppStorage("privamesh.shareVerifiedBadge") private var shareVerifiedBadge = true
-    @State private var showSolPrivacyAlert = false
-    @State private var pendingSolAmount: Decimal?
-    @State private var showGiftSheet   = false
     @State private var showContactProfile = false
     @State private var inputText          = ""
     @State private var isSending          = false
     @State private var showInfo           = false
-    @State private var showLowBalanceAlert = false
     @State private var infoMessage: MessageInfo?
     /// Cached sorted history. Sorting `contact.messages` is O(N log N); doing it
     /// inside `body` re-sorts the whole history on every keystroke (the input
@@ -358,11 +349,7 @@ struct ChatDetailView: View {
             if msg.isOutgoing { Spacer(minLength: 50) }
 
             Group {
-                if msg.kind == "sol" {
-                    solBubble(msg)
-                } else if msg.kind == "gift" {
-                    giftBubble(msg)
-                } else if let key = msg.photoKey {
+                if let key = msg.photoKey {
                     PhotoBubble(txId: msg.body, keyBase64: key, isOutgoing: msg.isOutgoing)
                 } else {
                     bubbleContent(msg)
@@ -379,79 +366,6 @@ struct ChatDetailView: View {
         }
     }
 
-    // MARK: - SOL / gift bubbles
-
-    private func solBubble(_ msg: ChatMessage) -> some View {
-        let amount = msg.solAmount ?? 0
-        return VStack(spacing: 6) {
-            Image(systemName: "dollarsign.circle.fill")
-                .font(.system(size: 28)).foregroundStyle(.white)
-            Text("\(Self.formatSOL(amount)) SOL")
-                .font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(.white)
-            if let usd = solPrice.usdValue(sol: Decimal(amount)) {
-                Text(Self.formatUSD(usd))
-                    .font(.system(size: 12, weight: .medium)).foregroundStyle(.white.opacity(0.9))
-            }
-            Text(LocalizedStringKey(msg.isOutgoing ? "Отправлено" : "Получено"))
-                .font(.system(size: 11)).foregroundStyle(.white.opacity(0.8))
-        }
-        .padding(.horizontal, 22).padding(.vertical, 14)
-        .background(LinearGradient(colors: [Color(red: 0.13, green: 0.7, blue: 0.5), Theme.accentDeep],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-    }
-
-    /// Plain decimal (no scientific notation), trimming trailing zeros.
-    static func formatSOL(_ value: Double) -> String {
-        let f = NumberFormatter()
-        f.numberStyle = .decimal
-        f.minimumFractionDigits = 0
-        f.maximumFractionDigits = 9
-        f.usesGroupingSeparator = false
-        return f.string(from: NSNumber(value: value)) ?? String(format: "%.9f", value)
-    }
-
-    static func formatUSD(_ usd: Double) -> String {
-        if usd > 0 && usd < 0.01 { return "< $0.01" }
-        return String(format: "≈ $%.2f", usd)
-    }
-
-    private func giftBubble(_ msg: ChatMessage) -> some View {
-        VStack(spacing: 8) {
-            Text(msg.isOutgoing ? LocalizedStringKey("🎁 Подарок") : LocalizedStringKey("🎁 Вам подарок"))
-                .font(.system(size: 11, weight: .semibold)).foregroundStyle(.white.opacity(0.9))
-            Group {
-                if msg.giftKind == "avatar", let ref = msg.giftRef {
-                    NFTAvatarView(seed: ref, size: 72)
-                } else {
-                    ZStack {
-                        Circle().fill(.white.opacity(0.25))
-                        Text("@").font(.system(size: 36, weight: .bold, design: .rounded)).foregroundStyle(.white)
-                    }.frame(width: 72, height: 72)
-                }
-            }
-            Text(msg.giftName ?? "NFT").font(.system(size: 13, weight: .bold)).foregroundStyle(.white)
-            if !msg.isOutgoing {
-                if msg.giftClaimed {
-                    Text("Забрано ✓").font(.system(size: 11)).foregroundStyle(.white.opacity(0.85))
-                } else {
-                    Button { claimGift(msg) } label: {
-                        Text("Забрать").font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Theme.accentDeep)
-                            .padding(.horizontal, 18).padding(.vertical, 7)
-                            .background(.white).clipShape(Capsule())
-                    }
-                    .buttonStyle(.plain)
-                }
-            } else {
-                Text("Отправлено").font(.system(size: 11)).foregroundStyle(.white.opacity(0.8))
-            }
-        }
-        .padding(.horizontal, 18).padding(.vertical, 14)
-        .background(LinearGradient(colors: [Color(red: 0.65, green: 0.35, blue: 0.95), Theme.accent],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-    }
 
     private func bubbleContent(_ msg: ChatMessage) -> some View {
         VStack(alignment: msg.isOutgoing ? .trailing : .leading, spacing: 2) {
@@ -577,15 +491,12 @@ struct ChatDetailView: View {
 
     // MARK: - Actions
 
-    // Minimum balance = estimated fee × 3 safety buffer (updated from RPC)
-    private var minBalanceSOL: Decimal { rpc.estimatedFeeSOL * 3 }
-
     private func sendMessage() async {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
 
-        // Metered messaging: network fees are sponsored by the app, so access is
-        // gated by the Apple IAP allowance, not the user's SOL balance.
+        // Metered messaging: delivery is sponsored by the app, so access is gated
+        // by the Apple IAP allowance.
         guard quota.canSend else { showQuotaPaywall = true; return }
 
         guard let keypair = try? await wallet.currentKeyPair() else { return }
@@ -609,15 +520,6 @@ struct ChatDetailView: View {
         isSending = false
     }
 
-    // MARK: - Gifts (display / claim only — sending value was removed)
-
-    private func claimGift(_ msg: ChatMessage) {
-        guard !msg.giftClaimed, let ref = msg.giftRef, let kind = msg.giftKind else { return }
-        market.claimGift(kind: kind, ref: ref)
-        msg.giftClaimed = true
-        try? context.save()
-        toast.show(String(localized: "Подарок забран: \(msg.giftName ?? "")"))
-    }
 
     #if os(iOS)
     private func sendPhoto(_ item: PhotosPickerItem) async {
@@ -642,62 +544,6 @@ struct ChatDetailView: View {
 // Adaptive: dark text in light mode, light text in dark mode (was a hardcoded
 // dark slate → unreadable incoming-bubble text on the dark theme).
 private let slate700 = Theme.slate700
-
-// MARK: - Gift picker sheet (NFT nicknames only)
-
-private struct GiftPickerSheet: View {
-    let onPick: (MarketItem) -> Void
-    @Environment(MarketService.self) private var market
-    @Environment(\.dismiss) private var dismiss
-    private let cols = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                PastelBackground()
-                ScrollView {
-                    // Only nicknames — NFT avatars were removed before release.
-                    let items = market.myCollection.filter { $0.kind == .nickname }
-                    if items.isEmpty {
-                        Text("Нет NFT-ников для подарка.\nЗаминть свой NFT-ник в профиле.")
-                            .font(.system(size: 14)).foregroundStyle(Theme.slate500)
-                            .multilineTextAlignment(.center).padding(.top, 60)
-                    } else {
-                        LazyVGrid(columns: cols, spacing: 12) {
-                            ForEach(items) { item in
-                                Button { onPick(item); dismiss() } label: {
-                                    VStack(spacing: 8) {
-                                        ZStack {
-                                            Circle().fill(LinearGradient(colors: [Theme.accent, Theme.accentDeep],
-                                                startPoint: .topLeading, endPoint: .bottomTrailing))
-                                            Text("@").font(.system(size: 40, weight: .bold, design: .rounded))
-                                                .foregroundStyle(.white)
-                                        }.frame(width: 80, height: 80)
-                                        Text(item.name).font(.system(size: 13, weight: .semibold))
-                                            .foregroundStyle(Theme.slate700).lineLimit(1)
-                                    }
-                                    .padding(12).frame(maxWidth: .infinity)
-                                    .background(Theme.glass)
-                                    .clipShape(RoundedRectangle(cornerRadius: Theme.radiusMedium))
-                                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusMedium)
-                                        .stroke(Theme.glassStroke, lineWidth: 1))
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                        .padding(16)
-                    }
-                }
-            }
-            .navigationTitle("Подарить NFT-ник")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar { ToolbarItem(placement: .confirmationAction) {
-                Button("Закрыть") { dismiss() }.foregroundStyle(Theme.accentDeep) } }
-        }
-    }
-}
 
 #if os(iOS)
 import UIKit

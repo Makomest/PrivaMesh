@@ -249,7 +249,7 @@ struct ContactProfileView: View {
 
     private func nicknamesSection(_ profile: ProfileSnapshot) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("NFT-ники")
+            sectionTitle("Ники")
             LazyVGrid(columns: cols, spacing: 12) {
                 ForEach(profile.nicknames, id: \.self) { handle in
                     itemTile(art: AnyView(

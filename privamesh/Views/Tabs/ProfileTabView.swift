@@ -40,15 +40,12 @@ struct ProfileTabView: View {
     @State private var seedLockEnabled = false
     @State private var notifMuteAll = false
     @State private var notifPreview = true
-    @State private var securing = false
-    @State private var secureStatus: String?
 
     @State private var publishing = false
     @State private var publishStatus: String?
     @State private var searchEnabled = false
 
     @State private var showNickPicker = false
-    @State private var showMint = false
     @State private var showNickEditor = false
     @State private var showBioEditor = false
     @State private var showResetAlert = false
@@ -591,95 +588,6 @@ struct ProfileTabView: View {
             ? String(localized: "Тебя можно найти по нику ✓")
             : String(localized: "Не удалось включить, попробуй позже")
         if err != nil { searchEnabled = false }
-    }
-
-    private var secureOnChainCard: some View {
-        cardChrome {
-            Button {
-                Task { await secureOnChain() }
-            } label: {
-                HStack {
-                    Image(systemName: "checkmark.shield.fill").font(.system(size: 16))
-                        .foregroundStyle(Theme.accentDeep).frame(width: 28)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Защитить коллекцию on-chain").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                        Text(secureStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Резервный ключ восстановления"))
-                            .font(.system(size: 11)).foregroundStyle(Theme.slate500).lineLimit(2)
-                    }
-                    Spacer()
-                    if securing { ProgressView().scaleEffect(0.8) }
-                    else { Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.slate400) }
-                }
-            }
-            .buttonStyle(.plain)
-            .disabled(securing)
-            .padding(16)
-        }
-    }
-
-    private func secureOnChain() async {
-        guard let address = publicKey, let keypair = try? await wallet.currentKeyPair() else { return }
-        securing = true; defer { securing = false }
-        secureStatus = nil
-        let onChain = Set(await OnChainNFT.ownedDesignIds(owner: address, rpc: rpc))
-        // Locally-remembered mints: the chain takes a few seconds to confirm, so
-        // without this a quick second tap would RE-MINT (and re-pay) the same
-        // items before the scan sees them. Persisted per account.
-        let securedKey = "privamesh.securedOnChain.\(address)"
-        var secured = Set(UserDefaults.standard.stringArray(forKey: securedKey) ?? [])
-        let todo = market.ownedNicknames.map { "nick:\($0)" }
-        let missing = todo.filter { !onChain.contains($0) && !secured.contains($0) }
-        guard !missing.isEmpty else {
-            secureStatus = String(localized: "✓ Коллекция уже защищена on-chain. Повторно нажимать не нужно — каждый минт стоит комиссию.")
-            return
-        }
-
-        // Pre-flight balance check. Each mint drains lamportsPerMint (mint acct +
-        // token acct rent + fee). CRITICAL: the wallet itself must STAY rent-exempt
-        // (~0.00089 SOL) after spending, else the tx is rejected with "account (0)
-        // insufficient funds for rent collection". So keep a reserve and only mint
-        // as many items as the balance can actually afford.
-        let perMint = Double(OnChainNFT.lamportsPerMint) / 1_000_000_000
-        let walletRentReserve: UInt64 = 1_000_000   // keep wallet above rent-exempt
-        var affordable = missing.count
-        if let lamports = try? await rpc.client.getBalance(account: address, commitment: "confirmed") {
-            let spendable = lamports > walletRentReserve ? lamports - walletRentReserve : 0
-            affordable = min(missing.count, Int(spendable / OnChainNFT.lamportsPerMint))
-            if affordable == 0 {
-                let have = Double(lamports) / 1_000_000_000
-                let need = perMint + Double(walletRentReserve) / 1_000_000_000
-                secureStatus = String(localized: "Недостаточно SOL: нужно ≈ \(String(format: "%.4f", need)) на 1 предмет (с резервом на ренту аккаунта), на балансе \(String(format: "%.4f", have)). Пополни баланс.")
-                return
-            }
-        }
-
-        var ok = 0
-        var firstErr: String?
-        for id in missing.prefix(affordable) {
-            do {
-                _ = try await OnChainNFT.mint(designId: id, keypair: keypair, rpc: rpc)
-                ok += 1
-                secured.insert(id)   // remember locally so a re-tap won't re-mint
-                UserDefaults.standard.set(Array(secured), forKey: securedKey)
-            }
-            catch {
-                let d = error.localizedDescription
-                // Map the on-chain insufficient-funds/rent errors to readable text.
-                if firstErr == nil {
-                    firstErr = (d.contains("0x1") || d.lowercased().contains("negative") || d.lowercased().contains("rent"))
-                        ? String(localized: "недостаточно SOL (нужно ≈ \(String(format: "%.4f", perMint)) на предмет + резерв)")
-                        : d
-                }
-                break   // stop — likely out of funds, don't spam failed txs
-            }
-        }
-        if firstErr == nil && affordable < missing.count {
-            secureStatus = String(localized: "Заминчено \(ok)/\(missing.count). На остальные не хватает SOL — пополни баланс.")
-        } else {
-            secureStatus = firstErr == nil
-                ? String(localized: "Заминчено on-chain: \(ok)")
-                : String(localized: "Готово \(ok)/\(missing.count). Ошибка: \(firstErr ?? "")")
-        }
     }
 
     // MARK: - Appearance

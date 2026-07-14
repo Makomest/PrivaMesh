@@ -375,9 +375,9 @@ final class MarketService {
             "Zero", "Vortex", "Echo", "Nyx", "Apex", "Rune", "Flux",
             "Onyx", "Cipher", "Halo", "Pixel", "Ghost", "Raven", "Volt", "Hex",
             "Nova", "Ace", "Zen", "Riot", "Drift", "Saint", "Vibe", "Kilo",
-            // crypto
-            "Satoshi", "Vitalik", "Hodl", "Degen", "Whale", "Diamond", "Moon",
-            "Lambo", "Wagmi", "Alpha", "Anatoly", "Phantom", "Gwei", "Solana",
+            // bold
+            "Alpha", "Titan", "Falcon", "Comet", "Ember", "Frost", "Blaze",
+            "Orbit", "Prism", "Zephyr", "Quartz", "Cobalt", "Aurora", "Neon",
             // film / pop-culture
             "Morpheus", "Trinity", "Vendetta", "Joker", "Wick", "Maverick",
             "Vader", "Yoda", "Gandalf", "Loki", "Thanos", "Bond",
