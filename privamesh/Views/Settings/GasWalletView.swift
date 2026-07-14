@@ -59,7 +59,7 @@ struct GasWalletView: View {
                 toast.show("Газовый баланс удалён. Выведи остаток заранее.")
             }
         } message: {
-            Text("Seed удалится с устройства. Сначала выведи остаток SOL — иначе он потеряется.")
+            Text("Ключ удалится с устройства. Сначала выведи остаток SOL — иначе он потеряется.")
         }
     }
 
@@ -105,7 +105,7 @@ struct GasWalletView: View {
             .buttonStyle(.plain).disabled(busy)
 
             Button { showImport = true } label: {
-                Label("Импортировать по seed", systemImage: "square.and.arrow.down")
+                Label("Импортировать по ключу", systemImage: "square.and.arrow.down")
                     .font(.system(size: 15, weight: .medium)).foregroundStyle(Theme.accentDeep)
                     .frame(maxWidth: .infinity).padding(.vertical, 14)
                     .background(Theme.glass).clipShape(Capsule())
@@ -161,7 +161,7 @@ struct GasWalletView: View {
     private var manageCard: some View {
         VStack(spacing: 0) {
             Button { showSeed = true } label: {
-                row(icon: "key.fill", title: "Показать seed газового баланса", tint: Theme.accentDeep)
+                row(icon: "key.fill", title: "Показать ключ газового баланса", tint: Theme.accentDeep)
             }.buttonStyle(.plain)
             Divider().padding(.leading, 52).background(Theme.glassStroke)
             Button { showRemoveAlert = true } label: {
@@ -199,7 +199,7 @@ struct GasWalletView: View {
                     .padding(20).glassCard().padding(20)
                 }
             }
-            .navigationTitle("Seed газового баланса")
+            .navigationTitle("Ключ газового баланса")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Готово") { showSeed = false } } }
         }
     }
@@ -224,7 +224,7 @@ struct GasWalletView: View {
                                     importText = ""; showImport = false
                                     await loadBalance()
                                     toast.show("Газовый баланс импортирован")
-                                } catch { toast.show("Не удалось импортировать seed") }
+                                } catch { toast.show("Не удалось импортировать ключ") }
                             }
                         } label: {
                             Text("Импортировать").font(.system(size: 16, weight: .semibold))

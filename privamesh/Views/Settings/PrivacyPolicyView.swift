@@ -21,7 +21,7 @@ struct PrivacyPolicyView: View {
                     )
                     policySection(
                         title: "Data Stored on Your Device",
-                        body: "Your seed phrase, passcode hash, and cryptographic identity keys are stored exclusively in the iOS Keychain on your device. Messages and contacts are stored in the local SwiftData database. Nothing leaves your device except encrypted messages sent to the Solana blockchain."
+                        body: "Your recovery phrase, passcode hash, and cryptographic identity keys are stored exclusively in the iOS Keychain on your device. Messages and contacts are stored in the local SwiftData database. Nothing leaves your device except encrypted messages sent over our relay."
                     )
                     policySection(
                         title: "Solana Blockchain",

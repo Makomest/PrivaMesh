@@ -61,7 +61,7 @@ struct SettingsView: View {
                     resetWallet()
                 }
             } message: {
-                Text("Аккаунт и пароль удалятся с этого устройства. Восстановить можно только seed phrase. Без неё — потерян навсегда.")
+                Text("Аккаунт и пароль удалятся с этого устройства. Восстановить можно только по фразе восстановления. Без неё — потерян навсегда.")
             }
         }
     }
@@ -132,7 +132,7 @@ struct SettingsView: View {
             NavigationLink {
                 SeedPhraseRevealView()
             } label: {
-                Label("Показать seed phrase", systemImage: "key.fill")
+                Label("Показать фразу восстановления", systemImage: "key.fill")
             }
 
             NavigationLink {
@@ -172,7 +172,7 @@ struct SettingsView: View {
         } header: {
             Text("Опасная зона")
         } footer: {
-            Text("Перед сбросом убедись что записал seed phrase.")
+            Text("Перед сбросом убедись что записал фразу восстановления.")
         }
     }
 

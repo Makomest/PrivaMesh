@@ -3,7 +3,7 @@
 //  privamesh
 //
 //  Switch between independent accounts (each its own seed/balance/nick/chats),
-//  create a new one, or import an existing one by seed phrase.
+//  create a new one, or import an existing one by фразу восстановления.
 //
 
 import SwiftUI
@@ -42,7 +42,7 @@ struct AccountSwitcherView: View {
                                 row(icon: "plus.circle.fill", "Создать новый аккаунт")
                             }.disabled(busy)
                             Button { showImport = true } label: {
-                                row(icon: "square.and.arrow.down.fill", "Подключить по seed-фразе")
+                                row(icon: "square.and.arrow.down.fill", "Подключить по фразе восстановления")
                             }.disabled(busy)
                         } footer: {
                             Text("До \(AccountManager.maxAccounts) аккаунтов на устройстве. Каждый — отдельный баланс, ник и чаты.")
@@ -107,7 +107,7 @@ struct AccountSwitcherView: View {
     private func activate(_ account: WalletAccount) {
         guard account.id != accountManager.activePublicKey else { dismiss(); return }
         guard let seed = accountManager.seedPhrase(for: account.id) else {
-            errorMessage = "Seed-фраза аккаунта не найдена"; return
+            errorMessage = "Фраза восстановления не найдена"; return
         }
         wallet.activate(account: account, seedPhrase: seed)
         accountManager.setActive(account.id)
@@ -129,7 +129,7 @@ struct AccountSwitcherView: View {
         do {
             let account = try await accountManager.importAccount(phrase: phrase)
             activate(account)
-        } catch { errorMessage = "Не удалось подключить: проверь seed-фразу" }
+        } catch { errorMessage = "Не удалось подключить: проверь фразу восстановления" }
     }
 
     private func gateNewAccount() -> Bool {
@@ -163,7 +163,7 @@ private struct ImportAccountSheet: View {
                     Text("Подключить аккаунт")
                         .font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
                         .padding(.top, 24)
-                    Text("Введи seed-фразу существующего аккаунта (12 или 24 слова).")
+                    Text("Введи фразу восстановления существующего аккаунта (12 или 24 слова).")
                         .font(.system(size: 13)).foregroundStyle(Theme.slate500)
                         .multilineTextAlignment(.center).padding(.horizontal, 24)
 

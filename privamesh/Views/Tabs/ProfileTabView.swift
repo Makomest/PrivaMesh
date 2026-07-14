@@ -501,8 +501,8 @@ struct ProfileTabView: View {
                       isOn: $shareVerifiedBadge)
             cardDivider
             if SeedLock.isAvailable {
-                toggleRow(icon: "key.viewfinder", title: "Защита seed по Face ID",
-                          subtitle: "Чтение seed требует Face ID / пароль", isOn: $seedLockEnabled)
+                toggleRow(icon: "key.viewfinder", title: "Защита ключа по Face ID",
+                          subtitle: "Чтение ключа требует Face ID / пароль", isOn: $seedLockEnabled)
                 cardDivider
             }
             HStack {
@@ -603,7 +603,7 @@ struct ProfileTabView: View {
                         .foregroundStyle(Theme.accentDeep).frame(width: 28)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Защитить коллекцию on-chain").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                        Text(secureStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Минт NFT-ников в блокчейн (портируемость по seed)"))
+                        Text(secureStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Резервный ключ восстановления"))
                             .font(.system(size: 11)).foregroundStyle(Theme.slate500).lineLimit(2)
                     }
                     Spacer()
