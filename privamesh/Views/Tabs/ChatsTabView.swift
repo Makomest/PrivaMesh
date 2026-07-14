@@ -11,6 +11,9 @@ import SwiftData
 struct ChatsTabView: View {
     @Environment(PollingService.self) private var polling
     @Environment(WalletManager.self) private var wallet
+    @Environment(MessageQuotaService.self) private var quota
+    @Environment(SubscriptionManager.self) private var subscription
+    @Environment(AvatarService.self) private var avatars
     @Environment(\.modelContext) private var context
 
     @Query(sort: \Contact.createdAt, order: .reverse) private var allContacts: [Contact]
@@ -25,6 +28,8 @@ struct ChatsTabView: View {
     }
 
     @State private var showAddContact = false
+    @State private var showProfile = false
+    @State private var showPaywall = false
     @State private var searchText = ""
     @State private var contactToDelete: Contact?
     @State private var contactToClear: Contact?
@@ -52,6 +57,9 @@ struct ChatsTabView: View {
 
                 VStack(spacing: 0) {
                     header
+                    quotaTile
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
                     searchBar
                         .padding(.horizontal, 20)
                         .padding(.top, 12)
@@ -75,6 +83,12 @@ struct ChatsTabView: View {
             #endif
             .sheet(isPresented: $showAddContact) {
                 AddContactView()
+            }
+            .sheet(isPresented: $showProfile) {
+                ProfileTabView()
+            }
+            .sheet(isPresented: $showPaywall) {
+                QuotaPaywallSheet()
             }
             .confirmationDialog("Удалить контакт?",
                                 isPresented: Binding(get: { contactToDelete != nil },
@@ -113,14 +127,27 @@ struct ChatsTabView: View {
     // MARK: - Header
 
     private var header: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Profile / settings entry (Messages-app style: avatar top-left).
+            Button { showProfile = true } label: {
+                Group {
+                    if let seed = avatars.activeDesign?.id {
+                        NFTAvatarView(seed: seed, size: 40)
+                    } else {
+                        MeshAvatarView(id: activeAddress.isEmpty ? "me" : activeAddress, size: 40)
+                    }
+                }
+                .overlay(Circle().stroke(Theme.glassStroke, lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+
             VStack(alignment: .leading, spacing: 2) {
-                Text("Чаты")
-                    .font(.system(size: 26, weight: .semibold, design: .rounded))
+                Text("PrivaMesh")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
                     .foregroundStyle(Theme.slate800)
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark.shield.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: 11))
                         .foregroundStyle(Theme.positive)
                     Text("Сквозное шифрование")
                         .font(.system(size: 11))
@@ -143,6 +170,38 @@ struct ChatsTabView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 8)
+    }
+
+    // MARK: - Quota tile
+
+    private var quotaTile: some View {
+        Button { showPaywall = true } label: {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle().fill(Theme.accentGradient).frame(width: 36, height: 36)
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Осталось сообщений")
+                        .font(.system(size: 11)).foregroundStyle(Theme.slate500)
+                    Text("\(quota.remaining)")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.slate800)
+                        .contentTransition(.numericText())
+                }
+                Spacer()
+                HStack(spacing: 3) {
+                    Text(subscription.isSubscribed ? "Ещё" : "Купить")
+                        .font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.accentDeep)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .semibold)).foregroundStyle(Theme.slate400)
+                }
+            }
+            .padding(.horizontal, 14).padding(.vertical, 10)
+            .glassEffect(.regular, in: .rect(cornerRadius: Theme.radiusMedium))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Search bar

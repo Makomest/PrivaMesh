@@ -40,65 +40,13 @@ struct MainTabView: View {
             .reduce(0) { $0 + $1.unreadCount }
     }
 
-    @State private var selectedTab: AppTab = .home
-    @State private var visited: Set<AppTab> = [.home]
-    @State private var showAccounts = false
     @AppStorage("privamesh.securitySetupDone") private var securitySetupDone = false
     @State private var showSecuritySetup = false
 
-    enum AppTab: String, Hashable, CaseIterable {
-        // Order here drives the tab bar layout. Chats sits in the middle.
-        case home, chats, profile
-
-        var label: String {
-            switch self {
-            case .home: return String(localized: "Главная")
-            case .chats: return String(localized: "Чаты")
-            case .profile: return String(localized: "Профиль")
-            }
-        }
-
-        /// Outline icon for an inactive tab.
-        var outlineIcon: String {
-            switch self {
-            case .home: return "house"
-            case .chats: return "message"
-            case .profile: return "gearshape"
-            }
-        }
-        /// Filled icon for the active tab (sits in the green circle).
-        var filledIcon: String {
-            switch self {
-            case .home: return "house.fill"
-            case .chats: return "message.fill"
-            case .profile: return "gearshape.fill"
-            }
-        }
-    }
-
+    // Single-screen layout (no bottom tab bar): the chat list is the root; the
+    // profile/settings and add-contact live in its nav bar (Messages-app style).
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Keep visited tabs mounted (opacity-swapped) so their scroll/state
-            // survives switching — like the native TabView did.
-            ZStack {
-                ForEach(AppTab.allCases, id: \.self) { tab in
-                    if visited.contains(tab) {
-                        tabContent(tab)
-                            .opacity(selectedTab == tab ? 1 : 0)
-                            .allowsHitTesting(selectedTab == tab)
-                            .zIndex(selectedTab == tab ? 1 : 0)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            if !tabBarVisibility.hidden {
-                customTabBar
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
-        .sheet(isPresented: $showAccounts) { AccountSwitcherView() }
+        ChatsTabView()
         .sheet(isPresented: $showSecuritySetup) { SecuritySetupView() }
         .task {
             if case let .ready(address) = wallet.state {
@@ -166,109 +114,6 @@ struct MainTabView: View {
                 signedBundleBase64: signed.base64Encoded,
                 avatarSeed: nil, keypair: keypair, rpc: rpc)
         }
-    }
-
-    @ViewBuilder
-    private func tabContent(_ tab: AppTab) -> some View {
-        switch tab {
-        case .home:    HomeTabView()
-        case .chats:   ChatsTabView()
-        case .profile: ProfileTabView()
-        }
-    }
-
-    // MARK: - Custom floating tab bar
-
-    private var customTabBar: some View {
-        let isDark = colorScheme == .dark
-        let shape = RoundedRectangle(cornerRadius: 30, style: .continuous)
-        return HStack(spacing: 0) {
-            ForEach(AppTab.allCases, id: \.self) { tab in
-                tabButton(tab)
-            }
-        }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 8)
-        // Glassmorphism: translucent blur + top sheen + soft inner-light border,
-        // adapting for both light and dark themes.
-        .background {
-            shape
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    shape.fill(
-                        LinearGradient(
-                            colors: [.white.opacity(isDark ? 0.10 : 0.55),
-                                     .white.opacity(0.0)],
-                            startPoint: .top, endPoint: .bottom)
-                    )
-                )
-                .overlay(
-                    shape.stroke(
-                        LinearGradient(
-                            colors: [.white.opacity(isDark ? 0.28 : 0.75),
-                                     .white.opacity(isDark ? 0.04 : 0.12)],
-                            startPoint: .topLeading, endPoint: .bottomTrailing),
-                        lineWidth: 1)
-                )
-        }
-        .shadow(color: .black.opacity(isDark ? 0.40 : 0.12), radius: 18, x: 0, y: 8)
-        .padding(.horizontal, 14)
-        .padding(.bottom, 6)
-    }
-
-    private func tabButton(_ tab: AppTab) -> some View {
-        let active = selectedTab == tab
-        return Button {
-            withAnimation(.easeInOut(duration: 0.22)) {
-                selectedTab = tab
-                visited.insert(tab)
-            }
-            #if os(iOS)
-            UISelectionFeedbackGenerator().selectionChanged()
-            #endif
-        } label: {
-            VStack(spacing: 4) {
-                ZStack {
-                    if active {
-                        Circle().fill(Theme.accentGradient)
-                            .frame(width: 42, height: 42)
-                            .shadow(color: Theme.accent.opacity(0.45), radius: 7, x: 0, y: 3)
-                    }
-                    Image(systemName: active ? tab.filledIcon : tab.outlineIcon)
-                        .font(.system(size: 18, weight: active ? .semibold : .regular))
-                        .foregroundStyle(active ? .white : Theme.slate400)
-
-                    if tab == .chats && totalUnread > 0 {
-                        Text(totalUnread > 99 ? "99+" : "\(totalUnread)")
-                            .font(.system(size: 9, weight: .bold)).foregroundStyle(.white)
-                            .padding(.horizontal, 5).padding(.vertical, 1.5)
-                            .background(Theme.negative, in: Capsule())
-                            .overlay(Capsule().stroke(.white, lineWidth: 1.5))
-                            .offset(x: 14, y: -12)
-                    }
-                }
-                .frame(height: 42)
-
-                Text(tab.label)
-                    .font(.system(size: 11, weight: active ? .semibold : .regular))
-                    .foregroundStyle(active ? Theme.accentDeep : Theme.slate400)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        // Long-press the Profile tab to switch accounts.
-        .simultaneousGesture(
-            tab == .profile
-            ? LongPressGesture(minimumDuration: 0.45).onEnded { _ in
-                #if os(iOS)
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                #endif
-                showAccounts = true
-            }
-            : nil
-        )
     }
 
     /// Bind all per-account services + (re)start polling for `address`.
