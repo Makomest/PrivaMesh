@@ -66,6 +66,21 @@ final class MessagingIdentityManager {
         UserDefaults.standard.set(address, forKey: Self.migratedFlag)
     }
 
+    /// Derive & persist `address`'s messaging identity from its seed phrase so
+    /// the identity is recoverable by re-entering the phrase (no server, no extra
+    /// backup). No-op if an identity already exists for `address` — never clobbers
+    /// live keys or existing Double Ratchet sessions. Called whenever an account's
+    /// seed is (re)stored.
+    func provision(address: String, seedPhrase words: [String]) {
+        guard !address.isEmpty, !words.isEmpty else { return }
+        let key = keychainKey(for: address)
+        guard KeychainStorage.load(key: key) == nil else { return }
+        guard let derived = try? CryptoIdentity.derive(fromSeedPhrase: words),
+              let data = try? JSONEncoder().encode(derived) else { return }
+        KeychainStorage.save(key: key, data: data)
+        if address == self.address { identity = derived }   // adopt if currently bound
+    }
+
     private func save(_ id: CryptoIdentity) throws {
         let data = try JSONEncoder().encode(id)
         KeychainStorage.save(key: keychainKey(for: address), data: data)

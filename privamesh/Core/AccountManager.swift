@@ -77,10 +77,16 @@ final class AccountManager {
         return words.isEmpty ? nil : words
     }
 
+    /// Notified whenever an account's seed is (re)stored — lets the messaging
+    /// layer derive that account's deterministic identity from the phrase in hand
+    /// (no later biometric-gated keychain read). Wired to MessagingIdentityManager.
+    var onSeedStored: (_ publicKey: String, _ phrase: [String]) -> Void = { _, _ in }
+
     private func storeSeed(_ phrase: [String], for publicKey: String) {
         KeychainStorage.save(key: seedKey(publicKey),
                              data: Data(phrase.joined(separator: " ").utf8),
                              requireBiometry: SeedLock.isEnabled)
+        onSeedStored(publicKey, phrase)
     }
 
     /// Re-store every account's seed backup with the current lock setting.

@@ -62,6 +62,11 @@ struct privameshApp: App {
         sub.onPackReceipt = { [weak relaySvc] jws in await relaySvc?.creditPack(jws: jws) }
         relaySvc.receiptProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
         relaySvc.activeAccountProvider = { [weak accounts] in accounts?.activePublicKey ?? "" }
+        // Derive each account's messaging identity deterministically from its seed
+        // phrase, so re-entering the phrase on any device restores the identity.
+        accounts.onSeedStored = { [weak messagingIdentity] pub, phrase in
+            messagingIdentity?.provision(address: pub, seedPhrase: phrase)
+        }
         messageSender.relay = relaySvc
         coverTraffic.quota = quotaSvc
         onChainDiscovery.relay = relaySvc

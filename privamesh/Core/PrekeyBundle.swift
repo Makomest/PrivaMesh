@@ -166,6 +166,36 @@ struct CryptoIdentity: Codable {
         )
     }
 
+    /// Deterministically derive the messaging identity from the wallet's BIP39
+    /// seed phrase via HKDF-SHA256. The same phrase always yields the same keys,
+    /// so the identity (and thus the account's provable presence to contacts) is
+    /// recoverable on any device just by re-entering the phrase — no server, no
+    /// extra backup. Distinct `info` labels give per-purpose domain separation,
+    /// and a messaging-specific salt keeps these keys unrelated to the Solana
+    /// wallet key derived from the same phrase. Ed25519 signatures are
+    /// deterministic (RFC 8032), so the produced bundle is byte-identical across
+    /// derivations of the same phrase.
+    static func derive(fromSeedPhrase words: [String]) throws -> CryptoIdentity {
+        let normalized = words.map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }.joined(separator: " ")
+        let ikm  = Data(normalized.utf8)
+        let salt = Data("PrivaMesh-msg-identity-v1".utf8)
+        func sk(_ label: String) -> Data {
+            CryptoBox.hkdf(inputKeyMaterial: ikm, salt: salt,
+                           info: Data(label.utf8), outputByteCount: 32)
+        }
+        let dhIK  = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: sk("dhIdentityKey"))
+        let sigIK = try Curve25519.Signing.PrivateKey(rawRepresentation: sk("signingKey"))
+        let spk   = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: sk("signedPrekey"))
+        let sig   = try sigIK.signature(for: spk.publicKey.rawRepresentation)
+        return CryptoIdentity(
+            dhIdentityKeyData: dhIK.rawRepresentation,
+            signingKeyData: sigIK.rawRepresentation,
+            signedPrekeyData: spk.rawRepresentation,
+            signedPrekeySignature: Data(sig)
+        )
+    }
+
     func dhIdentityKey() throws -> Curve25519.KeyAgreement.PrivateKey {
         try .init(rawRepresentation: dhIdentityKeyData)
     }
