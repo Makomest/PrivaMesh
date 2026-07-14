@@ -19,21 +19,21 @@ Users who engage in such behaviour may be blocked by other users and reported.
 
 - You can **block** any contact at any time — you will stop receiving their messages.
 - You can **report** any user or message. Reports are sent to the developer and reviewed.
-- Because PrivaMesh is end-to-end encrypted and serverless, the developer cannot read message content or remove content from the blockchain. Moderation is performed through client-side blocking and review of reports.
+- Because PrivaMesh is end-to-end encrypted and serverless, the developer cannot read message content or remove content from the public transport. Moderation is performed through client-side blocking and review of reports.
 
 ## 3. End-to-end encryption and serverless design
 
-PrivaMesh has no backend server. Messages are end-to-end encrypted and transported on the public Solana blockchain. The developer has **no access** to your messages, contacts, or keys, and cannot recover, read, alter, or delete them.
+PrivaMesh has no backend server. Messages are end-to-end encrypted and transported on the public, decentralized transport. The developer has **no access** to your messages, contacts, or keys, and cannot recover, read, alter, or delete them.
 
-## 4. Self-custody
+## 4. Your recovery phrase
 
-You alone control your seed phrase and keys. **Losing your seed means permanently losing access** to your account, messages, and funds. The developer cannot recover your account or funds under any circumstances. Keep your seed phrase safe and private.
+You alone control your recovery phrase and keys. **Losing your recovery phrase means permanently losing access** to your account, messages, . The developer cannot recover your account  under any circumstances. Keep your recovery phrase safe and private.
 
-## 5. Blockchain transactions
+## 5. Message delivery
 
-- Network actions (sending messages, payments, minting NFTs) are recorded on Solana mainnet-beta and are **irreversible**.
-- They cost real network fees (SOL). You are responsible for your transactions and for any funds you send or receive.
-- PrivaMesh is **not** a cryptocurrency exchange and does not buy, sell, or convert cryptocurrency for fiat. It only lets you send and receive SOL between addresses you control.
+- Network actions (sending messages, payments, reserving nicknames) are recorded on a decentralized transport and are **irreversible**.
+- They cost network delivery fees. You are responsible for your transactions and for any funds you send or receive.
+- PrivaMesh is **not** a cryptocurrency exchange and does not buy, sell, or convert cryptocurrency for fiat. It only lets you send and receivemessages between accounts you control.
 
 ## 6. Subscriptions
 
@@ -41,7 +41,7 @@ PrivaMesh+ is an auto-renewable subscription billed through Apple. It can be man
 
 ## 7. No warranty; limitation of liability
 
-PrivaMesh is provided "as is", without warranties of any kind. To the maximum extent permitted by law, the developer is not liable for any loss of data, funds, or damages arising from your use of the app, including loss of your seed phrase, failed or delayed transactions, or the actions of other users.
+PrivaMesh is provided "as is", without warranties of any kind. To the maximum extent permitted by law, the developer is not liable for any loss of data, funds, or damages arising from your use of the app, including loss of your recovery phrase, failed or delayed transactions, or the actions of other users.
 
 ## 8. Changes
 

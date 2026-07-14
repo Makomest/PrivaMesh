@@ -4,7 +4,7 @@ _Last updated: 2026_
 
 PrivaMesh is a private, end-to-end encrypted messenger. Your messages, contacts,
 and keys stay on your device; message content is never readable by us or anyone
-else. To pay Solana network fees on your behalf (so you never need to hold
+else. To pay network delivery fees on your behalf (so you never need to hold
 cryptocurrency), the app uses a small **fee relay** service. This policy explains
 exactly what that service receives and what it does not.
 
@@ -21,7 +21,7 @@ exactly what that service receives and what it does not.
 - Your contacts or contact graph
 - Your name, email, phone number, or precise location
 - Analytics, usage profiling, or advertising identifiers
-- Your Solana wallet's private keys or seed phrase
+- Your account keys or recovery phrase
 
 We do not use third-party analytics, advertising, or tracking SDKs. See the app's
 `PrivacyInfo.xcprivacy` manifest.
@@ -30,43 +30,42 @@ We do not use third-party analytics, advertising, or tracking SDKs. See the app'
 
 The following never leaves your device:
 
-- Your **seed phrase** and cryptographic keys — stored in the iOS Keychain, optionally locked behind Face ID / Touch ID / passcode.
+- Your **recovery phrase** and cryptographic keys — stored in the iOS Keychain, optionally locked behind Face ID / Touch ID / passcode.
 - **Decrypted messages, contacts, and chat history** — stored locally (SwiftData), removable at any time.
 - App preferences (theme, language, notifications).
 
-Deleting the app removes this local data. Encrypted on-chain history remains on
-the blockchain, undecryptable without your keys.
+Deleting the app removes this local data. Encrypted on the transport history remains on
+the public transport, undecryptable without your keys.
 
 ## The fee relay (message sponsorship)
 
-Every message is a Solana transaction that carries a small network fee. So that
+Every message is a message on a decentralized transport that carries a small network fee. So that
 you never have to buy or hold cryptocurrency, PrivaMesh operates a **fee relay**
-that pays those fees from an app-funded wallet and enforces the message allowance
+that pays those fees from an app-funded account and enforces the message allowance
 you obtained through Apple In-App Purchase. When you send a message, mint a
 nickname, or publish your profile to search, the app contacts the relay. The
 relay receives:
 
-- **The transaction to co-sign** — it contains only the *encrypted* message memo (the relay cannot read it), a one-time **stealth** recipient address, and a fresh **ephemeral** sender key. Your real wallet address is never in it.
+- **The transaction to co-sign** — it contains only the *encrypted* message payload (the relay cannot read it), a one-time **stealth** recipient address, and a fresh **ephemeral** sender key. Your real account address is never in it.
 - **Your device's IP address** — as with any network request. It is used only to route the request and is not stored to build a profile of you.
 - **Your Apple purchase receipt (JWS)** — to verify you have an active PrivaMesh+ subscription or message pack. Verification is cryptographic; we receive no card or payment details.
-- **A random per-install token** — used to count your remaining message allowance. It is not your name, wallet, or Apple ID, and is not linked to your identity.
+- **A per-account token** — used to count your remaining message allowance. It is not your name, account address, or Apple ID, and is not linked to your identity.
 
 The relay stores only **quota counters** (how many messages remain), keyed by that
-random token, in order to enforce your allowance and protect the shared fee
-wallet from abuse. It does **not** store message content (it cannot read it) and
+token, in order to enforce your allowance and protect the shared delivery account from abuse. It does **not** store message content (it cannot read it) and
 does not sell or share any of this data.
 
-## Data on the public blockchain
+## Data on the public decentralized transport
 
-PrivaMesh transports messages as encrypted memos inside Solana transactions:
+PrivaMesh transports messages as encrypted memos inside messages on a decentralized transport:
 
-- The **encrypted ciphertext** is publicly visible on the Solana ledger but is unreadable without the recipient's keys.
-- Transaction metadata (existence, timestamp, fee payer) is public, as on any blockchain. PrivaMesh reduces linkability with one-time **stealth addresses**, **ephemeral** per-message signers, an app-paid fee payer (your address never appears), and optional **cover traffic**.
+- The **encrypted ciphertext** is publicly visible on the public transport but is unreadable without the recipient's keys.
+- Transaction metadata (existence, timestamp, fee payer) is public, as on any decentralized transport. PrivaMesh reduces linkability with one-time **stealth addresses**, **ephemeral** per-message signers, an app-paid fee payer (your address never appears), and optional **cover traffic**.
 - This data is immutable and outside our control. We cannot delete it.
 
 ## Third parties
 
-- **Solana RPC provider** — the app and relay connect to a Solana RPC endpoint to read and submit transactions. That provider may observe request metadata (including IP) like any internet service.
+- **Network transport provider** — the app and relay connect to a transport endpoint to read and submit transactions. That provider may observe request metadata (including IP) like any internet service.
 - **Cloudflare** — the fee relay runs on Cloudflare's serverless platform, which processes requests on our behalf.
 - **Apple** — In-App Purchases (PrivaMesh+ and message packs) are processed by Apple via StoreKit. Apple's privacy policy applies. We receive no payment details.
 

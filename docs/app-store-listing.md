@@ -1,14 +1,14 @@
 # PrivaMesh — App Store Listing & Review Notes
 
-Copy-paste fields for App Store Connect. Position the app as a **private messenger** first.
+Copy-paste fields for App Store Connect. Position the app as a **private messenger** — no cryptocurrency, no wallet.
 
 ---
 
 ## App name
-`PrivaMesh`
+`PrivaMesh: Private Messenger`
 
 ## Subtitle (max 30 chars)
-- EN: `Serverless private messenger`
+- EN: `Encrypted private messenger`
 - RU: `Приватный мессенджер`
 
 ## Category
@@ -19,100 +19,114 @@ Copy-paste fields for App Store Connect. Position the app as a **private messeng
 **17+** (unrestricted user-generated content / messaging)
 
 ## Promotional text (max 170 chars)
-- EN: `A private, end-to-end encrypted messenger with no servers. Your messages live on-chain, your keys never leave your device.`
-- RU: `Приватный мессенджер со сквозным шифрованием и без серверов. Сообщения — на блокчейне, ключи не покидают устройство.`
+- EN: `Private messaging with no servers, no phone number, no email. End-to-end encrypted. Your keys and chats never leave your device.`
+- RU: `Приватные сообщения без серверов, без номера телефона, без email. Сквозное шифрование. Ключи и переписка не покидают устройство.`
 
-## Keywords (max 100 chars, comma-separated, no spaces)
-- EN: `private,messenger,encrypted,e2ee,secure,chat,anonymous,web3,solana,serverless,no phone,privacy`
-- RU: `мессенджер,приватный,шифрование,анонимный,безопасный,чат,web3,solana,без телефона,приватность`
+## Keywords (max 100 chars, comma-separated, no spaces — no brand names, no crypto terms)
+- EN: `private,secure,chat,anonymous,messaging,no phone,privacy,secret,e2e,safe,vault,cipher,offgrid,nolog`
+- RU: `мессенджер,приватный,шифрование,анонимный,безопасный,чат,без телефона,приватность,секрет,защита`
 
 ---
 
 ## Description (EN)
 
-PrivaMesh is a private messenger with no servers. It talks only to the public Solana blockchain — there is no PrivaMesh server, no message relay, no account database, and no operator who can read your messages or correlate your accounts.
+PrivaMesh is a private, end-to-end encrypted messenger for people who don't want their conversations logged, mined, or sold. No phone number. No email. No profile. Just a key that belongs to you.
 
-Your messages are end-to-end encrypted (X3DH + Double Ratchet, the modern standard) and travel as encrypted data on-chain. Your keys never leave your device. No phone number, no email — just a key pair you control.
+PRIVATE BY DESIGN
+Everything personal stays on your device — your identity, your contacts, your chat history. There's no account database and nothing about you to leak. Your keys never leave your phone.
 
-WHY PRIVAMESH
-• No servers — nothing to subpoena, breach, log, or shut down
-• End-to-end encryption — a fresh key for every message (forward secrecy)
-• No phone or email — your identity is a seed phrase you alone hold
-• Metadata privacy — one-time stealth addresses, optional decoy traffic, and a separate fee wallet keep who/when/how hidden
-• Censorship-resistant — to block you, one would have to block the entire blockchain
-• Open and verifiable — every shared event is a public, auditable on-chain record
+NO PHONE, NO EMAIL
+Sign up with nothing at all. No phone number, no email, no personal data. Your identity is a key you own, stored in the iOS Keychain and locked with Face ID / Touch ID.
 
-Each account is a self-custodial key pair, so PrivaMesh also includes a lightweight SOL wallet for in-chat payments and gifts, plus on-chain NFT avatars and nicknames. These are secondary to the core product: private messaging.
+REAL END-TO-END ENCRYPTION
+PrivaMesh uses a proven cryptographic core: X3DH for the initial handshake and the Double Ratchet for ongoing messages — the same family of protocols trusted by the world's leading secure messengers. Forward secrecy means even a compromised key can't unlock your past conversations.
 
-PrivaMesh runs on Solana mainnet. Network actions cost small SOL fees. PrivaMesh is not a cryptocurrency exchange — it only sends and receives SOL between addresses you control.
+METADATA-RESISTANT
+No central profile of your social graph. Who you talk to, when, and how often isn't collected, logged, or sold.
 
-Trust math, not companies.
+YOUR IDENTITY, YOUR CONTROL
+Pick a unique nickname so friends can find you — no contact-list upload, no data harvesting. You hold your own recovery phrase: back it up once and restore your account on any device.
+
+PRIVAMESH+ (optional)
+PrivaMesh+ unlocks a higher monthly message allowance and a verification badge. Auto-renewable subscription; payment is charged to your Apple ID and renews unless canceled at least 24 hours before the period ends. Manage or cancel anytime in Apple ID settings.
+
+Private messaging the way it should be: your words, your keys, your device. Trust math, not companies.
 
 ## Description (RU)
 
-PrivaMesh — приватный мессенджер без серверов. Приложение общается только с публичным блокчейном Solana: нет сервера PrivaMesh, нет ретранслятора сообщений, нет базы аккаунтов и нет оператора, который мог бы прочитать твою переписку или связать твои аккаунты.
+PrivaMesh — приватный мессенджер со сквозным шифрованием для тех, кто не хочет, чтобы их переписку логировали, анализировали или продавали. Без номера телефона. Без email. Без профиля. Только ключ, который принадлежит тебе.
 
-Сообщения зашифрованы сквозным шифрованием (X3DH + Double Ratchet) и передаются зашифрованными на блокчейне. Ключи не покидают устройство. Без телефона и email — только ключ, который контролируешь ты.
+ПРИВАТНОСТЬ ПО УМОЛЧАНИЮ
+Всё личное остаётся на устройстве — личность, контакты, история переписки. Нет базы аккаунтов и нечего утекать. Ключи не покидают телефон.
 
-ПОЧЕМУ PRIVAMESH
-• Без серверов — нечего взломать, изъять, залогировать или выключить
-• Сквозное шифрование — новый ключ на каждое сообщение (forward secrecy)
-• Без телефона и email — твоя личность это seed-фраза, она только у тебя
-• Приватность метаданных — одноразовые stealth-адреса, маскирующий трафик и отдельный кошелёк для комиссий скрывают кто/когда/как
-• Устойчивость к цензуре — чтобы тебя заблокировать, надо заблокировать весь блокчейн
-• Открыто и проверяемо — каждое общее событие это публичная запись в сети
+БЕЗ ТЕЛЕФОНА И EMAIL
+Регистрация вообще без данных. Твоя личность — ключ, который хранится в iOS Keychain и защищён Face ID / Touch ID.
 
-Каждый аккаунт — это самостоятельный ключ, поэтому в PrivaMesh есть и лёгкий SOL-кошелёк для платежей и подарков в чате, плюс NFT-аватары и ники на блокчейне. Это вторично — главное это приватная переписка.
+НАСТОЯЩЕЕ СКВОЗНОЕ ШИФРОВАНИЕ
+X3DH для рукопожатия и Double Ratchet для сообщений — семейство протоколов, которому доверяют ведущие защищённые мессенджеры. Forward secrecy: даже скомпрометированный ключ не раскроет прошлую переписку.
 
-PrivaMesh работает в сети Solana mainnet. Сетевые действия стоят небольших комиссий в SOL. PrivaMesh не является криптобиржей — он только отправляет и принимает SOL между адресами, которыми ты владеешь.
+УСТОЙЧИВОСТЬ К МЕТАДАННЫМ
+Никакого центрального профиля твоих связей. Кто, когда и как часто — не собирается и не продаётся.
+
+ТВОЯ ЛИЧНОСТЬ — ТВОЙ КОНТРОЛЬ
+Выбери уникальный ник, чтобы тебя находили — без загрузки контактов. Фраза восстановления только у тебя: сохрани один раз и восстанови аккаунт на любом устройстве.
+
+PRIVAMESH+ (опционально)
+PrivaMesh+ открывает больший месячный лимит сообщений и галочку верификации. Автопродление; оплата с Apple ID, продлевается, если не отменить за 24 часа до конца периода. Управление в настройках Apple ID.
 
 Доверяй математике, а не компаниям.
 
 ---
 
-## URLs (hosted on GitHub Pages)
-- Privacy Policy URL: `https://makomest.github.io/PrivaMesh/privacy-policy.html`  ← required field
-- Terms (EULA) URL: `https://makomest.github.io/PrivaMesh/terms.html`
-- Support URL: `https://makomest.github.io/PrivaMesh/`  (or `https://github.com/Makomest/PrivaMesh`)
-- Marketing URL: `https://makomest.github.io/PrivaMesh/`
+## URLs
+- Privacy Policy URL: `https://privamesh.org/privacy-policy.html`  ← required
+- Terms (EULA) URL: `https://privamesh.org/terms.html`
+- Support URL: `https://privamesh.org`
+- Marketing URL: `https://privamesh.org`
 
 ---
 
 ## App Review notes (paste into "Notes for Reviewer")
 
 ```
-PrivaMesh is a PRIVATE MESSENGER. It has no backend server — it communicates only
-with the public Solana blockchain (a Solana RPC endpoint). Messages are end-to-end
-encrypted and transported as encrypted memos in Solana transactions.
+PrivaMesh is a private, end-to-end encrypted messenger. It is NOT a cryptocurrency
+wallet — there is no wallet, no balance, no buy/sell/exchange, and no trading
+anywhere in the app. Users create an on-device identity key and send encrypted
+messages; that is the entire experience.
 
-CLARIFICATION ON CRYPTO:
-- PrivaMesh is NOT a cryptocurrency exchange and does NOT buy, sell, or convert
-  crypto for fiat. Each account is simply a self-custodial key pair.
-- Sending a message writes a small on-chain transaction, so it costs a tiny SOL
-  network fee. This is a network fee, not an in-app purchase of crypto.
-- The only in-app purchase (PrivaMesh+) is an auto-renewable subscription handled
-  by StoreKit. NFT avatars/nicknames are cosmetic and do not unlock app features.
+The app has no traditional login — an identity key is generated on device. For
+review we provide a DEMO account: restoring its recovery phrase pre-populates the
+app with sample contacts and two-way conversations so all features are verifiable.
+
+DEMO ACCOUNT — restore this recovery phrase:
+Welcome screen -> "Restore from recovery phrase" -> enter:
+
+drum need person expire large wrist struggle labor label ill improve cloud
+
+After restoring and setting a passcode, the Chats screen shows pre-populated
+conversations (Alice, Bob, Decart) demonstrating the full messaging UI
+(end-to-end encryption, message info, block/report, etc.).
+
+SEND A LIVE MESSAGE (no purchase needed):
+Each account includes a small free monthly message allowance. Open the "Decart"
+chat and send a message, or Chats -> "+" -> search "Decart" -> add -> message it.
+All delivery/infrastructure costs are covered by us, the developer. Users never
+buy, hold, send, or spend any cryptocurrency.
+
+IN-APP PURCHASES:
+To add messages, open Profile -> the "Messages left" tile (or send until the free
+allowance is used) to reach the purchase screen: subscriptions (PrivaMesh+
+Starter/Pro) and consumable message packs. Test in the StoreKit sandbox. IAP
+grants only a message allowance and membership perks — no cryptocurrency, token,
+or digital asset is ever sold.
 
 USER-GENERATED CONTENT MODERATION (Guideline 1.2):
-- Terms of Use (zero-tolerance policy) and Privacy Policy are linked in the Profile tab.
-- Users can BLOCK any contact (stops receiving their messages) and REPORT any user
-  (Contact profile → Report; sends a pre-filled email to privamesh@proton.me).
-- Because the app is end-to-end encrypted and serverless, moderation is client-side
-  (block + report). We cannot read or remove message content.
+- Terms of Use (zero-tolerance policy) and Privacy Policy are linked in the app.
+- Users can BLOCK any contact and REPORT any user or message.
+- The app is end-to-end encrypted, so moderation is client-side (block + report).
 
-HOW TO TEST:
-1. Launch → accept Terms → create a wallet (you receive a seed phrase) OR import the
-   test seed below.
-2. To test messaging you need a second device/account. You can create two accounts
-   (long-press the profile header → add account) and message between them, OR use the
-   test wallet below which is funded with a small amount of SOL.
-
-TEST WALLET (funded with SOL for review):
-   Seed phrase: <PASTE 12-WORD TEST SEED HERE>
-   (Import via Welcome → "Restore from seed phrase".)
+Encryption: end-to-end; export-exempt (ITSAppUsesNonExemptEncryption = NO).
+iPhone-only.
 
 If anything is unclear, contact privamesh@proton.me — thank you for reviewing.
 ```
-
-> Before submitting: create a throwaway wallet, fund it with ~0.05 SOL, and paste its
-> 12-word seed into the TEST WALLET section above. Never use your real seed.
