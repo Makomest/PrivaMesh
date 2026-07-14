@@ -334,8 +334,12 @@ private struct OnboardingPage: View {
         }
         .onAppear { runEntrance() }
         .onDisappear {
-            // Reset so the entrance replays each time the page scrolls back in.
-            appear = false; pop = false
+            // Reset so the entrance AND the ambient loops replay when the page
+            // scrolls back in. The repeatForever animations are dropped when the
+            // paged view disappears, so the loop state must return to false —
+            // otherwise runEntrance's false→true transition never fires and the
+            // orbiting ring / breathing glow stay frozen.
+            appear = false; pop = false; pulse = false; spin = false
         }
     }
 
@@ -399,9 +403,10 @@ private struct OnboardingPage: View {
     private func runEntrance() {
         withAnimation(.spring(response: 0.55, dampingFraction: 0.6)) { pop = true }
         withAnimation(.easeOut(duration: 0.5).delay(0.1)) { appear = true }
-        // Ambient loops (idempotent — guarded so they don't stack on replays).
-        if !pulse { withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) { pulse = true } }
-        if !spin  { withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) { spin = true } }
+        // Ambient loops. onDisappear resets these to false, so each (re)appear
+        // makes a fresh false→true transition that restarts the repeatForever.
+        withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) { pulse = true }
+        withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) { spin = true }
     }
 }
 
