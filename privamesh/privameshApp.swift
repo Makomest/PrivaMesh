@@ -64,8 +64,9 @@ struct privameshApp: App {
         relaySvc.activeAccountProvider = { [weak accounts] in accounts?.activePublicKey ?? "" }
         // Derive each account's messaging identity deterministically from its seed
         // phrase, so re-entering the phrase on any device restores the identity.
-        accounts.onSeedStored = { [weak messagingIdentity] pub, phrase in
+        accounts.onSeedStored = { [weak messagingIdentity, weak relaySvc] pub, phrase in
             messagingIdentity?.provision(address: pub, seedPhrase: phrase)
+            relaySvc?.provisionToken(address: pub, seedPhrase: phrase)
         }
         messageSender.relay = relaySvc
         coverTraffic.quota = quotaSvc

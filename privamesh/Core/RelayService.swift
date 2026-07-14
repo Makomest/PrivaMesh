@@ -58,18 +58,20 @@ final class RelayService {
     /// token. Wired to AccountManager by the app root.
     var activeAccountProvider: () -> String = { "" }
 
-    /// Opaque token unique to the ACTIVE account (not the device). DERIVED from
-    /// the account pubkey — `SHA256(pubkey + salt)` — so it is STABLE across app
-    /// reinstall/device: the same seed yields the same token, and the relay
-    /// restores that account's server-side balance instead of treating a fresh
-    /// install as a brand-new zero-balance user.
-    ///
-    /// Anonymity is preserved: two accounts have two pubkeys → two unrelated
-    /// hashes, and the relay never sees the pubkey (only the digest), so it
-    /// cannot correlate a device's separate accounts. Pubkeys are already public
-    /// on-chain, so deriving from one leaks nothing new.
+    /// Opaque token unique to the ACTIVE account. DERIVED from the account's SEED
+    /// (a secret only the owner holds) as `HKDF(seed, info: pubkey)`, persisted in
+    /// the Keychain by `provisionToken`. Two properties matter:
+    ///   • STABLE — the same seed yields the same token, so a reinstall/restore
+    ///     recovers the account's server-side balance instead of looking new.
+    ///   • UNFORGEABLE — it is NOT derived from the public key, so a third party
+    ///     who knows a victim's on-chain address (and can read the app binary)
+    ///     still cannot compute the victim's token and grief/spend their quota.
+    /// Anonymity holds: distinct seeds → unrelated tokens; the relay sees only the
+    /// digest, never the pubkey, so it can't correlate a device's accounts.
     private static let tokenKey = "privamesh.relay.accountToken"   // legacy pre-account fallback
-    private static let tokenSalt = "privamesh.relay.token.v1"
+    private static let legacyTokenSalt = "privamesh.relay.token.v1"
+    private func tokenKeychainKey(_ pub: String) -> String { "privamesh.relay.token.\(pub)" }
+
     var accountToken: String {
         let acct = activeAccountProvider()
         // Pre-account (onboarding warm-up): keep the legacy random device token.
@@ -80,8 +82,31 @@ final class RelayService {
             d.set(t, forKey: Self.tokenKey)
             return t
         }
-        let digest = SHA256.hash(data: Data("\(acct).\(Self.tokenSalt)".utf8))
+        // Seed-derived token (provisioned when the seed was stored).
+        if let data = KeychainStorage.load(key: tokenKeychainKey(acct)),
+           let s = String(data: data, encoding: .utf8), !s.isEmpty { return s }
+        // Transitional fallback for accounts provisioned before seed-derived
+        // tokens existed. Deterministic but derived from the public key, so it is
+        // replaced by the seed-derived token on the next seed (re)store.
+        let digest = SHA256.hash(data: Data("\(acct).\(Self.legacyTokenSalt)".utf8))
         return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    /// Derive & persist this account's relay token from its seed phrase. No-op if
+    /// one already exists. Called whenever an account's seed is (re)stored, so the
+    /// token is recoverable by re-entering the phrase yet never exposed by the
+    /// public key alone. See `accountToken`.
+    func provisionToken(address: String, seedPhrase words: [String]) {
+        guard !address.isEmpty, !words.isEmpty else { return }
+        let key = tokenKeychainKey(address)
+        guard KeychainStorage.load(key: key) == nil else { return }
+        let normalized = words.map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }.joined(separator: " ")
+        let digest = CryptoBox.hkdf(inputKeyMaterial: Data(normalized.utf8),
+                                    salt: Data("PrivaMesh-relay-token-v1".utf8),
+                                    info: Data(address.utf8), outputByteCount: 32)
+        let hex = digest.map { String(format: "%02x", $0) }.joined()
+        KeychainStorage.save(key: key, data: Data(hex.utf8))
     }
 
     var isConfigured: Bool { RelayConfig.isConfigured }

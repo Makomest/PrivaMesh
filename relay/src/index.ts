@@ -115,6 +115,7 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
   try {
     const treasury = Keypair.fromSecretKey(bs58.decode(env.TREASURY_SECRET));
     const transaction = Transaction.from(Buffer.from(tx, 'base64'));
+    assertTreasuryOnlyPaysFees(transaction, treasury); // never sign a tx that debits the treasury
     transaction.partialSign(treasury); // fills the fee-payer signature slot
     const raw = transaction.serialize();
     const conn = new Connection(env.RPC_URL, 'confirmed');
@@ -186,6 +187,7 @@ async function handleMint(req: Request, env: Env): Promise<Response> {
   try {
     const treasury = Keypair.fromSecretKey(bs58.decode(env.TREASURY_SECRET));
     const transaction = Transaction.from(Buffer.from(tx, 'base64'));
+    assertTreasuryOnlyPaysFees(transaction, treasury);
     transaction.partialSign(treasury);
     const raw = transaction.serialize();
     const conn = new Connection(env.RPC_URL, 'confirmed');
@@ -196,6 +198,30 @@ async function handleMint(req: Request, env: Env): Promise<Response> {
     // Refund the mint allowance on submit failure.
     await env.QUOTA.put(mintKey, String(used), { expirationTtl: 60 * 60 * 24 * 400 });
     return json({ error: 'mint submit failed: ' + String(e?.message ?? e) }, 502);
+  }
+}
+
+// ------------------------------------------------------ tx safety guard
+
+/**
+ * The treasury must sign ONLY as fee payer. A legitimate sponsored message tx
+ * lists the treasury as feePayer and never references it in any instruction
+ * (the memo + 0-lamport transfer are signed by an ephemeral key). If the
+ * treasury appears in an instruction's account list, signing it could authorise
+ * a SOL debit (e.g. SystemProgram.transfer from the treasury) and drain it — so
+ * we refuse to co-sign such a transaction.
+ */
+function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair): void {
+  const t = treasury.publicKey.toBase58();
+  if (!transaction.feePayer || transaction.feePayer.toBase58() !== t) {
+    throw new Error('treasury must be the fee payer');
+  }
+  for (const ix of transaction.instructions) {
+    for (const key of ix.keys) {
+      if (key.pubkey.toBase58() === t) {
+        throw new Error('treasury referenced by an instruction — refusing to sign');
+      }
+    }
   }
 }
 
