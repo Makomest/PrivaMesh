@@ -16,6 +16,7 @@
 //
 
 import Foundation
+import CryptoKit
 import SolanaSwift
 
 /// Deployment configuration for the sponsoring relay. Fill these in after
@@ -57,18 +58,30 @@ final class RelayService {
     /// token. Wired to AccountManager by the app root.
     var activeAccountProvider: () -> String = { "" }
 
-    /// Random token unique to the ACTIVE account (not the device). Two accounts on
-    /// the same device present different tokens, so the relay cannot correlate
-    /// them. Persisted per account in UserDefaults.
-    private static let tokenKey = "privamesh.relay.accountToken"
+    /// Opaque token unique to the ACTIVE account (not the device). DERIVED from
+    /// the account pubkey — `SHA256(pubkey + salt)` — so it is STABLE across app
+    /// reinstall/device: the same seed yields the same token, and the relay
+    /// restores that account's server-side balance instead of treating a fresh
+    /// install as a brand-new zero-balance user.
+    ///
+    /// Anonymity is preserved: two accounts have two pubkeys → two unrelated
+    /// hashes, and the relay never sees the pubkey (only the digest), so it
+    /// cannot correlate a device's separate accounts. Pubkeys are already public
+    /// on-chain, so deriving from one leaks nothing new.
+    private static let tokenKey = "privamesh.relay.accountToken"   // legacy pre-account fallback
+    private static let tokenSalt = "privamesh.relay.token.v1"
     var accountToken: String {
-        let d = UserDefaults.standard
         let acct = activeAccountProvider()
-        let key = acct.isEmpty ? Self.tokenKey : "\(Self.tokenKey).\(acct)"
-        if let t = d.string(forKey: key) { return t }
-        let t = UUID().uuidString
-        d.set(t, forKey: key)
-        return t
+        // Pre-account (onboarding warm-up): keep the legacy random device token.
+        guard !acct.isEmpty else {
+            let d = UserDefaults.standard
+            if let t = d.string(forKey: Self.tokenKey) { return t }
+            let t = UUID().uuidString
+            d.set(t, forKey: Self.tokenKey)
+            return t
+        }
+        let digest = SHA256.hash(data: Data("\(acct).\(Self.tokenSalt)".utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
     }
 
     var isConfigured: Bool { RelayConfig.isConfigured }

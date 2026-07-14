@@ -105,6 +105,11 @@ struct MainTabView: View {
             market.adoptOnChainNicks(onChainIDs)
             UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: stampKey)
         }
+        // Restore the reserved nickname after a reinstall/wipe: the custom nick
+        // lives in UserDefaults (lost on delete), but the registry still maps
+        // nickname→address. If we have no local custom nick, look ourselves up by
+        // address and adopt whatever name is reserved to us.
+        await restoreNicknameIfNeeded(address: address)
         if let bundle = try? identity.prekeyBundle(),
            let keypair = try? await wallet.currentKeyPair() {
             // Wallet-signed bundle → contacts find us by nickname (anti-MITM).
@@ -114,6 +119,17 @@ struct MainTabView: View {
                 signedBundleBase64: signed.base64Encoded,
                 avatarSeed: nil, keypair: keypair, rpc: rpc)
         }
+    }
+
+    /// If no custom nickname is stored locally, recover it from the on-chain
+    /// registry by reverse-looking-up our own address. No-op when a local nick is
+    /// already set (never overrides a fresh explicit choice) or nothing is found.
+    private func restoreNicknameIfNeeded(address: String) async {
+        guard nicknameManager.customNickname == nil else { return }
+        guard let found = await onChainDiscovery.search(query: address, rpc: rpc),
+              !found.nickname.isEmpty, found.nickname != address else { return }
+        nicknameManager.setCustomNickname(found.nickname)
+        market.mintNickname(found.nickname)   // re-record ownership for cap/picker
     }
 
     /// Bind all per-account services + (re)start polling for `address`.
