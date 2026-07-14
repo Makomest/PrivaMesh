@@ -382,20 +382,31 @@ struct ProfileTabView: View {
             }
 
             Divider().background(Theme.glassStroke)
-            Button {
-                if subscription.isSubscribed { showNickEditor = true } else { showPaywall = true }
-            } label: {
+            Button { showNickEditor = true } label: {
                 HStack {
                     Label("Свой ник", systemImage: "pencil")
                         .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.accentDeep)
                     Spacer()
-                    if !subscription.isSubscribed {
-                        Text("Premium").font(.system(size: 11, weight: .semibold)).foregroundStyle(Theme.accent)
-                    }
+                    Text(subscription.isSubscribed ? "до 3" : "1 · Pro для 3")
+                        .font(.system(size: 11, weight: .semibold)).foregroundStyle(Theme.slate400)
                     Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
                 }
             }
             .buttonStyle(.plain)
+
+            // Switch active nickname when you hold more than one.
+            if market.ownedNicknames.count > 1 {
+                Divider().background(Theme.glassStroke)
+                Button { showNickPicker = true } label: {
+                    HStack {
+                        Label("Мои ники (\(market.ownedNicknames.count))", systemImage: "at")
+                            .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.accentDeep)
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(16)
         .background(Theme.glass)
@@ -776,7 +787,17 @@ struct ProfileTabView: View {
 private struct NicknameEditorSheet: View {
     let nicknameManager: NicknameManager
     @Environment(\.dismiss) private var dismiss
+    @Environment(WalletManager.self) private var wallet
+    @Environment(SubscriptionManager.self) private var subscription
+    @Environment(MarketService.self) private var market
+    @Environment(OnChainDiscovery.self) private var discovery
+    @Environment(MessagingIdentityManager.self) private var identity
+    @Environment(SolanaRPCService.self) private var rpc
     @State private var draft = ""
+    @State private var saving = false
+    @State private var errorMessage: String?
+
+    private var cap: Int { subscription.isSubscribed ? 3 : 1 }
 
     var body: some View {
         ZStack {
@@ -786,13 +807,20 @@ private struct NicknameEditorSheet: View {
                     Text("Твой ник")
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundStyle(Theme.slate800)
-                    Text("Этот ник будут видеть твои контакты")
+                    Text("Этот ник будут видеть твои контакты. Свободный ник закрепляется за тобой.")
                         .font(.system(size: 14))
                         .foregroundStyle(Theme.slate500)
+                        .multilineTextAlignment(.center)
                     Text("Только буквы — цифры можно добавить по желанию (напр. Alex42)")
                         .font(.system(size: 12))
                         .foregroundStyle(Theme.slate400)
                         .multilineTextAlignment(.center)
+                    if let errorMessage {
+                        Text(LocalizedStringKey(errorMessage))
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(Theme.negative)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 .padding(.top, 32)
 
@@ -815,21 +843,23 @@ private struct NicknameEditorSheet: View {
 
                 VStack(spacing: 12) {
                     Button {
-                        nicknameManager.setCustomNickname(draft)
-                        dismiss()
+                        Task { await reserve() }
                     } label: {
-                        Text("Сохранить")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(draft.trimmingCharacters(in: .whitespaces).isEmpty
-                                ? AnyShapeStyle(Color(red: 0.75, green: 0.75, blue: 0.75))
-                                : AnyShapeStyle(Theme.accentGradient))
-                            .clipShape(Capsule())
+                        HStack(spacing: 8) {
+                            if saving { ProgressView().tint(.white) }
+                            Text(saving ? "Проверяю…" : "Сохранить")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(.white)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(draft.trimmingCharacters(in: .whitespaces).isEmpty
+                            ? AnyShapeStyle(Color(red: 0.75, green: 0.75, blue: 0.75))
+                            : AnyShapeStyle(Theme.accentGradient))
+                        .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
-                    .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty || saving)
 
                     Button {
                         dismiss()
@@ -853,6 +883,41 @@ private struct NicknameEditorSheet: View {
             draft = nicknameManager.customNickname ?? ""
         }
     }
+
+    /// Claim a nickname: it must be unique (a free name is reserved to you), and
+    /// the count is limited (1 for free, 3 for PrivaMesh+). Reservation cost is
+    /// sponsored by us — the user spends nothing.
+    private func reserve() async {
+        let name = draft.trimmingCharacters(in: .whitespaces)
+        guard name.count >= 2 else { errorMessage = "Минимум 2 буквы"; return }
+        // Limit: free 1, PrivaMesh+ 3.
+        if !market.ownedNicknames.contains(name), market.ownedNicknames.count >= cap {
+            errorMessage = cap == 1
+                ? "Доступен 1 ник. Оформи PrivaMesh+ для 3."
+                : "Достигнут лимит ников (3)."
+            return
+        }
+        guard case let .ready(address) = wallet.state else { errorMessage = "Профиль недоступен"; return }
+        saving = true; defer { saving = false }
+        errorMessage = nil
+        // Uniqueness: if someone else already holds this name, block.
+        if let found = await discovery.search(query: name, rpc: rpc), found.address != address {
+            errorMessage = "Ник «\(name)» уже занят"; return
+        }
+        // Reserve: publish the nickname→identity record (sponsored) so it's yours.
+        guard let bundle = try? identity.prekeyBundle(),
+              let keypair = try? await wallet.currentKeyPair() else {
+            errorMessage = "Профиль недоступен"; return
+        }
+        let signed = bundle.walletSigned(address: address, keypair: keypair)
+        let err = await discovery.publish(
+            nickname: name, address: address, signedBundleBase64: signed.base64Encoded,
+            avatarSeed: nil, keypair: keypair, rpc: rpc)
+        if err != nil { errorMessage = "Не удалось закрепить, попробуй позже"; return }
+        market.mintNickname(name)                 // record as owned/reserved
+        nicknameManager.setCustomNickname(name)
+        dismiss()
+    }
 }
 
 
@@ -869,7 +934,7 @@ private struct NicknamePickerSheet: View {
                 PastelBackground()
                 ScrollView {
                     VStack(spacing: 10) {
-                        Text("Выбери NFT-ник как отображаемое имя")
+                        Text("Выбери активный ник")
                             .font(.system(size: 13)).foregroundStyle(Theme.slate500)
                             .multilineTextAlignment(.center).padding(.horizontal, 24).padding(.top, 8)
 
@@ -910,7 +975,7 @@ private struct NicknamePickerSheet: View {
                     .padding(.horizontal, 20).padding(.bottom, 40)
                 }
             }
-            .navigationTitle("NFT-ники")
+            .navigationTitle("Мои ники")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif

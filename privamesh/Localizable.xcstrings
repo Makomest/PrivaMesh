@@ -362,6 +362,17 @@
         }
       }
     },
+    "**Одноразовые адреса** — новый адрес для каждого сообщения": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**One-time addresses** — a fresh address for every message"
+          }
+        }
+      }
+    },
     "**Пакеты сообщений** — разовая покупка без подписки": {
       "extractionState": "stale",
       "localizations": {
@@ -446,6 +457,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "**A unique nickname** is generated automatically from your key"
+          }
+        }
+      }
+    },
+    "**Это защита, а не баг** — даже с твоей фразой восстановления никто не прочитает старую переписку": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**This is protection, not a bug** — even with your recovery phrase no one can read your old chats"
           }
         }
       }
@@ -2465,6 +2487,17 @@
         }
       }
     },
+    "Доступ к ключам и фразе восстановления требует Face ID / пароль. Если телефон попал в чужие руки — ключи не достать.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access to your keys and recovery phrase requires Face ID / passcode. If your phone is lost, the keys stay out of reach."
+          }
+        }
+      }
+    },
     "Другие": {
       "extractionState": "stale",
       "localizations": {
@@ -2770,6 +2803,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Protect seed with Face ID"
+          }
+        }
+      }
+    },
+    "Защита ключа по Face ID": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protect keys with Face ID"
           }
         }
       }
@@ -7201,6 +7245,17 @@
         }
       }
     },
+    "Ты единолично контролируешь свою фразу восстановления. Потеря фразы = потеря доступа к аккаунту. Разработчик не может восстановить аккаунт.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You alone control your recovery phrase. Losing it means losing access to your account. The developer cannot recover your account."
+          }
+        }
+      }
+    },
     "Ты можешь пожаловаться на любого пользователя или сообщение и заблокировать собеседника в любой момент. Жалобы рассматриваются.": {
       "extractionState": "stale",
       "localizations": {
@@ -7676,52 +7731,112 @@
         }
       }
     },
-    "Ты единолично контролируешь свою фразу восстановления. Потеря фразы = потеря доступа к аккаунту. Разработчик не может восстановить аккаунт.": {
+    "Минимум 2 буквы": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You alone control your recovery phrase. Losing it means losing access to your account. The developer cannot recover your account."
+            "value": "At least 2 letters"
           }
         }
       }
     },
-    "Защита ключа по Face ID": {
+    "Доступен 1 ник. Оформи PrivaMesh+ для 3.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Protect keys with Face ID"
+            "value": "1 nickname available. Get PrivaMesh+ for 3."
           }
         }
       }
     },
-    "Доступ к ключам и фразе восстановления требует Face ID / пароль. Если телефон попал в чужие руки — ключи не достать.": {
+    "Достигнут лимит ников (3).": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Access to your keys and recovery phrase requires Face ID / passcode. If your phone is lost, the keys stay out of reach."
+            "value": "Nickname limit reached (3)."
           }
         }
       }
     },
-    "**Одноразовые адреса** — новый адрес для каждого сообщения": {
+    "Не удалось закрепить, попробуй позже": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "**One-time addresses** — a fresh address for every message"
+            "value": "Couldn't reserve, try again later"
           }
         }
       }
     },
-    "**Это защита, а не баг** — даже с твоей фразой восстановления никто не прочитает старую переписку": {
+    "до 3": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "**This is protection, not a bug** — even with your recovery phrase no one can read your old chats"
+            "value": "up to 3"
+          }
+        }
+      }
+    },
+    "1 · Pro для 3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 · Pro for 3"
+          }
+        }
+      }
+    },
+    "Выбери активный ник": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose active nickname"
+          }
+        }
+      }
+    },
+    "Мои ники": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My nicknames"
+          }
+        }
+      }
+    },
+    "Мои ники (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My nicknames (%lld)"
+          }
+        }
+      }
+    },
+    "Проверяю…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking…"
+          }
+        }
+      }
+    },
+    "Этот ник будут видеть твои контакты. Свободный ник закрепляется за тобой.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your contacts will see this nickname. An available name gets reserved to you."
           }
         }
       }
