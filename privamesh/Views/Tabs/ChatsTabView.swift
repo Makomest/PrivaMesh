@@ -14,6 +14,7 @@ struct ChatsTabView: View {
     @Environment(MessageQuotaService.self) private var quota
     @Environment(SubscriptionManager.self) private var subscription
     @Environment(AvatarService.self) private var avatars
+    @Environment(NicknameManager.self) private var nicknameManager
     @Environment(\.modelContext) private var context
 
     @Query(sort: \Contact.createdAt, order: .reverse) private var allContacts: [Contact]
@@ -127,46 +128,60 @@ struct ChatsTabView: View {
     // MARK: - Header
 
     private var header: some View {
-        HStack(spacing: 12) {
-            // Profile / settings entry (Messages-app style: avatar top-left).
-            Button { showProfile = true } label: {
-                Group {
-                    if let seed = avatars.activeDesign?.id {
-                        NFTAvatarView(seed: seed, size: 40)
-                    } else {
-                        MeshAvatarView(id: activeAddress.isEmpty ? "me" : activeAddress, size: 40)
+        VStack(spacing: 14) {
+            // Brand row + add.
+            HStack {
+                Text("PRIVAMESH")
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .tracking(1.5)
+                    .foregroundStyle(Theme.slate400)
+                Spacer()
+                Button { showAddContact = true } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(Theme.accentGradient)
+                        .clipShape(Circle())
+                        .shadow(color: Theme.accent.opacity(0.45), radius: 10, x: 0, y: 5)
+                }
+                .buttonStyle(.plain)
+            }
+
+            // Identity row: avatar + our own nickname.
+            HStack(spacing: 12) {
+                Button { showProfile = true } label: {
+                    Group {
+                        if let seed = avatars.activeDesign?.id {
+                            NFTAvatarView(seed: seed, size: 52)
+                        } else {
+                            MeshAvatarView(id: activeAddress.isEmpty ? "me" : activeAddress, size: 52)
+                        }
+                    }
+                    .overlay(Circle().stroke(Theme.glassStroke, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 5) {
+                        Text(nicknameManager.nickname)
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundStyle(Theme.slate800)
+                            .lineLimit(1)
+                        if subscription.isSubscribed {
+                            Image(systemName: "checkmark.seal.fill")
+                                .font(.system(size: 15)).foregroundStyle(Theme.accent)
+                        }
+                    }
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.shield.fill")
+                            .font(.system(size: 11)).foregroundStyle(Theme.positive)
+                        Text("Сквозное шифрование")
+                            .font(.system(size: 11)).foregroundStyle(Theme.accentDeep)
                     }
                 }
-                .overlay(Circle().stroke(Theme.glassStroke, lineWidth: 1))
+                Spacer()
             }
-            .buttonStyle(.plain)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("PrivaMesh")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .foregroundStyle(Theme.slate800)
-                HStack(spacing: 4) {
-                    Image(systemName: "checkmark.shield.fill")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Theme.positive)
-                    Text("Сквозное шифрование")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Theme.accentDeep)
-                }
-            }
-            Spacer()
-            Button {
-                showAddContact = true
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 40, height: 40)
-                    .background(Theme.accentGradient)
-                    .clipShape(Circle())
-                    .shadow(color: Theme.accent.opacity(0.45), radius: 10, x: 0, y: 5)
-            }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, 20)
         .padding(.top, 8)
@@ -176,30 +191,30 @@ struct ChatsTabView: View {
 
     private var quotaTile: some View {
         Button { showPaywall = true } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: 14) {
                 ZStack {
-                    Circle().fill(Theme.accentGradient).frame(width: 36, height: 36)
+                    Circle().fill(Theme.accentGradient).frame(width: 44, height: 44)
                     Image(systemName: "paperplane.fill")
-                        .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                        .font(.system(size: 17, weight: .semibold)).foregroundStyle(.white)
                 }
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text("Осталось сообщений")
-                        .font(.system(size: 11)).foregroundStyle(Theme.slate500)
+                        .font(.system(size: 12)).foregroundStyle(Theme.slate500)
                     Text("\(quota.remaining)")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
                         .foregroundStyle(Theme.slate800)
                         .contentTransition(.numericText())
                 }
                 Spacer()
-                HStack(spacing: 3) {
-                    Text(subscription.isSubscribed ? "Ещё" : "Купить")
-                        .font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.accentDeep)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .semibold)).foregroundStyle(Theme.slate400)
-                }
+                Text(subscription.isSubscribed ? "Ещё" : "Купить")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16).padding(.vertical, 8)
+                    .background(Theme.accentGradient)
+                    .clipShape(Capsule())
             }
-            .padding(.horizontal, 14).padding(.vertical, 10)
-            .glassEffect(.regular, in: .rect(cornerRadius: Theme.radiusMedium))
+            .padding(16)
+            .glassEffect(.regular, in: .rect(cornerRadius: Theme.radiusLarge))
         }
         .buttonStyle(.plain)
     }
@@ -304,7 +319,7 @@ struct ChatsTabView: View {
         }
         .buttonStyle(.plain)
         .contextMenu { rowMenu(contact) }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 20)
         .padding(.top, 8)
     }
 
@@ -348,7 +363,7 @@ struct ChatsTabView: View {
                     .contextMenu { rowMenu(contact) }
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 100)
         }
