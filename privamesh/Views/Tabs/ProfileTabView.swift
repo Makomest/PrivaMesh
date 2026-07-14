@@ -45,9 +45,11 @@ struct ProfileTabView: View {
 
     @State private var publishing = false
     @State private var publishStatus: String?
+    @State private var searchEnabled = false
 
     @State private var showNickPicker = false
     @State private var showMint = false
+    @State private var showNickEditor = false
     @State private var showBioEditor = false
     @State private var showResetAlert = false
     @State private var showPaywall = false
@@ -92,6 +94,10 @@ struct ProfileTabView: View {
                 seedLockEnabled = SeedLock.isEnabled
                 notifMuteAll = NotificationService.shared.muteAll
                 notifPreview = NotificationService.shared.showPreview
+                if let a = publicKey {
+                    searchEnabled = onChainDiscovery.alreadyPublished(
+                        nickname: nicknameManager.nickname, address: a, avatarSeed: nil)
+                }
             }
             .manageSubscriptionsSheet(isPresented: $showManageSubscriptions)
             .task(id: showManageSubscriptions) {
@@ -132,7 +138,7 @@ struct ProfileTabView: View {
             .sheet(isPresented: $showNickPicker) {
                 NicknamePickerSheet(market: market, nicknameManager: nicknameManager)
             }
-            .sheet(isPresented: $showMint) { MintNicknameSheet() }
+            .sheet(isPresented: $showNickEditor) { NicknameEditorSheet(nicknameManager: nicknameManager) }
             .sheet(isPresented: $showRPCEditor) { RPCEditorSheet(rpc: rpc) }
         }
     }
@@ -375,14 +381,21 @@ struct ProfileTabView: View {
                 Spacer()
             }
 
-            HStack(spacing: 6) {
-                Image(systemName: "info.circle")
-                    .font(.system(size: 11))
-                    .foregroundStyle(Theme.slate400)
-                Text("Ник генерируется автоматически из твоего ключа.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Theme.slate400)
+            Divider().background(Theme.glassStroke)
+            Button {
+                if subscription.isSubscribed { showNickEditor = true } else { showPaywall = true }
+            } label: {
+                HStack {
+                    Label("Свой ник", systemImage: "pencil")
+                        .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.accentDeep)
+                    Spacer()
+                    if !subscription.isSubscribed {
+                        Text("Premium").font(.system(size: 11, weight: .semibold)).foregroundStyle(Theme.accent)
+                    }
+                    Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
+                }
             }
+            .buttonStyle(.plain)
         }
         .padding(16)
         .background(Theme.glass)
@@ -532,57 +545,41 @@ struct ProfileTabView: View {
 
     private var discoveryCard: some View {
         cardChrome {
-            Button {
-                Task { await publishDiscovery() }
-            } label: {
-                HStack {
-                    Image(systemName: "magnifyingglass.circle.fill").font(.system(size: 16))
-                        .foregroundStyle(Theme.accentDeep).frame(width: 28)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Сделать профиль доступным для поиска").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                        Text(publishStatus.map { LocalizedStringKey($0) } ?? LocalizedStringKey("Опубликовать ник в сети, чтобы тебя находили по поиску. Стоит 1 сообщение."))
-                            .font(.system(size: 11)).foregroundStyle(Theme.slate500).lineLimit(3)
-                    }
-                    Spacer()
-                    if publishing { ProgressView().scaleEffect(0.8) }
-                    else { Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.slate400) }
-                }
-            }
-            .buttonStyle(.plain)
-            .disabled(publishing)
-            .padding(16)
+            toggleRow(icon: "magnifyingglass.circle.fill", title: "Поиск по нику",
+                      subtitle: publishStatus ?? "Разреши другим находить тебя по нику. Всё оплачиваем мы.",
+                      isOn: Binding(get: { searchEnabled },
+                                    set: { on in searchEnabled = on; Task { await setSearchable(on) } }))
         }
     }
 
-    private func publishDiscovery() async {
-        guard let address = publicKey else { return }
-        // Already published this nick+avatar → no tx (each publish burns a fee).
-        if onChainDiscovery.alreadyPublished(nickname: nicknameManager.nickname,
-                                             address: address, avatarSeed: nil) {
-            publishStatus = String(localized: "✓ Профиль уже доступен для поиска. Повторно нажимать не нужно — каждая публикация стоит 1 сообщение.")
+    /// Toggle "searchable by nickname". Enabling publishes the nickname so others
+    /// can find you; the cost is fully sponsored by us (no user charge). Disabling
+    /// simply stops advertising.
+    private func setSearchable(_ on: Bool) async {
+        guard on, let address = publicKey else {
+            if !on { publishStatus = String(localized: "Поиск по нику выключен") }
             return
         }
-        // Publishing is a sponsored on-chain memo — it costs one message.
-        guard quota.canSend else { showPaywall = true; return }
-        publishing = true; defer { publishing = false }
-        publishStatus = String(localized: "Публикую…")
-        guard let keypair = try? await wallet.currentKeyPair() else {
-            publishStatus = String(localized: "Профиль недоступен"); return
+        if onChainDiscovery.alreadyPublished(nickname: nicknameManager.nickname,
+                                             address: address, avatarSeed: nil) {
+            publishStatus = String(localized: "Тебя можно найти по нику ✓"); return
         }
-        guard let bundle = try? messagingIdentity.prekeyBundle() else {
-            publishStatus = String(localized: "Нет ключей профиля"); return
+        publishing = true; defer { publishing = false }
+        publishStatus = String(localized: "Включаю…")
+        guard let keypair = try? await wallet.currentKeyPair(),
+              let bundle = try? messagingIdentity.prekeyBundle() else {
+            publishStatus = String(localized: "Профиль недоступен"); searchEnabled = false; return
         }
         let signed = bundle.walletSigned(address: address, keypair: keypair)
         let err = await onChainDiscovery.publish(
             nickname: nicknameManager.nickname, address: address,
             signedBundleBase64: signed.base64Encoded,
             avatarSeed: nil, keypair: keypair, rpc: rpc)
-        if let err {
-            publishStatus = String(localized: "Ошибка: \(err)")
-        } else {
-            quota.consume()   // publishing costs one message
-            publishStatus = String(localized: "Опубликовано ✓ Ник «\(nicknameManager.nickname)» теперь ищется")
-        }
+        // Cost is sponsored by us — no message is charged to the user.
+        publishStatus = err == nil
+            ? String(localized: "Тебя можно найти по нику ✓")
+            : String(localized: "Не удалось включить, попробуй позже")
+        if err != nil { searchEnabled = false }
     }
 
     private var secureOnChainCard: some View {

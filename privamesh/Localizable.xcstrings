@@ -13,6 +13,7 @@
         }
       }
     },
+    "·": {},
     "· %@": {
       "localizations": {
         "en": {
@@ -97,6 +98,17 @@
         }
       }
     },
+    "**Face ID на ключи** — в Keychain под биометрией": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Face ID on your keys** — in the Keychain behind biometrics"
+          }
+        }
+      }
+    },
     "**PrivaMesh+** — от $5.99/мес: больше сообщений, галочка, 3 аккаунта": {
       "extractionState": "stale",
       "localizations": {
@@ -126,6 +138,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "**No phone or email** — only a seed phrase = your identity"
+          }
+        }
+      }
+    },
+    "**Без телефона и email** — только фраза восстановления = твоя личность": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No phone or email** — your recovery phrase is your identity"
           }
         }
       }
@@ -229,6 +252,17 @@
         }
       }
     },
+    "**Комиссии платит приложение** — твой адрес не раскрывается": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**The app pays the fees** — your address is not revealed"
+          }
+        }
+      }
+    },
     "**Личность и баланс** вернутся по 12 словам на любом устройстве": {
       "extractionState": "stale",
       "localizations": {
@@ -306,6 +340,17 @@
         }
       }
     },
+    "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No signup** — your recovery phrase is your account forever"
+          }
+        }
+      }
+    },
     "**Никому не показывай** эти слова. Любой кто их увидит — получит доступ к твоему аккаунту.": {
       "extractionState": "stale",
       "localizations": {
@@ -368,6 +413,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "**Separate account keys** — your accounts can't be linked"
+          }
+        }
+      }
+    },
+    "**Сообщения зашифрованы** — хранятся не на наших серверах": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Messages are encrypted** — not stored on our servers"
           }
         }
       }
@@ -819,6 +875,17 @@
     },
     "Full decentralized privacy, unlocked.": {},
     "https://your-rpc…": {},
+    "ID сообщения": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message ID"
+          }
+        }
+      }
+    },
     "Last updated: June 2026": {},
     "Loading pricing…": {},
     "Manage Accounts": {},
@@ -901,6 +968,16 @@
       }
     },
     "PrivaMesh+": {},
+    "PrivaMesh+ — авто-возобновляемая подписка (1 месяц). Оплата списывается с Apple ID, продлевается автоматически; отмена в любой момент в настройках Apple ID минимум за 24 часа до конца периода. Комиссии сети оплачиваются за вас.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PrivaMesh+ is an auto-renewable subscription (1 month). Payment is charged to your Apple ID and renews automatically; cancel anytime in Apple ID settings at least 24 hours before the period ends. Network fees are covered for you."
+          }
+        }
+      }
+    },
     "PrivaMesh+ открывает до %lld аккаунтов на устройстве.": {
       "localizations": {
         "en": {
@@ -955,7 +1032,6 @@
         }
       }
     },
-    "Seed phrase": {},
     "Seed газ-кошелька": {
       "extractionState": "stale",
       "localizations": {
@@ -1452,6 +1528,17 @@
         }
       }
     },
+    "В QR некорректный адрес получателя.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The QR has an invalid recipient address."
+          }
+        }
+      }
+    },
     "В буфере не 12 слов (нашёл %lld)": {
       "localizations": {
         "en": {
@@ -1514,7 +1601,18 @@
         }
       }
     },
+    "Введи ник вида **SwiftFox#1234**\nили полный адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a nickname like **SwiftFox#1234**\nor a full address"
+          }
+        }
+      }
+    },
     "Введи ник вида **SwiftFox#1234**\nили полный адрес Solana": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1674,11 +1772,22 @@
       }
     },
     "Восстановить из seed phrase": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Restore from seed phrase"
+          }
+        }
+      }
+    },
+    "Восстановить по фразе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore from recovery phrase"
           }
         }
       }
@@ -1738,11 +1847,22 @@
       }
     },
     "Все данные удалятся с устройства. Восстановить можно только seed phrase.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "All data will be deleted from this device. Only the seed phrase can restore it."
+          }
+        }
+      }
+    },
+    "Все данные удалятся с устройства. Восстановить можно только по фразе восстановления.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All data will be deleted from this device. Recovery is only possible with your recovery phrase."
           }
         }
       }
@@ -1829,6 +1949,7 @@
       }
     },
     "Выбрать NFT-ник (%lld)": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2185,6 +2306,7 @@
       }
     },
     "До 3 NFT-ников — минт бесплатно": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2257,11 +2379,22 @@
       }
     },
     "Добавь свой Solana RPC (https). Приложение будет ходить через него; дефолтные узлы остаются резервом. Пусто = дефолт (Helius).": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Add your Solana RPC (https). The app will use it; default nodes stay as backup. Empty = default (Helius)."
+          }
+        }
+      }
+    },
+    "Добавь свой сетевой узел (https). Приложение будет ходить через него; дефолтные остаются резервом. Пусто = дефолт.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your own network endpoint (https). The app routes through it; defaults remain as backup. Empty = default."
           }
         }
       }
@@ -2592,6 +2725,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "encrypted"
+          }
+        }
+      }
+    },
+    "Зашифровано · ключи не покидают устройство": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encrypted · keys never leave your device"
           }
         }
       }
@@ -2953,6 +3096,7 @@
       }
     },
     "Комиссии сети оплачиваются за вас. Подписка продлевается автоматически, отмена в любой момент в настройках Apple ID.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3199,6 +3343,7 @@
       }
     },
     "Лимит": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3637,6 +3782,17 @@
         }
       }
     },
+    "Не удалось отправить сообщение": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not send the message"
+          }
+        }
+      }
+    },
     "Не удалось подключить: проверь seed-фразу": {
       "extractionState": "stale",
       "localizations": {
@@ -3677,6 +3833,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Couldn't read the seed phrase"
+          }
+        }
+      }
+    },
+    "Не удалось прочитать фразу восстановления": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not read the recovery phrase"
           }
         }
       }
@@ -4127,7 +4294,18 @@
         }
       }
     },
+    "Ник генерируется автоматически из твоего ключа.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your nickname is generated automatically from your key."
+          }
+        }
+      }
+    },
     "Ник генерируется автоматически. Заминть свой NFT-ник, чтобы выбрать собственное имя.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -4159,11 +4337,22 @@
       }
     },
     "Ник или адрес Solana…": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Nickname or Solana address…"
+          }
+        }
+      }
+    },
+    "Ник или адрес…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname or address…"
           }
         }
       }
@@ -4548,6 +4737,7 @@
       }
     },
     "Открыть в Solana Explorer": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -5166,11 +5356,22 @@
       }
     },
     "Подтверди личность чтобы увидеть seed phrase": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Confirm your identity to view the seed phrase"
+          }
+        }
+      }
+    },
+    "Подтверди личность чтобы увидеть фразу восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm your identity to view the recovery phrase"
           }
         }
       }
@@ -5420,6 +5621,17 @@
         }
       }
     },
+    "Показать фразу восстановления": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show recovery phrase"
+          }
+        }
+      }
+    },
     "Показывать контактам, что у тебя PrivaMesh+.": {
       "extractionState": "stale",
       "localizations": {
@@ -5476,7 +5688,6 @@
       }
     },
     "Политика конфиденциальности": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -5497,7 +5708,18 @@
         }
       }
     },
+    "Получатель скрыт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipient hidden"
+          }
+        }
+      }
+    },
     "Получатель скрыт в блокчейне": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -5708,6 +5930,7 @@
       }
     },
     "Приватный мессенджер на Solana.\nБез телефона и email — только твой ключ.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -5724,6 +5947,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "A private messenger, wallet and NFT market on Solana.\nNo servers, no surveillance."
+          }
+        }
+      }
+    },
+    "Приватный мессенджер.\nБез телефона и email — только твой ключ.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A private messenger.\nNo phone or email — just your key."
           }
         }
       }
@@ -6482,6 +6715,7 @@
       }
     },
     "Создать NFT-ник (%lld/%lld)": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -6599,6 +6833,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Messages are end-to-end encrypted and stored on the blockchain. The developer has NO access to their content and cannot delete it."
+          }
+        }
+      }
+    },
+    "Сообщения зашифрованы end-to-end и хранятся не на наших серверах. Разработчик НЕ имеет доступа к их содержимому.": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages are end-to-end encrypted and not stored on our servers. The developer has NO access to their content."
           }
         }
       }
@@ -7138,6 +7383,16 @@
         }
       }
     },
+    "Условия использования (EULA)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use (EULA)"
+          }
+        }
+      }
+    },
     "Установлено": {
       "extractionState": "stale",
       "localizations": {
@@ -7149,7 +7404,18 @@
         }
       }
     },
+    "Фраза восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery phrase"
+          }
+        }
+      }
+    },
     "Хранение: блокчейн Solana · зашифровано · ключи не покидают устройство": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -7286,6 +7552,17 @@
         }
       }
     },
+    "Это старый QR без адреса. Попроси контакт показать новый QR (или добавь через поиск).": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is an old QR without an address. Ask the contact for a new QR (or add via search)."
+          }
+        }
+      }
+    },
     "Это твой лот": {
       "extractionState": "stale",
       "localizations": {
@@ -7327,252 +7604,62 @@
         }
       }
     },
-    "PrivaMesh+ — авто-возобновляемая подписка (1 месяц). Оплата списывается с Apple ID, продлевается автоматически; отмена в любой момент в настройках Apple ID минимум за 24 часа до конца периода. Комиссии сети оплачиваются за вас.": {
+    "Разреши другим находить тебя по нику. Всё оплачиваем мы.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "PrivaMesh+ is an auto-renewable subscription (1 month). Payment is charged to your Apple ID and renews automatically; cancel anytime in Apple ID settings at least 24 hours before the period ends. Network fees are covered for you."
+            "value": "Let others find you by your nickname. Fully covered by us."
           }
         }
       }
     },
-    "Условия использования (EULA)": {
+    "Тебя можно найти по нику ✓": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Terms of Use (EULA)"
+            "value": "You can be found by nickname ✓"
           }
         }
       }
     },
-    "Восстановить по фразе": {
+    "Поиск по нику выключен": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Restore from recovery phrase"
+            "value": "Find by nickname is off"
           }
         }
       }
     },
-    "Приватный мессенджер.\nБез телефона и email — только твой ключ.": {
+    "Включаю…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A private messenger.\nNo phone or email — just your key."
+            "value": "Enabling…"
           }
         }
       }
     },
-    "**Без телефона и email** — только фраза восстановления = твоя личность": {
+    "Не удалось включить, попробуй позже": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "**No phone or email** — your recovery phrase is your identity"
+            "value": "Could not enable, try again later"
           }
         }
       }
     },
-    "**Комиссии платит приложение** — твой адрес не раскрывается": {
+    "Свой ник": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "**The app pays the fees** — your address is not revealed"
-          }
-        }
-      }
-    },
-    "**Сообщения зашифрованы** — хранятся не на наших серверах": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**Messages are encrypted** — not stored on our servers"
-          }
-        }
-      }
-    },
-    "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**No signup** — your recovery phrase is your account forever"
-          }
-        }
-      }
-    },
-    "**Face ID на ключи** — в Keychain под биометрией": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**Face ID on your keys** — in the Keychain behind biometrics"
-          }
-        }
-      }
-    },
-    "Ник или адрес…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nickname or address…"
-          }
-        }
-      }
-    },
-    "Введи ник вида **SwiftFox#1234**\nили полный адрес": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter a nickname like **SwiftFox#1234**\nor a full address"
-          }
-        }
-      }
-    },
-    "Это старый QR без адреса. Попроси контакт показать новый QR (или добавь через поиск).": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is an old QR without an address. Ask the contact for a new QR (or add via search)."
-          }
-        }
-      }
-    },
-    "В QR некорректный адрес получателя.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The QR has an invalid recipient address."
-          }
-        }
-      }
-    },
-    "Фраза восстановления": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recovery phrase"
-          }
-        }
-      }
-    },
-    "Подтверди личность чтобы увидеть фразу восстановления": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm your identity to view the recovery phrase"
-          }
-        }
-      }
-    },
-    "Показать фразу восстановления": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show recovery phrase"
-          }
-        }
-      }
-    },
-    "Не удалось прочитать фразу восстановления": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not read the recovery phrase"
-          }
-        }
-      }
-    },
-    "Все данные удалятся с устройства. Восстановить можно только по фразе восстановления.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All data will be deleted from this device. Recovery is only possible with your recovery phrase."
-          }
-        }
-      }
-    },
-    "Получатель скрыт": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recipient hidden"
-          }
-        }
-      }
-    },
-    "Добавь свой сетевой узел (https). Приложение будет ходить через него; дефолтные остаются резервом. Пусто = дефолт.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add your own network endpoint (https). The app routes through it; defaults remain as backup. Empty = default."
-          }
-        }
-      }
-    },
-    "Ник генерируется автоматически из твоего ключа.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your nickname is generated automatically from your key."
-          }
-        }
-      }
-    },
-    "ID сообщения": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Message ID"
-          }
-        }
-      }
-    },
-    "Не удалось отправить сообщение": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not send the message"
-          }
-        }
-      }
-    },
-    "Зашифровано · ключи не покидают устройство": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Encrypted · keys never leave your device"
-          }
-        }
-      }
-    },
-    "Сообщения зашифрованы end-to-end и хранятся не на наших серверах. Разработчик НЕ имеет доступа к их содержимому.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Messages are end-to-end encrypted and not stored on our servers. The developer has NO access to their content."
+            "value": "Custom nickname"
           }
         }
       }
