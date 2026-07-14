@@ -35,8 +35,16 @@ export interface Env {
   /** PEM of Apple Root CA - G3. When set, receipt chains are pinned to it. */
   APPLE_ROOT_G3?: string;
   /** Overridable safety limits. */
-  DAILY_TX_CAP?: string;    // global sponsored tx/day
+  DAILY_TX_CAP?: string;    // global sponsored tx/day (all tiers)
+  FREE_DAILY_CAP?: string;  // global FREE-tier sponsored tx/day (sybil ceiling)
   RATE_PER_MIN?: string;    // per-account /send per minute
+  /**
+   * Relaxes Apple cert-chain pinning for LOCAL StoreKit testing only. MUST be
+   * unset in production; the Worker refuses to start a privileged request while
+   * it is '1' unless ALLOW_INSECURE is also set (an explicit dev acknowledgement).
+   */
+  DEV_SKIP_PINNING?: string;
+  ALLOW_INSECURE?: string;
 }
 
 const PACK_MESSAGES: Record<string, number> = {
@@ -50,7 +58,19 @@ const PRO_ID = 'com.privamesh.pro.monthly';
 const FREE_MONTHLY = 10;
 
 const DEFAULT_DAILY_CAP = 5000;
+const DEFAULT_FREE_DAILY_CAP = 500;   // global ceiling on FREE-tier sponsored tx/day
 const DEFAULT_RATE_PER_MIN = 20;
+
+/**
+ * Guard against shipping with pinning disabled. DEV_SKIP_PINNING bypasses Apple
+ * receipt verification and must never be live in production; requiring an
+ * explicit ALLOW_INSECURE alongside it makes an accidental deploy fail closed.
+ */
+function assertPinningSafe(env: Env): void {
+  if (env.DEV_SKIP_PINNING === '1' && env.ALLOW_INSECURE !== '1') {
+    throw new Error('refusing to run: DEV_SKIP_PINNING set without ALLOW_INSECURE');
+  }
+}
 
 /**
  * Apple Root CA - G3 (public), downloaded from
@@ -79,12 +99,14 @@ export default {
     if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
     const url = new URL(req.url);
     try {
+      assertPinningSafe(env);
       if (url.pathname === '/send') return await handleSend(req, env);
       if (url.pathname === '/credit') return await handleCredit(req, env);
-      if (url.pathname === '/mint') return await handleMint(req, env);
       return json({ error: 'not found' }, 404);
     } catch (e: any) {
-      return json({ error: String(e?.message ?? e) }, 500);
+      // Log full detail server-side; never leak internal exception text to callers.
+      console.error('relay error', e);
+      return json({ error: 'internal error' }, 500);
     }
   },
 };
@@ -95,37 +117,78 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
   const { tx, jws, account } = await req.json<any>();
   if (!tx || !account) return json({ error: 'missing tx/account' }, 400);
 
+  // Deserialize once — needed for the treasury-safety guard and the discovery
+  // nickname check below.
+  const treasury = Keypair.fromSecretKey(bs58.decode(env.TREASURY_SECRET));
+  let transaction: Transaction;
+  try {
+    transaction = Transaction.from(Buffer.from(tx, 'base64'));
+    assertTreasuryOnlyPaysFees(transaction, treasury); // never sign a tx that debits the treasury
+  } catch (e) {
+    console.error('bad tx', e);
+    return json({ error: 'bad transaction' }, 400);
+  }
+
   // 1. Rate-limit this account token.
   if (!(await underRateLimit(env, account))) {
     return json({ error: 'rate limited' }, 429);
   }
 
-  // 2. Global circuit-breaker: never exceed the daily sponsored-tx cap.
+  // 2. Nickname registry: a discovery publish reserves the nickname to this
+  //    account. Authoritative uniqueness — a different account cannot claim a
+  //    name already held by someone else.
+  const nick = extractDiscoveryNick(transaction);
+  if (nick) {
+    const owner = await env.QUOTA.get(`nick:${nick}`);
+    if (owner && owner !== account) return json({ error: 'nickname taken' }, 409);
+  }
+
+  // 3. Global circuit-breaker: never exceed the daily sponsored-tx cap.
   const cap = parseInt(env.DAILY_TX_CAP ?? '', 10) || DEFAULT_DAILY_CAP;
   const day = new Date().toISOString().slice(0, 10);
   const capKey = `daycap:${day}`;
   const spentToday = parseInt((await env.QUOTA.get(capKey)) ?? '0', 10);
   if (spentToday >= cap) return json({ error: 'daily cap reached' }, 503);
 
-  // 3. Verify entitlement + reserve one message of quota.
-  const ok = await reserveMessage(env, account, jws);
-  if (!ok) return json({ error: 'quota exceeded' }, 402);
+  // 4. Verify entitlement + reserve one message of quota.
+  const grant = await reserveMessage(env, account, jws);
+  if (!grant.ok) return json({ error: 'quota exceeded' }, 402);
 
-  // 4. Co-sign the fee-payer slot with the treasury and submit.
+  // 4b. FREE-tier sybil ceiling: unauthenticated (no active subscription) sends
+  //     draw from a SEPARATE, much lower global daily cap, so an attacker minting
+  //     unlimited seed accounts can never spend more than FREE_DAILY_CAP of the
+  //     treasury per day. Paying users are unaffected (they use the higher cap).
+  const freeCapKey = `freecap:${day}`;
+  if (grant.tier === 'free') {
+    const freeCap = parseInt(env.FREE_DAILY_CAP ?? '', 10) || DEFAULT_FREE_DAILY_CAP;
+    const freeToday = parseInt((await env.QUOTA.get(freeCapKey)) ?? '0', 10);
+    if (freeToday >= freeCap) {
+      await refundMessage(env, account);
+      return json({ error: 'free tier busy, try later' }, 503);
+    }
+  }
+
+  // 5. Co-sign the fee-payer slot with the treasury and submit.
   try {
-    const treasury = Keypair.fromSecretKey(bs58.decode(env.TREASURY_SECRET));
-    const transaction = Transaction.from(Buffer.from(tx, 'base64'));
-    assertTreasuryOnlyPaysFees(transaction, treasury); // never sign a tx that debits the treasury
     transaction.partialSign(treasury); // fills the fee-payer signature slot
     const raw = transaction.serialize();
     const conn = new Connection(env.RPC_URL, 'confirmed');
     const signature = await conn.sendRawTransaction(raw, { skipPreflight: false });
-    // Count a successful sponsored tx against the daily cap.
+    // Count a successful sponsored tx against the daily cap(s).
     await env.QUOTA.put(capKey, String(spentToday + 1), { expirationTtl: 60 * 60 * 26 });
+    if (grant.tier === 'free') {
+      const freeToday = parseInt((await env.QUOTA.get(freeCapKey)) ?? '0', 10);
+      await env.QUOTA.put(freeCapKey, String(freeToday + 1), { expirationTtl: 60 * 60 * 26 });
+    }
+    // Claim the nickname now that the publish actually landed.
+    if (nick) {
+      await env.QUOTA.put(`nick:${nick}`, account, { expirationTtl: 60 * 60 * 24 * 400 });
+    }
     return json({ signature });
-  } catch (e: any) {
+  } catch (e) {
+    console.error('submit failed', e);
     await refundMessage(env, account); // don't burn quota on submit failure
-    return json({ error: 'submit failed: ' + String(e?.message ?? e) }, 502);
+    return json({ error: 'submit failed' }, 502);
   }
 }
 
@@ -147,58 +210,6 @@ async function handleCredit(req: Request, env: Env): Promise<Response> {
   const cur = parseInt((await env.QUOTA.get(balKey)) ?? '0', 10);
   await env.QUOTA.put(balKey, String(cur + messages));
   return json({ ok: true, balance: cur + messages });
-}
-
-// ---------------------------------------------------------------- /mint
-
-const MAX_MINTS = 3; // sponsored NFT nickname mints per subscriber account
-
-async function handleMint(req: Request, env: Env): Promise<Response> {
-  const { tx, jws, account } = await req.json<any>();
-  if (!tx || !account) return json({ error: 'missing tx/account' }, 400);
-  if (!jws) return json({ error: 'subscription required' }, 403);
-
-  // Must be an active subscriber.
-  let claims;
-  try {
-    claims = await verifyAppleJWS(jws, env);
-  } catch (e: any) {
-    return json({ error: 'invalid receipt: ' + String(e?.message ?? e) }, 403);
-  }
-  const subActive =
-    (claims.productId === PLUS_ID || claims.productId === PRO_ID) &&
-    !(claims.expiresDate && claims.expiresDate < Date.now());
-  if (!subActive) return json({ error: 'active subscription required' }, 403);
-
-  // Enforce the lifetime mint allowance per account.
-  const mintKey = `mints:${account}`;
-  const used = parseInt((await env.QUOTA.get(mintKey)) ?? '0', 10);
-  if (used >= MAX_MINTS) return json({ error: 'mint limit reached' }, 402);
-
-  // Rate-limit + daily circuit-breaker apply to mints too.
-  if (!(await underRateLimit(env, account))) return json({ error: 'rate limited' }, 429);
-  const cap = parseInt(env.DAILY_TX_CAP ?? '', 10) || DEFAULT_DAILY_CAP;
-  const day = new Date().toISOString().slice(0, 10);
-  const capKey = `daycap:${day}`;
-  const spentToday = parseInt((await env.QUOTA.get(capKey)) ?? '0', 10);
-  if (spentToday >= cap) return json({ error: 'daily cap reached' }, 503);
-
-  await env.QUOTA.put(mintKey, String(used + 1), { expirationTtl: 60 * 60 * 24 * 400 });
-  try {
-    const treasury = Keypair.fromSecretKey(bs58.decode(env.TREASURY_SECRET));
-    const transaction = Transaction.from(Buffer.from(tx, 'base64'));
-    assertTreasuryOnlyPaysFees(transaction, treasury);
-    transaction.partialSign(treasury);
-    const raw = transaction.serialize();
-    const conn = new Connection(env.RPC_URL, 'confirmed');
-    const signature = await conn.sendRawTransaction(raw, { skipPreflight: false });
-    await env.QUOTA.put(capKey, String(spentToday + 1), { expirationTtl: 60 * 60 * 26 });
-    return json({ signature });
-  } catch (e: any) {
-    // Refund the mint allowance on submit failure.
-    await env.QUOTA.put(mintKey, String(used), { expirationTtl: 60 * 60 * 24 * 400 });
-    return json({ error: 'mint submit failed: ' + String(e?.message ?? e) }, 502);
-  }
 }
 
 // ------------------------------------------------------ tx safety guard
@@ -227,7 +238,9 @@ function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair)
 
 // ------------------------------------------------------------ quota core
 
-async function reserveMessage(env: Env, account: string, jws?: string): Promise<boolean> {
+type Grant = { ok: boolean; tier: 'free' | 'sub' | 'pack' | null };
+
+async function reserveMessage(env: Env, account: string, jws?: string): Promise<Grant> {
   let allowance = 0;
   if (jws) {
     try {
@@ -239,6 +252,7 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
       allowance = 0; // invalid receipt → no subscription allowance
     }
   }
+  const hasSub = allowance > 0;
 
   const month = new Date().toISOString().slice(0, 7);
   const usedKey = `used:${account}:${month}`;
@@ -247,16 +261,49 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
 
   if (used < effectiveAllowance) {
     await env.QUOTA.put(usedKey, String(used + 1), { expirationTtl: 60 * 60 * 24 * 62 });
-    return true;
+    // Without an active subscription the message comes from the free allowance.
+    return { ok: true, tier: hasSub ? 'sub' : 'free' };
   }
 
   const balKey = `pack:${account}`;
   const bal = parseInt((await env.QUOTA.get(balKey)) ?? '0', 10);
   if (bal > 0) {
     await env.QUOTA.put(balKey, String(bal - 1));
-    return true;
+    return { ok: true, tier: 'pack' };
   }
-  return false;
+  return { ok: false, tier: null };
+}
+
+// ------------------------------------------------------ discovery nick parse
+
+const MEMO_PROGRAM_ID = 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr';
+const DISCOVERY_PREFIX = 'PDIR1:';
+
+/**
+ * If this transaction is a discovery-registry publish, return the lowercased
+ * nickname it claims; otherwise null. Ordinary messages carry an encrypted memo
+ * that does not start with the discovery prefix, so they are ignored. Used to
+ * enforce authoritative nickname uniqueness in KV.
+ */
+function extractDiscoveryNick(transaction: Transaction): string | null {
+  for (const ix of transaction.instructions) {
+    if (ix.programId.toBase58() !== MEMO_PROGRAM_ID) continue;
+    let text: string;
+    try {
+      text = new TextDecoder().decode(ix.data);
+    } catch {
+      continue;
+    }
+    if (!text.startsWith(DISCOVERY_PREFIX)) continue;
+    try {
+      const rec = JSON.parse(text.slice(DISCOVERY_PREFIX.length));
+      const n = String(rec?.nickname ?? '').trim().toLowerCase();
+      return n || null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
 }
 
 async function refundMessage(env: Env, account: string): Promise<void> {
