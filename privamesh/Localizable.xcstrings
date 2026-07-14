@@ -7840,6 +7840,96 @@
           }
         }
       }
+    },
+    "Поиск": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "Придумай новый код": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new code"
+          }
+        }
+      }
+    },
+    "Аккаунт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "Газовый баланс не создан": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gas balance not created"
+          }
+        }
+      }
+    },
+    "Не удалось закодировать запись": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't encode record"
+          }
+        }
+      }
+    },
+    "Не удалось прочитать бандл": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't read bundle"
+          }
+        }
+      }
+    },
+    "Пустой никнейм": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty nickname"
+          }
+        }
+      }
+    },
+    "Реестр не настроен": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registry not configured"
+          }
+        }
+      }
+    },
+    "Ник «%@» уже занят": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname “%@” is taken"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

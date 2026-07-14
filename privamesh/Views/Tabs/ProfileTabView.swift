@@ -902,7 +902,7 @@ private struct NicknameEditorSheet: View {
         errorMessage = nil
         // Uniqueness: if someone else already holds this name, block.
         if let found = await discovery.search(query: name, rpc: rpc), found.address != address {
-            errorMessage = "Ник «\(name)» уже занят"; return
+            errorMessage = String(localized: "Ник «\(name)» уже занят"); return
         }
         // Reserve: publish the nickname→identity record (sponsored) so it's yours.
         guard let bundle = try? identity.prekeyBundle(),
