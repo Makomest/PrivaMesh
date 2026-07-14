@@ -129,7 +129,7 @@ struct OnboardingExplainerView: View {
                           text: "**Double Ratchet** — новый ключ для каждого сообщения"),
                 PointData(icon: "eye.slash.fill",
                           color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Stealth адреса** — одноразовый адрес на каждую транзакцию"),
+                          text: "**Одноразовые адреса** — новый адрес для каждого сообщения"),
                 PointData(icon: "person.fill.questionmark",
                           color: Color(red: 245/255, green: 158/255, blue: 11/255),
                           text: "**Без телефона и email** — только фраза восстановления = твоя личность"),
@@ -227,7 +227,7 @@ struct OnboardingExplainerView: View {
                           text: "**История чатов не переедет** на новый телефон — копии есть только здесь"),
                 PointData(icon: "lock.shield.fill",
                           color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                          text: "**Это защита, а не баг** — даже с твоим seed никто не прочитает старую переписку"),
+                          text: "**Это защита, а не баг** — даже с твоей фразой восстановления никто не прочитает старую переписку"),
             ]
         ),
         SlideData(

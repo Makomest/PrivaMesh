@@ -33,8 +33,8 @@ struct SecuritySetupView: View {
                         if SeedLock.isAvailable {
                             toggleCard(
                                 icon: "faceid", color: Theme.accent,
-                                title: "Защита seed по Face ID",
-                                desc: "Чтение seed-фразы и подпись требуют Face ID / пароль. Если телефон попал в чужие руки — ключи не достать.",
+                                title: "Защита ключа по Face ID",
+                                desc: "Доступ к ключам и фразе восстановления требует Face ID / пароль. Если телефон попал в чужие руки — ключи не достать.",
                                 isOn: $seedLockOn)
                         }
 
