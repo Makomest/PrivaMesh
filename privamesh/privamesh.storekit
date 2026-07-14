@@ -123,12 +123,12 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "2000 сообщений в месяц, галочка верификации, до 3 аккаунтов, бесплатный NFT-ник, приоритет. Комиссии сети оплачиваются за вас.",
+              "description" : "2000 сообщений в месяц, галочка верификации, до 3 аккаунтов, приоритет. Комиссии сети оплачиваются за вас.",
               "displayName" : "PrivaMesh+ Pro",
               "locale" : "ru"
             },
             {
-              "description" : "2000 messages per month, verification checkmark, up to 3 accounts, free NFT nickname, priority. Network fees covered.",
+              "description" : "2000 messages per month, verification checkmark, up to 3 accounts, priority. Network fees covered.",
               "displayName" : "PrivaMesh+ Pro",
               "locale" : "en_US"
             }

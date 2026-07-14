@@ -207,7 +207,6 @@ struct QuotaPaywallSheet: View {
             String(localized: "Галочка верификации на аккаунте"),
             String(localized: "До 3 аккаунтов на устройстве"),
         ]
-        list.append(String(localized: "До 3 NFT-ников — минт бесплатно"))
         return list
     }
 

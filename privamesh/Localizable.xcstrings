@@ -7346,6 +7346,236 @@
           }
         }
       }
+    },
+    "Восстановить по фразе": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore from recovery phrase"
+          }
+        }
+      }
+    },
+    "Приватный мессенджер.\nБез телефона и email — только твой ключ.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A private messenger.\nNo phone or email — just your key."
+          }
+        }
+      }
+    },
+    "**Без телефона и email** — только фраза восстановления = твоя личность": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No phone or email** — your recovery phrase is your identity"
+          }
+        }
+      }
+    },
+    "**Комиссии платит приложение** — твой адрес не раскрывается": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**The app pays the fees** — your address is not revealed"
+          }
+        }
+      }
+    },
+    "**Сообщения зашифрованы** — хранятся не на наших серверах": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Messages are encrypted** — not stored on our servers"
+          }
+        }
+      }
+    },
+    "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**No signup** — your recovery phrase is your account forever"
+          }
+        }
+      }
+    },
+    "**Face ID на ключи** — в Keychain под биометрией": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Face ID on your keys** — in the Keychain behind biometrics"
+          }
+        }
+      }
+    },
+    "Ник или адрес…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nickname or address…"
+          }
+        }
+      }
+    },
+    "Введи ник вида **SwiftFox#1234**\nили полный адрес": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a nickname like **SwiftFox#1234**\nor a full address"
+          }
+        }
+      }
+    },
+    "Это старый QR без адреса. Попроси контакт показать новый QR (или добавь через поиск).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is an old QR without an address. Ask the contact for a new QR (or add via search)."
+          }
+        }
+      }
+    },
+    "В QR некорректный адрес получателя.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The QR has an invalid recipient address."
+          }
+        }
+      }
+    },
+    "Фраза восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery phrase"
+          }
+        }
+      }
+    },
+    "Подтверди личность чтобы увидеть фразу восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm your identity to view the recovery phrase"
+          }
+        }
+      }
+    },
+    "Показать фразу восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show recovery phrase"
+          }
+        }
+      }
+    },
+    "Не удалось прочитать фразу восстановления": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not read the recovery phrase"
+          }
+        }
+      }
+    },
+    "Все данные удалятся с устройства. Восстановить можно только по фразе восстановления.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All data will be deleted from this device. Recovery is only possible with your recovery phrase."
+          }
+        }
+      }
+    },
+    "Получатель скрыт": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipient hidden"
+          }
+        }
+      }
+    },
+    "Добавь свой сетевой узел (https). Приложение будет ходить через него; дефолтные остаются резервом. Пусто = дефолт.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your own network endpoint (https). The app routes through it; defaults remain as backup. Empty = default."
+          }
+        }
+      }
+    },
+    "Ник генерируется автоматически из твоего ключа.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your nickname is generated automatically from your key."
+          }
+        }
+      }
+    },
+    "ID сообщения": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message ID"
+          }
+        }
+      }
+    },
+    "Не удалось отправить сообщение": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not send the message"
+          }
+        }
+      }
+    },
+    "Зашифровано · ключи не покидают устройство": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encrypted · keys never leave your device"
+          }
+        }
+      }
+    },
+    "Сообщения зашифрованы end-to-end и хранятся не на наших серверах. Разработчик НЕ имеет доступа к их содержимому.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages are end-to-end encrypted and not stored on our servers. The developer has NO access to their content."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

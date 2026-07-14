@@ -70,8 +70,9 @@ struct ProfileTabView: View {
                         if subscription.isSubscribed { premiumStatusCard } else { premiumUpsellCard }
                         descriptionCard
                         nicknameCard
+                        // NFT nickname minting / on-chain "secure" removed — no
+                        // crypto-asset creation in the app.
                         discoveryCard
-                        secureOnChainCard
                         appearanceCard
                         securityCard
                         privacyCard
@@ -117,7 +118,7 @@ struct ProfileTabView: View {
                     router.go(to: .welcome)
                 }
             } message: {
-                Text("Все данные удалятся с устройства. Восстановить можно только seed phrase.")
+                Text("Все данные удалятся с устройства. Восстановить можно только по фразе восстановления.")
             }
             .sheet(isPresented: $showPaywall) {
                 QuotaPaywallSheet()
@@ -374,55 +375,14 @@ struct ProfileTabView: View {
                 Spacer()
             }
 
-            if market.ownedNicknames.isEmpty {
-                HStack(spacing: 6) {
-                    Image(systemName: "info.circle")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Theme.slate400)
-                    Text("Ник генерируется автоматически. Заминть свой NFT-ник, чтобы выбрать собственное имя.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Theme.slate400)
-                }
-            } else {
-                Divider().background(Theme.glassStroke)
-                Button { showNickPicker = true } label: {
-                    HStack {
-                        Label("Выбрать NFT-ник (\(market.ownedNicknames.count))", systemImage: "at.badge.plus")
-                            .font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.accentDeep)
-                        Spacer()
-                        Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
-                    }
-                }
-                .buttonStyle(.plain)
+            HStack(spacing: 6) {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.slate400)
+                Text("Ник генерируется автоматически из твоего ключа.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Theme.slate400)
             }
-
-            // Mint a custom NFT nickname — a premium perk. The network fee + rent
-            // are sponsored by the app (relay), so the subscriber spends no crypto.
-            // Capped at maxMints per account (also enforced by the relay).
-            Divider().background(Theme.glassStroke)
-            let mintLimitReached = market.mintedNicknames.count >= MarketService.maxMints
-            Button {
-                if !subscription.isSubscribed { showPaywall = true }
-                else if !mintLimitReached { showMint = true }
-            } label: {
-                HStack {
-                    Label("Создать NFT-ник (\(market.mintedNicknames.count)/\(MarketService.maxMints))",
-                          systemImage: "sparkles")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(mintLimitReached ? Theme.slate400 : Theme.accentDeep)
-                    Spacer()
-                    if mintLimitReached {
-                        Text("Лимит").font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Theme.slate400)
-                    } else if !subscription.isSubscribed {
-                        Text("Premium").font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Theme.accent)
-                    }
-                    Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(Theme.slate400)
-                }
-            }
-            .buttonStyle(.plain)
-            .disabled(subscription.isSubscribed && mintLimitReached)
         }
         .padding(16)
         .background(Theme.glass)
@@ -438,7 +398,7 @@ struct ProfileTabView: View {
             NavigationLink {
                 SeedPhraseRevealView()
             } label: {
-                settingsRow(icon: "key.fill", title: "Показать seed phrase", color: Theme.accentDeep)
+                settingsRow(icon: "key.fill", title: "Показать фразу восстановления", color: Theme.accentDeep)
             }
             Divider().padding(.leading, 56).background(Theme.slate300.opacity(0.4))
             NavigationLink {
@@ -526,7 +486,7 @@ struct ProfileTabView: View {
                     .foregroundStyle(Theme.accentDeep).frame(width: 28)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Stealth-адреса").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                    Text("Получатель скрыт в блокчейне").font(.system(size: 11)).foregroundStyle(Theme.slate500)
+                    Text("Получатель скрыт").font(.system(size: 11)).foregroundStyle(Theme.slate500)
                 }
                 Spacer()
                 Text("Активны").font(.system(size: 13, weight: .medium)).foregroundStyle(Theme.positive)
@@ -980,7 +940,7 @@ private struct RPCEditorSheet: View {
                         .foregroundStyle(Theme.accentGradient).padding(.top, 24)
                     Text("Свой RPC-узел")
                         .font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
-                    Text("Добавь свой Solana RPC (https). Приложение будет ходить через него; дефолтные узлы остаются резервом. Пусто = дефолт (Helius).")
+                    Text("Добавь свой сетевой узел (https). Приложение будет ходить через него; дефолтные остаются резервом. Пусто = дефолт.")
                         .font(.system(size: 12)).foregroundStyle(Theme.slate500)
                         .multilineTextAlignment(.center).padding(.horizontal, 24)
 

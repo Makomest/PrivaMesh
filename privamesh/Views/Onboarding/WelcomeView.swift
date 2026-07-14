@@ -68,7 +68,7 @@ struct WelcomeView: View {
                     Button {
                         router.go(to: .importWallet)
                     } label: {
-                        Text("Восстановить из seed phrase")
+                        Text("Восстановить по фразе")
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(Theme.accentDeep)
                             .frame(maxWidth: .infinity)
@@ -82,7 +82,7 @@ struct WelcomeView: View {
                 }
                 .padding(.horizontal, 24)
 
-                Text("Приватный мессенджер на Solana.\nБез телефона и email — только твой ключ.")
+                Text("Приватный мессенджер.\nБез телефона и email — только твой ключ.")
                     .font(.system(size: 12))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Theme.slate400)

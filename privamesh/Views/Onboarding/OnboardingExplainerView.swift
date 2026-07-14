@@ -132,7 +132,7 @@ struct OnboardingExplainerView: View {
                           text: "**Stealth адреса** — одноразовый адрес на каждую транзакцию"),
                 PointData(icon: "person.fill.questionmark",
                           color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**Без телефона и email** — только seed phrase = твоя личность"),
+                          text: "**Без телефона и email** — только фраза восстановления = твоя личность"),
             ]
         ),
         SlideData(
@@ -148,7 +148,7 @@ struct OnboardingExplainerView: View {
                           text: "**Раздельные ключи аккаунтов** — твои аккаунты не связать между собой"),
                 PointData(icon: "building.columns.fill",
                           color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Комиссии платит приложение** — в блокчейне виден общий оплатитель, не твой адрес"),
+                          text: "**Комиссии платит приложение** — твой адрес не раскрывается"),
                 PointData(icon: "theatermasks.fill",
                           color: Color(red: 245/255, green: 158/255, blue: 11/255),
                           text: "**Маскирующий трафик** — ложные сообщения прячут, когда ты пишешь"),
@@ -164,7 +164,7 @@ struct OnboardingExplainerView: View {
             points: [
                 PointData(icon: "faceid",
                           color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Face ID на seed** — ключи в Keychain под биометрией"),
+                          text: "**Face ID на ключи** — в Keychain под биометрией"),
                 PointData(icon: "timer",
                           color: Color(red: 99/255, green: 102/255, blue: 241/255),
                           text: "**Исчезающие сообщения** — авто-удаление локальных копий"),
@@ -186,7 +186,7 @@ struct OnboardingExplainerView: View {
                           text: "**Нет центрального сервера** — некого взломать или принудить"),
                 PointData(icon: "cube.fill",
                           color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Сообщения хранятся на блокчейне** Solana — зашифрованными"),
+                          text: "**Сообщения зашифрованы** — хранятся не на наших серверах"),
                 PointData(icon: "checkmark.shield.fill",
                           color: Color(red: 16/255, green: 185/255, blue: 129/255),
                           text: "**Полная децентрализация** — не блокируется, не цензурируется"),
@@ -240,7 +240,7 @@ struct OnboardingExplainerView: View {
             points: [
                 PointData(icon: "person.badge.key.fill",
                           color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Никакой регистрации** — seed phrase = твой аккаунт навсегда"),
+                          text: "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда"),
                 PointData(icon: "arrow.clockwise.circle.fill",
                           color: Color(red: 99/255, green: 102/255, blue: 241/255),
                           text: "**Восстанавливается** на любом устройстве только по 12 словам"),

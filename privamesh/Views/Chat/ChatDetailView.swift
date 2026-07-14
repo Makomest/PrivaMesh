@@ -135,7 +135,7 @@ struct ChatDetailView: View {
     /// Block a send (and warn) when the gas wallet is active but underfunded.
     private func gasFundsOK() async -> Bool {
         if await gasWallet.needsTopUp(rpc: rpc) {
-            toast.show("Пополни газовый баланс — не хватает SOL на комиссию")
+            toast.show("Не удалось отправить сообщение")
             return false
         }
         return true
@@ -246,7 +246,7 @@ struct ChatDetailView: View {
                     bold: "Stealth-адреса:", text: "уникальный одноразовый адрес на сообщение")
             infoRow(icon: "bolt.fill", color: Color(red: 245/255, green: 158/255, blue: 11/255),
                     bold: "Cover-трафик:", text: "паттерн активности скрыт автоматически")
-            Text("Хранение: блокчейн Solana · зашифровано · ключи не покидают устройство")
+            Text("Зашифровано · ключи не покидают устройство")
                 .font(.system(size: 11, design: .monospaced))
                 .foregroundStyle(Theme.slate400)
         }

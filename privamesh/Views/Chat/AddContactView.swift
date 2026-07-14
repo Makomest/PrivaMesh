@@ -3,7 +3,7 @@
 //  privamesh
 //
 //  Two-tab contact addition:
-//    • "Поиск" — search by nickname or Solana address via DiscoveryService
+//    • "Поиск" — search by nickname or address via DiscoveryService
 //    • "QR / Бандл" — classic QR scan or paste
 //
 
@@ -165,7 +165,7 @@ struct AddContactView: View {
                 Image(systemName: "at")
                     .font(.system(size: 15))
                     .foregroundStyle(Theme.slate400)
-                TextField("Ник или адрес Solana…", text: $searchQuery)
+                TextField("Ник или адрес…", text: $searchQuery)
                     .font(.system(size: 15))
                     .foregroundStyle(Theme.slate800)
                     .autocorrectionDisabled()
@@ -298,7 +298,7 @@ struct AddContactView: View {
             Image(systemName: "person.2.wave.2.fill")
                 .font(.system(size: 32))
                 .foregroundStyle(Theme.accentGradient)
-            Text("Введи ник вида **SwiftFox#1234**\nили полный адрес Solana")
+            Text("Введи ник вида **SwiftFox#1234**\nили полный адрес")
                 .font(.system(size: 13))
                 .foregroundStyle(Theme.slate500)
                 .multilineTextAlignment(.center)
@@ -542,12 +542,12 @@ struct AddContactView: View {
             // Legacy bundle-only QRs have no address and can't receive on-chain
             // messages, so we reject them with a clear message.
             guard let card = ContactCard.fromQRPayload(scannedBase64) else {
-                errorMessage = "Это старый QR без Solana-адреса. Попроси контакт показать новый QR (или добавь его через поиск)."
+                errorMessage = "Это старый QR без адреса. Попроси контакт показать новый QR (или добавь через поиск)."
                 showError = true
                 return
             }
             guard card.hasValidAddress else {
-                errorMessage = "В QR некорректный Solana-адрес получателя."
+                errorMessage = "В QR некорректный адрес получателя."
                 showError = true
                 return
             }

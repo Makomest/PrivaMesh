@@ -27,7 +27,7 @@ struct SeedPhraseRevealView: View {
                 }
             }
         }
-        .navigationTitle("Seed phrase")
+        .navigationTitle("Фраза восстановления")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -44,7 +44,7 @@ struct SeedPhraseRevealView: View {
                     Image(systemName: biometry.kind.systemImage)
                         .font(.system(size: 56)).foregroundStyle(Theme.accentGradient)
                 }
-                Text("Подтверди личность чтобы увидеть seed phrase")
+                Text("Подтверди личность чтобы увидеть фразу восстановления")
                     .font(.system(size: 15)).foregroundStyle(Theme.slate600)
                     .multilineTextAlignment(.center).padding(.horizontal, 32)
                 Button { Task { await authWithBiometry() } } label: {
@@ -109,7 +109,7 @@ struct SeedPhraseRevealView: View {
     }
 
     private func authWithBiometry() async {
-        let ok = await biometry.authenticate(reason: "Показать seed phrase")
+        let ok = await biometry.authenticate(reason: "Показать фразу восстановления")
         if ok {
             loadPhrase()
         }
@@ -129,7 +129,7 @@ struct SeedPhraseRevealView: View {
             phrase = try wallet.revealSeedPhrase()
             isAuthenticated = true
         } catch {
-            errorMessage = "Не удалось прочитать seed phrase"
+            errorMessage = "Не удалось прочитать фразу восстановления"
         }
     }
 }

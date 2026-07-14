@@ -34,21 +34,7 @@ struct MessageInfoSheet: View {
                         value: msg.sentAt.formatted(date: .abbreviated, time: .standard))
                     row(icon: "checkmark.seal.fill", title: "Статус", value: statusValue)
                     if hasSignature {
-                        row(icon: "number", title: "Подпись", value: shortSig, mono: true)
-                    }
-
-                    if hasSignature, let url = explorerURL {
-                        Button { openURL(url) } label: {
-                            Label("Открыть в Solana Explorer", systemImage: "arrow.up.right.square")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 13)
-                                .background(Theme.accentGradient)
-                                .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.top, 4)
+                        row(icon: "number", title: "ID сообщения", value: shortSig, mono: true)
                     }
                 }
                 .padding(20)
