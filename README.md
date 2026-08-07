@@ -25,13 +25,13 @@ PrivaMesh is a private messenger built for people who don't want their conversat
 
 <div align="center">
 
-<img src=".github/assets/screenshots/01.png" width="30%" alt="Private by default" />
-<img src=".github/assets/screenshots/02.png" width="30%" alt="No servers" />
-<img src=".github/assets/screenshots/03.png" width="30%" alt="Hide who, when, how" />
+<img src=".github/assets/screenshots/01.png" width="30%" alt="Privacy by default — Double Ratchet key per message and one-time addresses" />
+<img src=".github/assets/screenshots/02.png" width="30%" alt="No servers, seriously — nothing central to hack or coerce" />
+<img src=".github/assets/screenshots/03.png" width="30%" alt="On-device security — keys behind Face ID, disappearing messages, signed contacts" />
 
-<img src=".github/assets/screenshots/04.png" width="30%" alt="No phone, no email" />
-<img src=".github/assets/screenshots/05.png" width="30%" alt="End-to-end encrypted" />
-<img src=".github/assets/screenshots/06.png" width="30%" alt="Own your identity" />
+<img src=".github/assets/screenshots/04.png" width="30%" alt="End-to-end encrypted chat" />
+<img src=".github/assets/screenshots/05.png" width="30%" alt="Your chats — names and nicknames, no phone numbers" />
+<img src=".github/assets/screenshots/06.png" width="30%" alt="A private social graph — your connections, visualised privately" />
 
 </div>
 
