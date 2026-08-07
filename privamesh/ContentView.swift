@@ -75,6 +75,26 @@ struct ContentView: View {
         .onAppear {
             purgeStaleSecretsOnFreshInstall()
             decideInitialRoute()
+            #if DEBUG
+            // Screenshot helper: -previewRoute <onboarding|welcome> forces a route.
+            if let i = CommandLine.arguments.firstIndex(of: "-previewRoute"),
+               i + 1 < CommandLine.arguments.count {
+                switch CommandLine.arguments[i + 1] {
+                case "onboarding": router.go(to: .onboarding)
+                case "welcome":    router.go(to: .welcome)
+                default: break
+                }
+            }
+            // Verification helper: -demoImport restores the App Review demo seed
+            // exactly as the reviewer would, then lands on the main screen — so
+            // the demo seeding path can be exercised end-to-end on a clean install.
+            if CommandLine.arguments.contains("-demoImport") {
+                Task {
+                    try? await wallet.importWallet(phrase: DemoContent.demoPhrase)
+                    await MainActor.run { router.go(to: .main) }
+                }
+            }
+            #endif
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             handleScenePhase(old: oldPhase, new: newPhase)

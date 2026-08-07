@@ -91,7 +91,9 @@ struct MeshNetworkView: View {
             }
             .frame(width: size, height: size)
 
-            PrivaLogo(size: logoSize)
+            // New brand mark instead of the old teal mesh tile.
+            NetworkSphereView(diameter: logoSize, horizon: false,
+                              color: Theme.accentDeep, reduced: true)
         }
         .frame(width: size, height: size)
     }

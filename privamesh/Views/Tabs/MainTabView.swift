@@ -36,7 +36,7 @@ struct MainTabView: View {
         return ""
     }
     private var totalUnread: Int {
-        contacts.filter { $0.ownerAddress == activeAddress || $0.ownerAddress.isEmpty }
+        contacts.filter { $0.ownerAddress == activeAddress }
             .reduce(0) { $0 + $1.unreadCount }
     }
 
@@ -46,7 +46,7 @@ struct MainTabView: View {
     // Single-screen layout (no bottom tab bar): the chat list is the root; the
     // profile/settings and add-contact live in its nav bar (Messages-app style).
     var body: some View {
-        ChatsTabView()
+        OrbitChatsView()
         .sheet(isPresented: $showSecuritySetup) { SecuritySetupView() }
         .task {
             if case let .ready(address) = wallet.state {
@@ -54,7 +54,10 @@ struct MainTabView: View {
                 if let phrase = try? wallet.revealSeedPhrase(), !phrase.isEmpty {
                     accountManager.ensurePrimary(phrase: phrase, publicKey: address)
                 }
-                migrateLegacyContacts(to: address)
+                // Adopt legacy (pre-multi-account) empty-owner contacts to the FIRST
+                // account only — never to a freshly created second account, so old
+                // chats can't jump onto a new, supposedly-clean account.
+                if accountManager.isFirstAccountActive { migrateLegacyContacts(to: address) }
                 activate(address)
                 // One-time: offer the privacy hardening options to a new user.
                 if !securitySetupDone {
@@ -147,6 +150,10 @@ struct MainTabView: View {
         if let bundle = try? identity.prekeyBundle() {
             ensureSelfContact(address: address, bundleBase64: bundle.base64Encoded)
         }
+        // App Review demo account only: chats never sync to a new device, so the
+        // demo identity re-seeds its sample contacts/conversations on every
+        // activation (launch, account switch, import). No-op for real accounts.
+        Task { await DemoContent.populateIfDemo(address: address, context: context) }
     }
 
     /// One-time: assign pre-multi-account chats to the current account.

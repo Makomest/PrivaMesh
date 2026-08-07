@@ -2,8 +2,9 @@
 //  OnboardingExplainerView.swift
 //  privamesh
 //
-//  Interactive 4-slide onboarding explaining privacy, decentralization,
-//  and blockchain cost. Shown only on first launch.
+//  First-launch explainer: privacy, decentralization, cost. Monochrome, on the
+//  same black mesh ground as the app itself — hierarchy through weight, size and
+//  opacity, never colour.
 //
 
 import SwiftUI
@@ -11,88 +12,67 @@ import SwiftUI
 struct OnboardingExplainerView: View {
     @Environment(AppRouter.self) private var router
 
-    @State private var currentPage = 0
+    @State private var currentPage: Int = {
+        #if DEBUG
+        let a = CommandLine.arguments   // -onboardingPage N jumps straight to a slide for screenshots
+        if let i = a.firstIndex(of: "-onboardingPage"), i + 1 < a.count, let p = Int(a[i + 1]) { return p }
+        #endif
+        return 0
+    }()
     private let totalPages = 7
 
     var body: some View {
         ZStack {
-            PastelBackground()
+            OrbitMeshBackground(intensity: 1.3)
 
             VStack(spacing: 0) {
-                // Skip button
                 HStack {
                     Spacer()
                     if currentPage < totalPages - 1 {
-                        Button {
-                            finish()
-                        } label: {
+                        Button { finish() } label: {
                             Text("Пропустить")
                                 .font(.system(size: 14))
-                                .foregroundStyle(Theme.slate400)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
+                                .foregroundStyle(Orbit.label3)
+                                .padding(.horizontal, 16).padding(.vertical, 8)
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.top, 8)
-                .padding(.trailing, 4)
+                .padding(.top, 8).padding(.trailing, 4)
                 .frame(height: 44)
 
-                // Pages
                 TabView(selection: $currentPage) {
                     ForEach(0..<totalPages, id: \.self) { index in
-                        OnboardingPage(slide: slides[index])
-                            .tag(index)
+                        OnboardingPage(slide: slides[index]).tag(index)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut, value: currentPage)
 
-                // Dots + button
                 VStack(spacing: 28) {
                     dotsIndicator
 
-                    if currentPage == totalPages - 1 {
-                        Button {
-                            finish()
-                        } label: {
-                            Text("Начать общение")
+                    Button {
+                        if currentPage == totalPages - 1 { finish() }
+                        else { withAnimation(.easeInOut(duration: 0.35)) { currentPage += 1 } }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(currentPage == totalPages - 1 ? "Начать общение" : "Далее")
                                 .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(Theme.accentGradient)
-                                .clipShape(Capsule())
-                                .shadow(color: Theme.accent.opacity(0.4), radius: 12, x: 0, y: 6)
-                        }
-                        .buttonStyle(.plain)
-                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                    } else {
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.35)) {
-                                currentPage += 1
+                            if currentPage < totalPages - 1 {
+                                Image(systemName: "arrow.right").font(.system(size: 15, weight: .semibold))
                             }
-                        } label: {
-                            HStack(spacing: 6) {
-                                Text("Далее")
-                                    .font(.system(size: 17, weight: .semibold))
-                                Image(systemName: "arrow.right")
-                                    .font(.system(size: 15, weight: .semibold))
-                            }
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Theme.accentGradient)
-                            .clipShape(Capsule())
-                            .shadow(color: Theme.accent.opacity(0.4), radius: 12, x: 0, y: 6)
                         }
-                        .buttonStyle(.plain)
+                        .foregroundStyle(Orbit.ink)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Orbit.label, in: Capsule())
                     }
+                    .buttonStyle(.plain)
+                    .animation(.easeInOut, value: currentPage)
                 }
                 .padding(.horizontal, 32)
                 .padding(.bottom, 48)
-                .animation(.easeInOut, value: currentPage)
             }
         }
     }
@@ -101,7 +81,7 @@ struct OnboardingExplainerView: View {
         HStack(spacing: 8) {
             ForEach(0..<totalPages, id: \.self) { index in
                 Capsule()
-                    .fill(index == currentPage ? Theme.accent : Theme.slate300)
+                    .fill(index == currentPage ? Orbit.label : Orbit.label.opacity(0.22))
                     .frame(width: index == currentPage ? 24 : 8, height: 8)
                     .animation(.spring(response: 0.3), value: currentPage)
             }
@@ -116,139 +96,62 @@ struct OnboardingExplainerView: View {
     // MARK: - Slide data
 
     private var slides: [SlideData] {[
-        SlideData(
-            icon: "lock.shield.fill",
-            iconColors: [Color(red: 52/255, green: 211/255, blue: 153/255),
-                         Color(red: 20/255, green: 184/255, blue: 166/255)],
-            badge: nil,
+        SlideData(icon: "lock.shield.fill", badge: nil,
             title: "Приватность\nпо умолчанию",
             subtitle: "Каждое сообщение защищено военным уровнем шифрования — ещё до отправки.",
             points: [
-                PointData(icon: "key.fill",
-                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Double Ratchet** — новый ключ для каждого сообщения"),
-                PointData(icon: "eye.slash.fill",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Одноразовые адреса** — новый адрес для каждого сообщения"),
-                PointData(icon: "person.fill.questionmark",
-                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**Без телефона и email** — только фраза восстановления = твоя личность"),
-            ]
-        ),
-        SlideData(
-            icon: "eye.slash.circle.fill",
-            iconColors: [Color(red: 99/255, green: 102/255, blue: 241/255),
-                         Color(red: 56/255, green: 189/255, blue: 248/255)],
-            badge: nil,
+                PointData(icon: "key.fill", text: "**Double Ratchet** — новый ключ для каждого сообщения"),
+                PointData(icon: "eye.slash.fill", text: "**Одноразовые адреса** — новый адрес для каждого сообщения"),
+                PointData(icon: "person.fill.questionmark", text: "**Без телефона и email** — только фраза восстановления = твоя личность"),
+            ]),
+        SlideData(icon: "eye.slash.circle.fill", badge: nil,
             title: "Слои\nанонимности",
             subtitle: "Скрыто не только содержимое — но и кто, с кем и когда переписывается.",
             points: [
-                PointData(icon: "person.2.fill",
-                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Раздельные ключи аккаунтов** — твои аккаунты не связать между собой"),
-                PointData(icon: "building.columns.fill",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Комиссии платит приложение** — твой адрес не раскрывается"),
-                PointData(icon: "theatermasks.fill",
-                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**Маскирующий трафик** — ложные сообщения прячут, когда ты пишешь"),
-            ]
-        ),
-        SlideData(
-            icon: "lock.iphone",
-            iconColors: [Color(red: 52/255, green: 211/255, blue: 153/255),
-                         Color(red: 20/255, green: 184/255, blue: 166/255)],
-            badge: nil,
+                PointData(icon: "person.2.fill", text: "**Раздельные ключи аккаунтов** — твои аккаунты не связать между собой"),
+                PointData(icon: "building.columns.fill", text: "**Комиссии платит приложение** — твой адрес не раскрывается"),
+                PointData(icon: "theatermasks.fill", text: "**Маскирующий трафик** — ложные сообщения прячут, когда ты пишешь"),
+            ]),
+        SlideData(icon: "lock.iphone", badge: nil,
             title: "Защита\nна устройстве",
             subtitle: "Ключи и переписка защищены даже если телефон попал в чужие руки.",
             points: [
-                PointData(icon: "faceid",
-                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Face ID на ключи** — в Keychain под биометрией"),
-                PointData(icon: "timer",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Исчезающие сообщения** — авто-удаление локальных копий"),
-                PointData(icon: "checkmark.shield.fill",
-                          color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                          text: "**Подпись контактов** — защита от подмены собеседника (MITM)"),
-            ]
-        ),
-        SlideData(
-            icon: "network",
-            iconColors: [Color(red: 99/255, green: 102/255, blue: 241/255),
-                         Color(red: 168/255, green: 85/255, blue: 247/255)],
-            badge: nil,
-            title: "Нет серверов.\nСерьёзно.",
-            subtitle: "Мы физически не можем прочитать твои сообщения, удалить их или передать кому-либо.",
+                PointData(icon: "faceid", text: "**Face ID на ключи** — в Keychain под биометрией"),
+                PointData(icon: "timer", text: "**Исчезающие сообщения** — авто-удаление локальных копий"),
+                PointData(icon: "checkmark.shield.fill", text: "**Подпись контактов** — защита от подмены собеседника (MITM)"),
+            ]),
+        SlideData(icon: "network", badge: nil,
+            title: "Нет сервера\nсообщений",
+            subtitle: "Твои чаты живут зашифрованными в блокчейне — не в нашей базе и не в облаке.",
             points: [
-                PointData(icon: "xmark.circle.fill",
-                          color: Color(red: 244/255, green: 63/255, blue: 94/255),
-                          text: "**Нет центрального сервера** — некого взломать или принудить"),
-                PointData(icon: "cube.fill",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Сообщения зашифрованы** — хранятся не на наших серверах"),
-                PointData(icon: "checkmark.shield.fill",
-                          color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                          text: "**Полная децентрализация** — не блокируется, не цензурируется"),
-            ]
-        ),
-        SlideData(
-            icon: "paperplane.circle.fill",
-            iconColors: [Color(red: 245/255, green: 158/255, blue: 11/255),
-                         Color(red: 234/255, green: 88/255, blue: 12/255)],
-            badge: "10 free",
+                PointData(icon: "lock.fill", text: "**Сквозное шифрование** — мы физически не можем прочитать переписку"),
+                PointData(icon: "cube.fill", text: "**On-chain, не на наших серверах** — нет базы, которую взломать или запросить по суду"),
+                PointData(icon: "eye.slash.fill", text: "**Комиссию платим вслепую** — relay не видит ни кто, ни что ты отправляешь"),
+            ]),
+        SlideData(icon: "paperplane.circle.fill", badge: "10 free",
             title: "Просто\nпиши",
             subtitle: "Комиссии сети мы оплачиваем за тебя. Никакой криптовалюты — только сообщения.",
             points: [
-                PointData(icon: "gift.fill",
-                          color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                          text: "**10 бесплатных сообщений** каждый месяц — сразу, без оплаты"),
-                PointData(icon: "star.circle.fill",
-                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**PrivaMesh+** — от $5.99/мес: больше сообщений, галочка, 3 аккаунта"),
-                PointData(icon: "bag.fill",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Пакеты сообщений** — разовая покупка без подписки"),
-            ]
-        ),
-        SlideData(
-            icon: "iphone.and.arrow.forward",
-            iconColors: [Color(red: 99/255, green: 102/255, blue: 241/255),
-                         Color(red: 168/255, green: 85/255, blue: 247/255)],
-            badge: nil,
+                PointData(icon: "gift.fill", text: "**10 бесплатных сообщений** каждый месяц — сразу, без оплаты"),
+                PointData(icon: "star.circle.fill", text: "**PrivaMesh+** — от $5.99/мес: больше сообщений, галочка, 3 аккаунта"),
+                PointData(icon: "bag.fill", text: "**Пакеты сообщений** — разовая покупка без подписки"),
+            ]),
+        SlideData(icon: "iphone.and.arrow.forward", badge: nil,
             title: "Переписка\nтолько у тебя",
             subtitle: "Расшифрованные сообщения хранятся только на этом телефоне — не в облаке и не на сервере.",
             points: [
-                PointData(icon: "key.horizontal.fill",
-                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Личность** вернётся по 12 словам на любом устройстве"),
-                PointData(icon: "iphone.slash",
-                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**История чатов не переедет** на новый телефон — копии есть только здесь"),
-                PointData(icon: "lock.shield.fill",
-                          color: Color(red: 16/255, green: 185/255, blue: 129/255),
-                          text: "**Это защита, а не баг** — даже с твоей фразой восстановления никто не прочитает старую переписку"),
-            ]
-        ),
-        SlideData(
-            icon: "checkmark.seal.fill",
-            iconColors: [Color(red: 52/255, green: 211/255, blue: 153/255),
-                         Color(red: 34/255, green: 211/255, blue: 238/255)],
-            badge: nil,
+                PointData(icon: "key.horizontal.fill", text: "**Личность** вернётся по 12 словам на любом устройстве"),
+                PointData(icon: "iphone.slash", text: "**История чатов не переедет** на новый телефон — копии есть только здесь"),
+                PointData(icon: "lock.shield.fill", text: "**Это защита, а не баг** — даже с твоей фразой восстановления никто не прочитает старую переписку"),
+            ]),
+        SlideData(icon: "checkmark.seal.fill", badge: nil,
             title: "Ты готов\nк старту",
             subtitle: "Создай аккаунт или восстанови существующий — займёт меньше минуты.",
             points: [
-                PointData(icon: "person.badge.key.fill",
-                          color: Color(red: 20/255, green: 184/255, blue: 166/255),
-                          text: "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда"),
-                PointData(icon: "arrow.clockwise.circle.fill",
-                          color: Color(red: 99/255, green: 102/255, blue: 241/255),
-                          text: "**Восстанавливается** на любом устройстве только по 12 словам"),
-                PointData(icon: "at.circle.fill",
-                          color: Color(red: 245/255, green: 158/255, blue: 11/255),
-                          text: "**Уникальный ник** генерируется автоматически из твоего ключа"),
-            ]
-        ),
+                PointData(icon: "person.badge.key.fill", text: "**Никакой регистрации** — фраза восстановления = твой аккаунт навсегда"),
+                PointData(icon: "arrow.clockwise.circle.fill", text: "**Восстанавливается** на любом устройстве только по 12 словам"),
+                PointData(icon: "at.circle.fill", text: "**Уникальный ник** генерируется автоматически из твоего ключа"),
+            ]),
     ]}
 }
 
@@ -256,7 +159,6 @@ struct OnboardingExplainerView: View {
 
 private struct SlideData {
     let icon: String
-    let iconColors: [Color]
     let badge: String?
     let title: String
     let subtitle: String
@@ -265,7 +167,6 @@ private struct SlideData {
 
 private struct PointData {
     let icon: String
-    let color: Color
     let text: String
 }
 
@@ -274,7 +175,6 @@ private struct PointData {
 private struct OnboardingPage: View {
     let slide: SlideData
 
-    // Entrance + ambient animation state.
     @State private var appear = false      // staggered content reveal
     @State private var pop = false         // icon spring-in
     @State private var pulse = false       // glow breathing
@@ -285,36 +185,34 @@ private struct OnboardingPage: View {
             VStack(spacing: 28) {
                 animatedIcon
 
-                // Title + subtitle (localized via LocalizedStringKey)
                 VStack(spacing: 12) {
                     Text(LocalizedStringKey(slide.title))
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundStyle(Theme.slate800)
+                        .font(.system(size: 30, weight: .bold))
+                        .foregroundStyle(Orbit.label)
                         .multilineTextAlignment(.center)
                         .staggered(appear, index: 1)
 
                     Text(LocalizedStringKey(slide.subtitle))
                         .font(.system(size: 15))
-                        .foregroundStyle(Theme.slate500)
+                        .foregroundStyle(Orbit.label2)
                         .multilineTextAlignment(.center)
                         .lineSpacing(3)
                         .padding(.horizontal, 8)
                         .staggered(appear, index: 2)
                 }
 
-                // Bullet points card — each row reveals in sequence
                 VStack(alignment: .leading, spacing: 14) {
                     ForEach(0..<slide.points.count, id: \.self) { i in
                         let point = slide.points[i]
                         HStack(alignment: .top, spacing: 12) {
                             Image(systemName: point.icon)
                                 .font(.system(size: 16))
-                                .foregroundStyle(point.color)
+                                .foregroundStyle(Orbit.label)
                                 .frame(width: 24)
 
                             Text(.init(point.text))
                                 .font(.system(size: 14))
-                                .foregroundStyle(Theme.slate700)
+                                .foregroundStyle(Orbit.label2)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineSpacing(2)
                         }
@@ -323,62 +221,45 @@ private struct OnboardingPage: View {
                 }
                 .padding(18)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.glass)
-                .clipShape(RoundedRectangle(cornerRadius: Theme.radiusMedium))
-                .overlay(RoundedRectangle(cornerRadius: Theme.radiusMedium)
-                    .stroke(Theme.glassStroke, lineWidth: 1))
+                .orbitGlassPanel(Theme.radiusMedium)
             }
             .padding(.horizontal, 28)
-            .padding(.top, 64)   // room for the icon's glow/ring (else clipped at top)
+            .padding(.top, 64)
             .padding(.bottom, 20)
         }
         .onAppear { runEntrance() }
-        .onDisappear {
-            // Reset so the entrance AND the ambient loops replay when the page
-            // scrolls back in. The repeatForever animations are dropped when the
-            // paged view disappears, so the loop state must return to false —
-            // otherwise runEntrance's false→true transition never fires and the
-            // orbiting ring / breathing glow stay frozen.
-            appear = false; pop = false; pulse = false; spin = false
-        }
+        .onDisappear { appear = false; pop = false; pulse = false; spin = false }
     }
 
-    // MARK: Animated icon (orbiting ring + breathing glow + spring pop)
+    // MARK: Animated icon — monochrome: glass disc, white glyph, dashed white ring
 
     private var animatedIcon: some View {
         ZStack(alignment: .topTrailing) {
             ZStack {
-                // Breathing glow halo — kept within the icon frame so the
-                // ScrollView doesn't clip it at the top of a slide.
+                // Soft white breathing bloom (glass needs light behind it).
                 Circle()
-                    .fill(LinearGradient(colors: slide.iconColors,
-                                         startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .fill(Color.white)
                     .frame(width: 96, height: 96)
-                    .blur(radius: 20)
-                    .opacity(pulse ? 0.55 : 0.30)
-                    .scaleEffect(pulse ? 1.06 : 0.92)
+                    .blur(radius: 26)
+                    .opacity(pulse ? 0.16 : 0.07)
+                    .scaleEffect(pulse ? 1.08 : 0.92)
 
-                // Orbiting conic ring
+                // Orbiting hairline ring — a nod to the globe's horizon.
                 Circle()
-                    .stroke(
-                        AngularGradient(colors: slide.iconColors + [slide.iconColors.first ?? .clear],
-                                        center: .center),
-                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [3, 7]))
+                    .stroke(Orbit.label.opacity(0.35),
+                            style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [3, 8]))
                     .frame(width: 112, height: 112)
                     .rotationEffect(.degrees(spin ? 360 : 0))
-                    .opacity(0.7)
 
-                // Glass disc + icon
                 Circle()
-                    .fill(Theme.glass)
+                    .fill(.ultraThinMaterial)
                     .frame(width: 96, height: 96)
-                    .overlay(Circle().stroke(Theme.glassStroke, lineWidth: 1))
+                    .overlay(Circle().stroke(Orbit.label.opacity(0.18), lineWidth: 1))
 
                 Image(systemName: slide.icon)
                     .resizable().scaledToFit()
-                    .frame(width: 56, height: 56)
-                    .foregroundStyle(LinearGradient(colors: slide.iconColors,
-                                                    startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 52, height: 52)
+                    .foregroundStyle(Orbit.label)
                     .symbolRenderingMode(.hierarchical)
             }
             .frame(width: 120, height: 120)
@@ -389,11 +270,9 @@ private struct OnboardingPage: View {
             if let badge = slide.badge {
                 Text(badge)
                     .font(.system(size: 12, weight: .bold, design: .monospaced))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Orbit.ink)
                     .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(LinearGradient(colors: slide.iconColors,
-                                               startPoint: .leading, endPoint: .trailing))
-                    .clipShape(Capsule())
+                    .background(Orbit.label, in: Capsule())
                     .scaleEffect(appear ? 1 : 0.4)
                     .opacity(appear ? 1 : 0)
             }
@@ -403,8 +282,6 @@ private struct OnboardingPage: View {
     private func runEntrance() {
         withAnimation(.spring(response: 0.55, dampingFraction: 0.6)) { pop = true }
         withAnimation(.easeOut(duration: 0.5).delay(0.1)) { appear = true }
-        // Ambient loops. onDisappear resets these to false, so each (re)appear
-        // makes a fresh false→true transition that restarts the repeatForever.
         withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) { pulse = true }
         withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) { spin = true }
     }
@@ -413,7 +290,6 @@ private struct OnboardingPage: View {
 // MARK: - Staggered reveal modifier
 
 private extension View {
-    /// Fade + slide-up reveal, delayed by `index` for a cascading effect.
     func staggered(_ visible: Bool, index: Int) -> some View {
         self
             .opacity(visible ? 1 : 0)
@@ -426,4 +302,5 @@ private extension View {
 #Preview {
     OnboardingExplainerView()
         .environment(AppRouter())
+        .preferredColorScheme(.dark)
 }

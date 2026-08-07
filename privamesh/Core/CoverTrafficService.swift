@@ -77,8 +77,11 @@ final class CoverTrafficService {
             !$0.isSelf && $0.ownerAddress == myAddress
                 && $0.stealthRoot != nil && $0.sessionData != nil
         }
+        // Cover traffic runs on a timer in the background — it must stay silent.
+        // Use the keypair only if already unlocked this session; never read the
+        // seed here (that would pop Face ID at random moments).
         guard let contact = eligible.randomElement(),
-              let keyPair = try? await wallet.currentKeyPair() else { return }
+              let keyPair = wallet.readyKeyPair else { return }
         // Each decoy is a real sponsored message — pause when the balance is empty
         // so cover traffic never fails or silently eats a paid allowance the user
         // expects for real messages.

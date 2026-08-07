@@ -71,7 +71,7 @@ final class AccountManager {
     func seedPhrase(for publicKey: String) -> [String]? {
         guard let data = KeychainStorage.load(key: seedKey(publicKey),
                                               context: SeedLock.context(),
-                                              prompt: "Доступ к аккаунту"),
+                                              prompt: String(localized: "Доступ к аккаунту")),
               let s = String(data: data, encoding: .utf8) else { return nil }
         let words = s.split(separator: " ").map(String.init)
         return words.isEmpty ? nil : words

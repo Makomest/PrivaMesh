@@ -147,7 +147,7 @@ enum OnChainNFT {
                        ["programId": TokenProgram.id.base58EncodedString],
                        ["encoding": "jsonParsed", "commitment": "confirmed"]]
         ])
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
+        guard let (data, _) = try? await PrivateNetwork.shared.data(for: req),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result = json["result"] as? [String: Any],
               let value = result["value"] as? [[String: Any]] else { return nil }

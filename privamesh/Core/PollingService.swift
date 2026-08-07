@@ -161,9 +161,10 @@ final class PollingService {
         // X3DH / DR envelope
         guard let envelope = try? MessageEnvelope.fromBase64(memo) else { return }
         let contactDesc = FetchDescriptor<Contact>()
-        // Only this account's contacts (chats are scoped per account).
+        // Only this account's contacts (chats are strictly scoped per account —
+        // no empty-owner fallback, which used to leak chats across accounts).
         let contacts = ((try? context.fetch(contactDesc)) ?? [])
-            .filter { $0.ownerAddress == myAddress || $0.ownerAddress.isEmpty }
+            .filter { $0.ownerAddress == myAddress }
 
         switch envelope.kind {
         case .regular:
@@ -177,13 +178,29 @@ final class PollingService {
                 }
             }
 
-        case .sessionInit:
+        case .sessionInit, .sessionInitPQ:
             // First message from someone. The envelope is self-contained, so we
             // can decrypt WITHOUT having the sender in contacts. Decrypt once,
             // then find-or-create the contact so the message (and a chat) appear.
             let myIdentity: CryptoIdentity
             do { myIdentity = try identity.getOrCreate() } catch { return }
-            guard let result = Self.decryptSessionInit(envelope: envelope, myIdentity: myIdentity)
+
+            // Post-quantum init carries the X-Wing KEM ciphertext off-chain (Irys);
+            // fetch + decapsulate it to recover the PQ shared secret that the sender
+            // mixed in. If the sender committed to PQ (kind == .sessionInitPQ) but we
+            // can't recover it, we must NOT fall back — the roots would differ — so
+            // bail and let a later poll retry (Irys is durable).
+            var pqSharedSecret: Data? = nil
+            if envelope.kind == .sessionInitPQ {
+                guard let ref = envelope.pqCiphertextRef, let kp = myIdentity.pqKeypair(),
+                      let ct = try? await IrysUploader.download(txId: ref),
+                      let ss = try? PQXDH.decapsulate(ciphertext: ct, keypair: kp)
+                else { return }
+                pqSharedSecret = ss
+            }
+
+            guard let result = Self.decryptSessionInit(envelope: envelope, myIdentity: myIdentity,
+                                                        pqSharedSecret: pqSharedSecret)
             else { return }
 
             // The sender's wallet address = the tx fee payer; needed so replies
@@ -338,7 +355,7 @@ final class PollingService {
                                    "maxSupportedTransactionVersion": 0,
                                    "commitment": "confirmed"]]
         ])
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
+        guard let (data, _) = try? await PrivateNetwork.shared.data(for: req),
               let json    = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result  = json["result"] as? [String: Any],
               let meta    = result["meta"] as? [String: Any],
@@ -465,17 +482,22 @@ final class PollingService {
     /// to be a known contact. Returns the message and the fresh ratchet to store.
     private static func decryptSessionInit(
         envelope: MessageEnvelope,
-        myIdentity: CryptoIdentity
+        myIdentity: CryptoIdentity,
+        pqSharedSecret: Data? = nil
     ) -> (payload: ChatPayload, ratchet: DoubleRatchet, stealthRoot: Data)? {
         guard let senderIK = envelope.senderIdentityPublic,
               let senderEK = envelope.senderEphemeralPublic else { return nil }
         do {
-            let sk = try X3DH.receiverSharedSecret(
+            let classicalSK = try X3DH.receiverSharedSecret(
                 myIdentityKey:            try myIdentity.dhIdentityKey(),
                 mySignedPrekey:           try myIdentity.signedPrekey(),
                 senderIdentityKeyPublic:  senderIK,
                 senderEphemeralKeyPublic: senderEK
             )
+            // Mix the PQ secret in (nil for a classical init → unchanged). Both the
+            // root ratchet AND the stealth-address root derive from this combined
+            // secret, so the sender must combine identically before it does either.
+            let sk = PQXDH.combine(classicalSecret: classicalSK, pqSharedSecret: pqSharedSecret)
             var ratchet = DoubleRatchet.initReceiver(sharedSecret: sk,
                                                      localSPK: try myIdentity.signedPrekey())
             let padded    = try ratchet.decrypt(message: envelope.message)
@@ -499,7 +521,7 @@ final class PollingService {
                                    "maxSupportedTransactionVersion": 0,
                                    "commitment": "confirmed"]]
         ])
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
+        guard let (data, _) = try? await PrivateNetwork.shared.data(for: req),
               let json    = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result  = json["result"] as? [String: Any],
               let tx      = result["transaction"] as? [String: Any],

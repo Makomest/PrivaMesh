@@ -58,6 +58,13 @@ final class RelayService {
     /// token. Wired to AccountManager by the app root.
     var activeAccountProvider: () -> String = { "" }
 
+    /// Anonymous blind-token hooks (see BlindTokenService), wired at the app root.
+    /// When a token is available, a message is sent with it INSTEAD of the Apple
+    /// receipt + account token, so nothing identifying reaches the relay. Both are
+    /// no-ops by default, which keeps the legacy receipt path working unchanged.
+    var takeBlindToken: () async -> BlindToken? = { nil }
+    var returnBlindToken: (BlindToken) async -> Void = { _ in }
+
     /// Opaque token unique to the ACTIVE account. DERIVED from the account's SEED
     /// (a secret only the owner holds) as `HKDF(seed, info: pubkey)`, persisted in
     /// the Keychain by `provisionToken`. Two properties matter:
@@ -116,11 +123,16 @@ final class RelayService {
     /// Build a sponsored message tx, submit it via the relay, return the on-chain
     /// signature. Throws `notConfigured` when the relay/treasury are unset (the
     /// caller should fall back or block).
+    /// - Parameter allowAnonymousToken: when true (the default, for ordinary
+    ///   messages) an anonymous blind token is spent if one is stocked, so the
+    ///   relay learns nothing about the sender. Discovery publishes pass false —
+    ///   they need the account path for authoritative nickname ownership.
     func sendMessage(
         to recipientAddress: String,
         memoBase64: String,
         endpointURL: String,
-        computeUnitLimit: UInt32? = nil
+        computeUnitLimit: UInt32? = nil,
+        allowAnonymousToken: Bool = true
     ) async throws -> String {
         guard RelayConfig.isConfigured,
               let treasury = try? PublicKey(string: RelayConfig.treasuryPubkey),
@@ -130,8 +142,21 @@ final class RelayService {
         let txBase64 = try await MemoTransactionBuilder.buildSponsoredMessageBase64(
             to: recipientAddress, memoBase64: memoBase64,
             treasury: treasury, endpointURL: endpointURL, computeUnitLimit: computeUnitLimit)
+
+        // Preferred path: spend an anonymous token. On ANY failure, hand the
+        // (still-unspent — the relay only burns it on submit success) token back
+        // and fall through to the legacy receipt path so the message still sends.
+        if allowAnonymousToken, let token = await takeBlindToken() {
+            do {
+                return try await post(txBase64: txBase64, jws: nil, token: token)
+            } catch {
+                await returnBlindToken(token)
+                // fall through to legacy path below
+            }
+        }
+
         let jws = await receiptProvider()
-        return try await post(txBase64: txBase64, jws: jws)
+        return try await post(txBase64: txBase64, jws: jws, token: nil)
     }
 
     /// Mint an NFT nickname with the fee + account rent sponsored by the treasury.
@@ -155,7 +180,7 @@ final class RelayService {
         req.httpBody = try JSONSerialization.data(withJSONObject: [
             "tx": built.tx, "jws": jws ?? "", "account": accountToken,
         ])
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await PrivateNetwork.shared.data(for: req)
         guard let http = resp as? HTTPURLResponse else { throw RelayError.badResponse }
         if http.statusCode == 402 { throw RelayError.quotaExceeded }   // out of mint allowance
         guard (200..<300).contains(http.statusCode) else {
@@ -174,12 +199,12 @@ final class RelayService {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.timeoutInterval = 30
         req.httpBody = try? JSONSerialization.data(withJSONObject: ["jws": jws, "account": accountToken])
-        _ = try? await URLSession.shared.data(for: req)
+        _ = try? await PrivateNetwork.shared.data(for: req)
     }
 
     // MARK: - Transport
 
-    private func post(txBase64: String, jws: String?) async throws -> String {
+    private func post(txBase64: String, jws: String?, token: BlindToken?) async throws -> String {
         guard let url = URL(string: RelayConfig.baseURL + "/send") else {
             throw RelayError.notConfigured
         }
@@ -187,14 +212,18 @@ final class RelayService {
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.timeoutInterval = 30
-        let body: [String: Any] = [
-            "tx": txBase64,
-            "jws": jws ?? "",
-            "account": accountToken,
-        ]
+        // Anonymous token path carries NO identity — no receipt, no account token.
+        // Legacy path sends the receipt + per-account token as before.
+        var body: [String: Any] = ["tx": txBase64]
+        if let token {
+            body["token"] = ["t": token.t, "sig": token.sig]
+        } else {
+            body["jws"] = jws ?? ""
+            body["account"] = accountToken
+        }
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await PrivateNetwork.shared.data(for: req)
         guard let http = resp as? HTTPURLResponse else { throw RelayError.badResponse }
         if http.statusCode == 402 { throw RelayError.quotaExceeded }   // out of quota
         guard (200..<300).contains(http.statusCode) else {

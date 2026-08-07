@@ -40,7 +40,7 @@ enum IrysUploader {
         req.httpMethod = "POST"
         req.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         req.httpBody = item
-        let (responseData, response) = try await URLSession.shared.data(for: req)
+        let (responseData, response) = try await PrivateNetwork.shared.data(for: req)
         if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
             let body = String(data: responseData, encoding: .utf8) ?? ""
             throw IrysError.serverError(statusCode: http.statusCode, message: body)
@@ -50,7 +50,7 @@ enum IrysUploader {
 
     static func download(txId: String) async throws -> Data {
         guard let url = URL(string: arweaveGateway + txId) else { throw IrysError.invalidTxId }
-        let (data, response) = try await URLSession.shared.data(from: url)
+        let (data, response) = try await PrivateNetwork.shared.data(from: url)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             throw IrysError.downloadFailed
         }

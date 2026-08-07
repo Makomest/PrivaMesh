@@ -79,9 +79,9 @@ PrivaMesh+ открывает больший месячный лимит соо�
 ---
 
 ## URLs
-- Privacy Policy URL: `https://privamesh.org/privacy-policy.html`  ← required
-- Terms (EULA) URL: `https://privamesh.org/terms.html`
-- Support URL: `https://privamesh.org`
+- Privacy Policy URL: `https://privamesh.org/privacy-policy`  ← required
+- Terms (EULA) URL: `https://privamesh.org/terms`
+- Support URL: `https://privamesh.org/support`
 - Marketing URL: `https://privamesh.org`
 
 ---

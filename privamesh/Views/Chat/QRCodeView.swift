@@ -28,10 +28,10 @@ struct QRCodeView: View {
         ZStack {
             RoundedRectangle(cornerRadius: size * 0.12)
                 .fill(.white)
-                .shadow(color: Theme.accent.opacity(0.18), radius: 16, x: 0, y: 8)
+                .shadow(color: .black.opacity(0.35), radius: 12, x: 0, y: 6)
 
             if n == 0 {
-                ProgressView().tint(Theme.accent)
+                ProgressView().tint(Theme.qrInk)
             }
 
             if n > 0 {
@@ -76,11 +76,13 @@ struct QRCodeView: View {
                 }
                 .frame(width: size, height: size)
 
-                // Centre logo on a white disc.
-                PrivaLogo(size: size * 0.16)
-                    .padding(size * 0.035)
+                // Centre mark on a white disc: the brand's network sphere, drawn
+                // in the QR's own dark ink so it sits on white and stays scannable.
+                NetworkSphereView(diameter: size * 0.16, horizon: false,
+                                  color: Theme.qrInk, reduced: true)
+                    .padding(size * 0.045)
                     .background(.white, in: Circle())
-                    .overlay(Circle().stroke(Theme.accent.opacity(0.15), lineWidth: 1))
+                    .overlay(Circle().stroke(.black.opacity(0.12), lineWidth: 1))
             }
         }
         .frame(width: size, height: size)
@@ -110,7 +112,10 @@ enum QRMatrix {
     static func generate(_ text: String) -> [[Bool]]? {
         let filter = CIFilter.qrCodeGenerator()
         filter.message = Data(text.utf8)
-        filter.correctionLevel = "H"
+        // "M" (15% ECC) instead of "H" (30%): fewer modules → larger, calmer dots
+        // for the same card. The centre mark clears only ~5% of modules, well
+        // inside M's recovery budget, so it stays scannable.
+        filter.correctionLevel = "M"
         guard let output = filter.outputImage else { return nil }
 
         let extent = output.extent.integral

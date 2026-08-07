@@ -23,28 +23,37 @@ enum Theme {
         #endif
     }
 
-    // MARK: - Primary accent (emerald → teal → cyan) — fixed brand, both modes
-    static let accent = Color(red: 20/255, green: 184/255, blue: 166/255)        // teal-500
-    static let accentLight = Color(red: 52/255, green: 211/255, blue: 153/255)   // emerald-400
-    static let accentDeep = Color(red: 13/255, green: 148/255, blue: 136/255)    // teal-600
-    static let cyan = Color(red: 34/255, green: 211/255, blue: 238/255)          // cyan-400
+    // MARK: - Primary accent — greyscale only, no hue anywhere in the product.
+    // These stay DARK on purpose: ~34 call sites fill a control with
+    // `accentGradient` and label it `.foregroundStyle(.white)`. A white accent
+    // would render white-on-white. Dark grey + white label is the safe monochrome
+    // equivalent and reads as a standard filled iOS control.
+    /// FILL role (~40 sites): a control's background, almost always labelled
+    /// `.foregroundStyle(.white)`. Must stay dark in both modes.
+    static let accent = Color(white: 0.30)
+    static let accentLight = Color(white: 0.38)
+    /// TEXT/ICON/TINT role (~49 sites): drawn ON a background, so it has to
+    /// invert with the mode — a fixed dark grey vanished on the dark sheets.
+    /// Teal carried both roles at once; greyscale cannot, so the roles split here.
+    static let accentDeep = dyn((64, 64, 64, 1), (205, 205, 205, 1))
+    static let cyan = Color(white: 0.34)
 
     // Fixed near-black ink for QR modules — max scan contrast on white, both modes
-    static let qrInk = Color(red: 12/255, green: 18/255, blue: 32/255)
+    static let qrInk = Color(white: 0.05)
 
-    // MARK: - Secondary pastels
-    static let sky = Color(red: 125/255, green: 211/255, blue: 252/255)          // sky-300
-    static let violet = Color(red: 196/255, green: 181/255, blue: 253/255)       // violet-300
-    static let emerald = Color(red: 110/255, green: 231/255, blue: 183/255)      // emerald-300
+    // MARK: - Secondary tones (were pastels)
+    static let sky = Color(white: 0.62)
+    static let violet = Color(white: 0.54)
+    static let emerald = Color(white: 0.70)
 
-    // MARK: - Slate neutrals (adaptive — flip toward light in dark mode)
-    static let slate900 = dyn((15, 23, 42, 1),    (248, 250, 252, 1))   // primary text
-    static let slate800 = dyn((30, 41, 59, 1),    (226, 232, 240, 1))
-    static let slate700 = dyn((51, 65, 85, 1),    (203, 213, 225, 1))
-    static let slate600 = dyn((71, 85, 105, 1),   (170, 182, 200, 1))
-    static let slate500 = dyn((100, 116, 139, 1), (148, 163, 184, 1))   // secondary
-    static let slate400 = dyn((148, 163, 184, 1), (120, 132, 150, 1))   // tertiary/placeholder
-    static let slate300 = dyn((203, 213, 225, 1), (51, 65, 85, 1))      // dividers
+    // MARK: - Neutrals (adaptive — flip toward light in dark mode)
+    static let slate900 = dyn((17, 17, 17, 1),    (248, 248, 248, 1))   // primary text
+    static let slate800 = dyn((38, 38, 38, 1),    (229, 229, 229, 1))
+    static let slate700 = dyn((64, 64, 64, 1),    (212, 212, 212, 1))
+    static let slate600 = dyn((82, 82, 82, 1),    (180, 180, 180, 1))
+    static let slate500 = dyn((115, 115, 115, 1), (150, 150, 150, 1))   // secondary
+    static let slate400 = dyn((163, 163, 163, 1), (125, 125, 125, 1))   // tertiary/placeholder
+    static let slate300 = dyn((212, 212, 212, 1), (64, 64, 64, 1))      // dividers
 
     // MARK: - Glass surfaces (adaptive)
     static let glass = dyn((255, 255, 255, 0.55), (255, 255, 255, 0.07))      // card fill
@@ -52,9 +61,11 @@ enum Theme {
     static let glassStroke = dyn((255, 255, 255, 0.50), (255, 255, 255, 0.12))
 
     // MARK: - Semantic
-    static let positive = Color(red: 16/255, green: 185/255, blue: 129/255)      // emerald-500
-    static let negative = Color(red: 244/255, green: 63/255, blue: 94/255)       // rose-500
-    static let warning = Color(red: 245/255, green: 158/255, blue: 11/255)       // amber-500
+    // Greyscale too, per the monochrome direction. Note this drops the red that
+    // iOS users read as "destructive" — delete/block now rely on wording alone.
+    static let positive = Color(white: 0.72)
+    static let negative = Color(white: 0.92)   // loudest grey we have = most urgent
+    static let warning = Color(white: 0.82)
 
     // MARK: - Gradients
     static var accentGradient: LinearGradient {
@@ -87,23 +98,7 @@ enum Theme {
     static let radiusLarge: CGFloat = 24
 }
 
-/// User-selectable appearance. Persisted via @AppStorage("privamesh.themeMode").
-enum ThemeMode: String, CaseIterable {
-    case system, light, dark
-
-    var label: String {
-        switch self {
-        case .system: return String(localized: "Системная")
-        case .light:  return String(localized: "Светлая")
-        case .dark:   return String(localized: "Тёмная")
-        }
-    }
-
-    var colorScheme: ColorScheme? {
-        switch self {
-        case .system: return nil
-        case .light:  return .light
-        case .dark:   return .dark
-        }
-    }
-}
+// ThemeMode removed: the app ships dark-only (UIUserInterfaceStyle=Dark). The
+// orbit chat surface is a fixed monochrome dark world, so an appearance picker
+// could only have repainted the secondary screens — a control that visibly does
+// nothing, which is what App Review 2.1(a) flagged.

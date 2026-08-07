@@ -102,7 +102,7 @@ struct CreateWalletView: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 14))
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.accentDeep)
                 .frame(width: 20, alignment: .center)
             Text(.init(text))
                 .font(.system(size: 14))

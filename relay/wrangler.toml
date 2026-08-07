@@ -9,6 +9,29 @@ compatibility_flags = ["nodejs_compat"]
 binding = "QUOTA"
 id = "f781d41203a24a66adf9abb3b2eff0b1"
 
+# Strong single-spend for anonymous blind tokens. Each token is claimed in its
+# own Durable Object (sharded by nonce), giving serialized, strongly-consistent
+# spend — no double-charge race. Without this binding the token path falls back
+# to the eventually-consistent KV spent-set.
+[[durable_objects.bindings]]
+name = "SPENT"
+class_name = "SpentTokenDO"
+
+# Strongly-consistent atomic counters for the money-critical paths (issuance
+# budget, pack credit dedup, per-account quota, daily circuit-breaker). Without
+# this binding those counters fall back to eventually-consistent KV (raceable).
+[[durable_objects.bindings]]
+name = "QUOTA_DO"
+class_name = "QuotaDO"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SpentTokenDO"]
+
+[[migrations]]
+tag = "v2"
+new_classes = ["QuotaDO"]
+
 [vars]
 # Solana RPC endpoint. Set as a SECRET (contains an API key), NOT here:
 #   wrangler secret put RPC_URL
@@ -25,6 +48,15 @@ RATE_PER_MIN = "10"     # per-account /send per minute
 # Set to "1" ONLY for local StoreKit testing; keep off (remove) in production.
 # DEV_SKIP_PINNING = "1"
 
+# Anonymous blind-token issuer key (RSA). Generate with:  npm run keygen
+# That prints TOKEN_RSA_N / TOKEN_RSA_E / TOKEN_RSA_D (base64url). N and E are
+# PUBLIC (served at GET /pubkey); D is the SIGNING SECRET. Leave all three unset
+# to keep the token endpoints disabled and stay on the legacy receipt path.
+TOKEN_RSA_E = "AQAB"   # public exponent 65537; N goes in as a secret below
+# ISSUE_BATCH_MAX = "64"  # max tokens per /issue call (default 64)
+
 # Secrets (set with `wrangler secret put <NAME>`, never commit):
 #   TREASURY_SECRET   base58-encoded 64-byte Solana secret key of the gas treasury
 #   APPLE_ROOT_CA_G3  (optional) PEM of Apple Root CA - G3 for JWS chain pinning
+#   TOKEN_RSA_N       base64url RSA modulus (public, but kept out of git here)
+#   TOKEN_RSA_D       base64url RSA private exponent — THE token signing secret

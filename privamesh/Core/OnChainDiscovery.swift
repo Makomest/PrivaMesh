@@ -94,9 +94,13 @@ final class OnChainDiscovery {
             // ephemeral on-chain signer is fine. Fall back to the direct path.
             let sig: String
             if let relay, relay.isConfigured {
+                // Discovery publishes claim a nickname → the relay needs the
+                // account path for authoritative ownership (an anonymous token
+                // has no stable owner). Never spend a blind token here.
                 sig = try await relay.sendMessage(
                     to: Self.address, memoBase64: memo,
-                    endpointURL: rpc.currentEndpoint.address, computeUnitLimit: 600_000)
+                    endpointURL: rpc.currentEndpoint.address, computeUnitLimit: 600_000,
+                    allowAnonymousToken: false)
             } else {
                 sig = try await MemoTransactionBuilder.send(
                     from: keypair, to: Self.address, memoBase64: memo,

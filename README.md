@@ -8,11 +8,12 @@
 
 *Trust math, not companies.*
 
+[![Download on the App Store](https://img.shields.io/badge/Download_on_the-App_Store-0D96F6?logo=apple&logoColor=white)](https://apps.apple.com/app/privamesh-messenger/id6785997584)
 ![Platform](https://img.shields.io/badge/platform-iOS-black)
 ![Swift](https://img.shields.io/badge/Swift-SwiftUI-orange)
 ![E2E](https://img.shields.io/badge/encryption-X3DH%20%2B%20Double%20Ratchet-blue)
 
-**[privamesh.org](https://privamesh.org)**
+**[Get it on the App Store](https://apps.apple.com/app/privamesh-messenger/id6785997584)** · **[privamesh.org](https://privamesh.org)** · **[Support](https://privamesh.org/support)**
 
 </div>
 
@@ -91,6 +92,19 @@ open privamesh.xcodeproj   # scheme: privamesh → run on device/simulator
 ```
 
 > Never commit private keys or API secrets.
+
+## Install
+
+PrivaMesh is available on the App Store for iPhone and iPad:
+
+**[apps.apple.com/app/privamesh-messenger](https://apps.apple.com/app/privamesh-messenger/id6785997584)**
+
+## Support
+
+Questions, bug reports and account help: **[privamesh.org/support](https://privamesh.org/support)**
+or email [privamesh@proton.me](mailto:privamesh@proton.me).
+
+We never ask for your recovery phrase. Anyone who does is trying to steal your account.
 
 ---
 

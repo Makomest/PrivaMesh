@@ -28,6 +28,17 @@ final class WalletManager {
         SeedLock.invalidate()
     }
 
+    /// The already-derived keypair for the active account, or nil if it hasn't
+    /// been unlocked this session. NEVER reads the Keychain, so it can never
+    /// trigger a Face ID / passcode prompt — use it for incidental, non-user
+    /// work (fee estimates, cover traffic) that must stay silent. Only explicit
+    /// actions the user initiated (sending, publishing) should fall back to
+    /// `currentKeyPair()`, which may prompt once and then warms this cache.
+    var readyKeyPair: KeyPair? {
+        if case let .ready(pub) = state, let c = cachedKeyPair, cachedFor == pub { return c }
+        return nil
+    }
+
     init() {
         if let publicKey = (try? KeychainStorage.read(.publicKey)) ?? nil {
             state = .ready(publicKeyBase58: publicKey)
@@ -133,7 +144,7 @@ final class WalletManager {
     func revealSeedPhrase() throws -> [String] {
         guard let raw = try KeychainStorage.read(
             .seedPhrase, context: SeedLock.context(),
-            prompt: "Доступ к seed-фразе") else { return [] }
+            prompt: String(localized: "Доступ к аккаунту")) else { return [] }
         return raw.split(separator: " ").map(String.init)
     }
 

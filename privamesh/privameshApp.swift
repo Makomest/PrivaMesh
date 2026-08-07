@@ -62,6 +62,14 @@ struct privameshApp: App {
         sub.onPackReceipt = { [weak relaySvc] jws in await relaySvc?.creditPack(jws: jws) }
         relaySvc.receiptProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
         relaySvc.activeAccountProvider = { [weak accounts] in accounts?.activePublicKey ?? "" }
+        // Anonymous blind tokens: a message spends a token the relay can't link to
+        // the purchase, instead of sending the Apple receipt on every /send. When
+        // the relay has no issuer key configured the pool stays empty and sends
+        // transparently fall back to the receipt path above.
+        let blindSvc = BlindTokenService()
+        blindSvc.jwsProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
+        relaySvc.takeBlindToken = { [weak blindSvc] in blindSvc?.takeToken() }
+        relaySvc.returnBlindToken = { [weak blindSvc] token in blindSvc?.returnToken(token) }
         // Derive each account's messaging identity deterministically from its seed
         // phrase, so re-entering the phrase on any device restores the identity.
         accounts.onSeedStored = { [weak messagingIdentity, weak relaySvc] pub, phrase in
@@ -74,6 +82,7 @@ struct privameshApp: App {
         _subscription = State(initialValue: sub)
         _quota        = State(initialValue: quotaSvc)
         _relay        = State(initialValue: relaySvc)
+        _blindTokens  = State(initialValue: blindSvc)
     }
 
     /// Apply data-protection to the SwiftData SQLite store and its WAL/SHM sidecars.
@@ -106,9 +115,8 @@ struct privameshApp: App {
     @State private var subscription = SubscriptionManager()
     @State private var quota = MessageQuotaService()
     @State private var relay = RelayService()
+    @State private var blindTokens = BlindTokenService()
     @State private var accountManager = AccountManager()
-    @State private var sns = SNSService()
-    @State private var solPrice = SOLPriceService()
     @State private var nicknameManager = NicknameManager()
     @State private var discovery = DiscoveryService()
     @State private var toast = ToastManager()
@@ -116,12 +124,40 @@ struct privameshApp: App {
     @State private var market: MarketService
     @State private var userProfile = UserProfileService()
 
-    @AppStorage("privamesh.themeMode") private var themeModeRaw = ThemeMode.system.rawValue
+
+    /// Normally the full app. With `-orbitUIPreview` (DEBUG only) it boots
+    /// straight into the Orbit chat surface on seeded mock contacts — no wallet,
+    /// no passcode — so the scene itself can be inspected in isolation.
+    @ViewBuilder
+    private var rootView: some View {
+        #if DEBUG
+        if CommandLine.arguments.contains("-orbitUIPreview") {
+            OrbitChatsView()
+                .task {
+                    OrbitPreviewSeed.populate(context: sharedModelContainer.mainContext)
+                    OrbitPreviewSeed.seedQuota(quota)
+                    let args = CommandLine.arguments
+                    if args.contains("-orbitInjectArrival") || args.contains("-orbitInjectSpam") {
+                        await OrbitPreviewSeed.injectArrivals(
+                            context: sharedModelContainer.mainContext,
+                            spam: args.contains("-orbitInjectSpam"))
+                    }
+                }
+        } else {
+            ContentView()
+        }
+        #else
+        ContentView()
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .preferredColorScheme((ThemeMode(rawValue: themeModeRaw) ?? .system).colorScheme)
+            rootView
+                // Dark-only product: the chat surface is a single monochrome dark
+                // world, so light mode would only have repainted the secondary
+                // screens. Matches UIUserInterfaceStyle=Dark in Info.plist.
+                .preferredColorScheme(.dark)
                 .environment(router)
                 .environment(wallet)
                 .environment(passcode)
@@ -139,9 +175,8 @@ struct privameshApp: App {
                 .environment(subscription)
                 .environment(quota)
                 .environment(relay)
+                .environment(blindTokens)
                 .environment(accountManager)
-                .environment(sns)
-                .environment(solPrice)
                 .environment(nicknameManager)
                 .environment(discovery)
                 .environment(toast)
@@ -150,6 +185,13 @@ struct privameshApp: App {
                 .environment(userProfile)
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background { BackgroundRefresh.schedule() }
+                    if phase == .active { Task { await blindTokens.ensureStock() } }
+                }
+                .task {
+                    // Fetch the issuer key and top up the anonymous-token pool so a
+                    // token is ready before the first message is sent.
+                    await blindTokens.refreshIssuerKey()
+                    await blindTokens.ensureStock()
                 }
         }
         .modelContainer(sharedModelContainer)

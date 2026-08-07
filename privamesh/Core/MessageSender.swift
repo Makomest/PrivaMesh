@@ -110,7 +110,7 @@ final class MessageSender {
                 if contact.isSelf {
                     memoBase64 = try Self.buildSelfMemo(padded: padded, identity: identity)
                 } else {
-                    let envelope = try buildEnvelope(padded: padded, contact: contact, identity: identity)
+                    let envelope = try await buildEnvelope(padded: padded, contact: contact, identity: identity, senderKeyPair: senderKeyPair)
                     built = envelope
                     memoBase64 = envelope.base64
                 }
@@ -210,7 +210,7 @@ final class MessageSender {
                 if contact.isSelf {
                     memoBase64 = try Self.buildSelfMemo(padded: padded, identity: identity)
                 } else {
-                    let envelope = try buildEnvelope(padded: padded, contact: contact, identity: identity)
+                    let envelope = try await buildEnvelope(padded: padded, contact: contact, identity: identity, senderKeyPair: senderKeyPair)
                     built = envelope
                     memoBase64 = envelope.base64
                 }
@@ -248,7 +248,7 @@ final class MessageSender {
         guard !contact.isSelf, contact.sessionData != nil, contact.stealthRoot != nil else { return }
         do {
             let padded = MessagePadding.pad(try ChatPayload.cover().encode())
-            let built  = try buildEnvelope(padded: padded, contact: contact, identity: identity)
+            let built  = try await buildEnvelope(padded: padded, contact: contact, identity: identity, senderKeyPair: senderKeyPair)
             let sig = try await submitMemo(memoBase64: built.base64,
                                            recipientAddress: built.sendAddress,
                                            senderKeyPair: senderKeyPair, rpc: rpc)
@@ -299,7 +299,7 @@ final class MessageSender {
             if contact.isSelf {
                 memoBase64 = try Self.buildSelfMemo(padded: padded, identity: identity)
             } else {
-                let envelope = try buildEnvelope(padded: padded, contact: contact, identity: identity)
+                let envelope = try await buildEnvelope(padded: padded, contact: contact, identity: identity, senderKeyPair: senderKeyPair)
                 built = envelope
                 memoBase64 = envelope.base64
             }
@@ -381,14 +381,16 @@ final class MessageSender {
     private func buildEnvelope(
         padded: Data,
         contact: Contact,
-        identity: MessagingIdentityManager
-    ) throws -> BuiltEnvelope {
+        identity: MessagingIdentityManager,
+        senderKeyPair: KeyPair
+    ) async throws -> BuiltEnvelope {
         let myIdentity = try identity.getOrCreate()
 
         var ratchet: DoubleRatchet
         let isFirst: Bool
         var ephemeral: Data?
         var stealthRoot: Data?
+        var pqRef: String?          // Irys ref of the X-Wing KEM ciphertext (PQ init)
 
         if let sessionData = contact.sessionData,
            let existing = try? JSONDecoder().decode(DoubleRatchet.self, from: sessionData) {
@@ -400,11 +402,22 @@ final class MessageSender {
                 throw SendError.corruptContactBundle(name: contact.displayName)
             }
             let ek  = CryptoKit.Curve25519.KeyAgreement.PrivateKey()
-            let sk  = try X3DH.senderSharedSecret(
+            var sk  = try X3DH.senderSharedSecret(
                 myIdentityKey:  try myIdentity.dhIdentityKey(),
                 myEphemeralKey: ek,
                 remoteBundle:   bundle
             )
+            // Post-quantum augmentation: if the contact published an X-Wing prekey,
+            // encapsulate to it, ship the (too-big-for-a-memo) ciphertext off-chain
+            // via Irys, and mix the KEM secret into sk. Only when BOTH the encaps and
+            // the upload succeed do we commit to PQ (set pqRef) — otherwise we keep
+            // the classical sk so the receiver, seeing no PQ ref, derives the same.
+            if PQXDH.enabled, let pqKey = bundle.pqPrekeyPublic,
+               let enc = try? PQXDH.encapsulate(toEncapsulationKey: pqKey),
+               let ref = try? await IrysUploader.upload(enc.ciphertext, keypair: senderKeyPair) {
+                sk = PQXDH.combine(classicalSecret: sk, pqSharedSecret: enc.sharedSecret)
+                pqRef = ref
+            }
             ratchet     = try DoubleRatchet.initSender(sharedSecret: sk, remoteSPKPublic: bundle.signedPrekeyPublic)
             ephemeral   = ek.rawRepresentation
             stealthRoot = StealthAddress.root(fromSharedSecret: sk)
@@ -433,9 +446,10 @@ final class MessageSender {
             let dhIK = try myIdentity.dhIdentityKey()
             let ek   = try CryptoKit.Curve25519.KeyAgreement.PrivateKey(rawRepresentation: ephemeral!)
             envelope = MessageEnvelope(
-                kind: .sessionInit,
+                kind: pqRef == nil ? .sessionInit : .sessionInitPQ,
                 senderIdentityPublic:  dhIK.publicKey.rawRepresentation,
                 senderEphemeralPublic: ek.publicKey.rawRepresentation,
+                pqCiphertextRef: pqRef,
                 message: message
             )
         } else {

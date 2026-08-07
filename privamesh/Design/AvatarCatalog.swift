@@ -127,7 +127,10 @@ enum AvatarCatalog {
 
     static func id(_ key: String, _ index: Int) -> String { String(format: "%@-%02d", key, index) }
 
+    /// The product is monochrome, so every catalog colour collapses to its
+    /// luminance here — one choke point keeps all designs' contrast and shape
+    /// while removing hue. Restore the RGB return to bring colour back.
     private static func c(_ r: Double, _ g: Double, _ b: Double) -> Color {
-        Color(red: r, green: g, blue: b)
+        Color(white: 0.2126*r + 0.7152*g + 0.0722*b)
     }
 }

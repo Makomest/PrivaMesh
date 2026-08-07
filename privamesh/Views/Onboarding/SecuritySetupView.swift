@@ -109,7 +109,7 @@ struct SecuritySetupView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 8)
-            Toggle("", isOn: isOn).labelsHidden().tint(Theme.accent)
+            Toggle("", isOn: isOn).labelsHidden().tint(Theme.accentDeep)
         }
         .padding(16).background(Theme.glass)
         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))

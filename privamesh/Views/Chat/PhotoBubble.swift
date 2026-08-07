@@ -36,7 +36,7 @@ struct PhotoBubble: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.white.opacity(0.3))
                         .frame(width: 120, height: 120)
-                    ProgressView().tint(Theme.accent)
+                    ProgressView().tint(Theme.accentDeep)
                 }
             }
         }

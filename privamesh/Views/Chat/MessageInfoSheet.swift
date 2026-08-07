@@ -10,7 +10,6 @@ import SwiftUI
 
 struct MessageInfoSheet: View {
     let msg: ChatMessage
-    let solPrice: SOLPriceService
 
     @Environment(\.dismiss) private var dismiss
 

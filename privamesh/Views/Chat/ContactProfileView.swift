@@ -15,6 +15,8 @@ struct ContactProfileView: View {
     let contact: Contact
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    /// Needed to count pins — the cap is global, not per-contact.
+    @Query private var allContacts: [Contact]
     @State private var showEdit = false
 
     private var profile: ProfileSnapshot? { contact.profile }
@@ -32,6 +34,7 @@ struct ContactProfileView: View {
                     VStack(spacing: 16) {
                         header
                         myInfoCard
+                        if !contact.isSelf { favouriteCard }
                         if !contact.isSelf { muteCard }
                         if !contact.isSelf { safetyCard }
                         disappearCard
@@ -81,6 +84,36 @@ struct ContactProfileView: View {
             }
             .buttonStyle(.plain).padding(.top, 2)
         }
+        .padding(16)
+        .background(Theme.glass)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
+        .overlay(RoundedRectangle(cornerRadius: Theme.radiusLarge).stroke(Theme.glassStroke, lineWidth: 1))
+    }
+
+    /// Pin to the globe. A favourite is never aged off it, however long the two
+    /// of you go quiet — that's the difference between it and the automatic
+    /// "you've been talking a lot lately" ring.
+    private var favouriteCard: some View {
+        let canPin = Contact.canPin(contact, among: allContacts)
+        return Toggle(isOn: Binding(
+            get: { contact.isFavourite },
+            set: { contact.isFavourite = $0; try? context.save() }
+        )) {
+            HStack(spacing: 8) {
+                Image(systemName: contact.isFavourite ? "circle.circle.fill" : "circle.circle")
+                    .font(.system(size: 13)).foregroundStyle(Theme.slate400).frame(width: 18)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Всегда в глобусе").font(.system(size: 14)).foregroundStyle(Theme.slate800)
+                    Text(LocalizedStringKey(
+                        contact.isFavourite ? "Не исчезнет, даже если долго не общаться"
+                        : canPin ? "Исчезнет из глобуса, если долго не общаться"
+                        : "Уже выбрано \(Contact.maxFavourites). Открепи другой контакт"))
+                        .font(.system(size: 11)).foregroundStyle(Theme.slate500)
+                }
+            }
+        }
+        .disabled(!canPin)          // un-pinning is never blocked; canPin covers that
+        .tint(Theme.accentDeep)
         .padding(16)
         .background(Theme.glass)
         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
@@ -216,7 +249,7 @@ struct ContactProfileView: View {
                 if let seed = profile?.activeAvatarSeed {
                     NFTAvatarView(seed: seed, size: 84)
                 } else {
-                    MeshAvatarView(id: contact.id, size: 84)
+                    MeshAvatarView(id: contact.id, name: contact.primaryName, size: 84)
                         .overlay(Circle().stroke(Color.white.opacity(0.8), lineWidth: 2)).clipShape(Circle())
                 }
             }
@@ -225,11 +258,11 @@ struct ContactProfileView: View {
                     .font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(Theme.slate800)
                 if !contact.isSelf, profile?.isPremium == true {
                     Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 16)).foregroundStyle(Theme.accent)
+                        .font(.system(size: 16)).foregroundStyle(Theme.accentDeep)
                 }
             }
-            if let saved = contact.secondaryName {
-                Text("в контактах: \(saved)")
+            if let realNick = contact.secondaryName {
+                Text("их ник: \(realNick)")
                     .font(.system(size: 12)).foregroundStyle(Theme.slate500)
             }
             Text(shortAddress(contact.id))

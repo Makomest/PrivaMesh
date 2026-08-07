@@ -103,6 +103,16 @@ struct SeedPhraseConfirmView: View {
                 }
 
                 VStack(spacing: 12) {
+                    // Also next to the button: the copy inside the scroll view can
+                    // sit off-screen, making a rejected tap look like no reaction.
+                    if let errorMessage {
+                        Text(LocalizedStringKey(errorMessage))
+                            .font(.footnote)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(Theme.negative)
+                            .frame(maxWidth: .infinity)
+                    }
+
                     Button {
                         confirm()
                     } label: {
@@ -117,7 +127,6 @@ struct SeedPhraseConfirmView: View {
                             .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
-                    .disabled(!isAllAnswered)
 
                     Button {
                         router.go(to: .seedPhraseDisplay)
@@ -161,6 +170,11 @@ struct SeedPhraseConfirmView: View {
     }
 
     private func confirm() {
+        // Unanswered questions get an explanation, not a dead button.
+        guard isAllAnswered else {
+            errorMessage = String(localized: "Ответь на все вопросы")
+            return
+        }
         guard isAllCorrect else {
             errorMessage = "Одно или несколько слов выбрано неправильно. Проверь свою запись."
             return

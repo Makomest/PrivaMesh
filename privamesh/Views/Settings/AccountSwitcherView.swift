@@ -62,7 +62,7 @@ struct AccountSwitcherView: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
-                if busy { ProgressView().tint(Theme.accent) }
+                if busy { ProgressView().tint(Theme.accentDeep) }
             }
             .navigationTitle("Аккаунты")
             #if os(iOS)
@@ -149,6 +149,7 @@ private struct ImportAccountSheet: View {
     let onImport: ([String]) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
+    @State private var hint: String?
 
     private var words: [String] {
         text.lowercased().split { $0 == " " || $0 == "\n" }.map(String.init)
@@ -179,7 +180,19 @@ private struct ImportAccountSheet: View {
                     Text("\(words.count) слов").font(.system(size: 11))
                         .foregroundStyle(valid ? Theme.positive : Theme.slate400)
 
+                    if let hint {
+                        Text(LocalizedStringKey(hint)).font(.footnote)
+                            .foregroundStyle(Theme.negative).multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
+                    }
+
                     Button {
+                        // Answer the tap: a dead button on a short phrase looks
+                        // like the app is broken.
+                        guard valid else {
+                            hint = String(localized: "Нужно 12 или 24 слова (сейчас \(words.count))")
+                            return
+                        }
                         onImport(words); dismiss()
                     } label: {
                         Text("Подключить").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
@@ -187,7 +200,7 @@ private struct ImportAccountSheet: View {
                             .background(valid ? AnyShapeStyle(Theme.accentGradient) : AnyShapeStyle(Color(white: 0.75)))
                             .clipShape(Capsule())
                     }
-                    .buttonStyle(.plain).disabled(!valid).padding(.horizontal, 20)
+                    .buttonStyle(.plain).padding(.horizontal, 20)
                     Spacer()
                 }
             }

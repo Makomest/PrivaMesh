@@ -30,6 +30,12 @@ struct PrekeyBundle: Codable {
     /// Curve25519 Signing public key — used only to verify the SPK signature.
     let signingIdentityKey: Data     // 32 bytes
 
+    /// Post-quantum prekey — X-Wing (X25519+ML-KEM-768) encapsulation key, ~1216
+    /// bytes. Present only in the QR bundle (too large for the on-chain compact
+    /// form, which stays classical). When nil, the handshake uses classical X3DH
+    /// unchanged. See PQXDH.
+    var pqPrekeyPublic: Data? = nil
+
     /// The Solana wallet address that published this bundle (optional, legacy nil).
     var walletAddress: String? = nil
     /// Ed25519 signature over `canonicalBytes` by the wallet key — proves the
@@ -54,6 +60,9 @@ struct PrekeyBundle: Codable {
         d.append(signedPrekeySignature)
         if let opk = oneTimePrekeyPublic { d.append(opk) }
         d.append(signingIdentityKey)
+        // Bind the PQ prekey too, so a MITM can't strip it to force a classical
+        // downgrade without breaking the wallet signature.
+        if let pq = pqPrekeyPublic { d.append(pq) }
         return d
     }
 
@@ -152,6 +161,9 @@ struct CryptoIdentity: Codable {
     let signingKeyData: Data          // Curve25519.Signing private key (32 bytes)
     let signedPrekeyData: Data        // Curve25519.KeyAgreement private key (32 bytes)
     let signedPrekeySignature: Data   // 64 bytes
+    /// X-Wing PQ prekey seed (32 bytes). Optional so identities stored before PQXDH
+    /// decode fine (nil → classical handshake). See PQXDH.
+    var pqPrekeySeed: Data? = nil
 
     static func generate() throws -> CryptoIdentity {
         let dhIK  = Curve25519.KeyAgreement.PrivateKey()
@@ -162,7 +174,8 @@ struct CryptoIdentity: Codable {
             dhIdentityKeyData: dhIK.rawRepresentation,
             signingKeyData: sigIK.rawRepresentation,
             signedPrekeyData: spk.rawRepresentation,
-            signedPrekeySignature: Data(sig)
+            signedPrekeySignature: Data(sig),
+            pqPrekeySeed: try PQXDH.generate().seed
         )
     }
 
@@ -192,7 +205,10 @@ struct CryptoIdentity: Codable {
             dhIdentityKeyData: dhIK.rawRepresentation,
             signingKeyData: sigIK.rawRepresentation,
             signedPrekeyData: spk.rawRepresentation,
-            signedPrekeySignature: Data(sig)
+            signedPrekeySignature: Data(sig),
+            // Deterministic PQ prekey seed — recoverable from the phrase like the
+            // rest of the identity, so the published bundle stays reproducible.
+            pqPrekeySeed: sk("pqPrekey")
         )
     }
 
@@ -204,6 +220,12 @@ struct CryptoIdentity: Codable {
         try .init(rawRepresentation: signedPrekeyData)
     }
 
+    /// The X-Wing PQ prekey, or nil for an identity created before PQXDH.
+    func pqKeypair() -> PQXDH.Keypair? {
+        guard let seed = pqPrekeySeed else { return nil }
+        return try? PQXDH.keypair(fromSeed: seed)
+    }
+
     func prekeyBundle() throws -> PrekeyBundle {
         let dhIK  = try dhIdentityKey()
         let spk   = try signedPrekey()
@@ -213,7 +235,10 @@ struct CryptoIdentity: Codable {
             signedPrekeyPublic: spk.publicKey.rawRepresentation,
             signedPrekeySignature: signedPrekeySignature,
             oneTimePrekeyPublic: nil,
-            signingIdentityKey: sigIK.publicKey.rawRepresentation
+            signingIdentityKey: sigIK.publicKey.rawRepresentation,
+            // Gated OFF for this release (see PQXDH.enabled): nil → bundle is byte-
+            // identical to the classical format, so nothing downstream does PQ.
+            pqPrekeyPublic: PQXDH.enabled ? pqKeypair()?.encapsulationKey : nil
         )
     }
 }

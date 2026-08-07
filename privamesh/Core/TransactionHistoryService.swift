@@ -84,7 +84,7 @@ final class TransactionHistoryService {
     private static let pageSize = 20
 
     @MainActor
-    func refresh(publicKey: String, rpc: SolanaRPCService, price: SOLPriceService? = nil,
+    func refresh(publicKey: String, rpc: SolanaRPCService,
                  gasAddress: String? = nil) async {
         // Keep showing existing rows while refreshing; only spin if empty.
         let priorRows = transactions
@@ -114,9 +114,9 @@ final class TransactionHistoryService {
                 rows = await mergingGasRows(into: rows, gasAddress: gasAddress,
                                             mainAddress: publicKey, rpc: rpc)
                 state = .loaded(rows)
-                // Enrich payment rows (no memo) with amount + historical USD.
+                // Enrich payment rows (no memo) with their SOL amount.
                 await enrichPayments(&rows, myAddress: publicKey,
-                                     endpointURL: rpc.currentEndpoint.address, price: price)
+                                     endpointURL: rpc.currentEndpoint.address)
                 if !Task.isCancelled { state = .loaded(rows) }
                 return
             } catch {
@@ -155,7 +155,7 @@ final class TransactionHistoryService {
 
     /// Append the next page of older transactions (cursor = last loaded signature).
     @MainActor
-    func loadMore(publicKey: String, rpc: SolanaRPCService, price: SOLPriceService? = nil) async {
+    func loadMore(publicKey: String, rpc: SolanaRPCService) async {
         guard case let .loaded(existing) = state,
               let cursor = existing.last?.signature,
               canLoadMore, !isLoadingMore else { return }
@@ -180,7 +180,7 @@ final class TransactionHistoryService {
                 var merged = existing + newRows
                 state = .loaded(merged)
                 await enrichPayments(&merged, myAddress: publicKey,
-                                     endpointURL: rpc.currentEndpoint.address, price: price)
+                                     endpointURL: rpc.currentEndpoint.address)
                 if !Task.isCancelled { state = .loaded(merged) }
                 return
             } catch {
@@ -192,20 +192,16 @@ final class TransactionHistoryService {
         }
     }
 
-    /// Fill the SOL delta + historical USD for every row (so mints/market/chat
-    /// spends show how much they cost, not just plain transfers).
+    /// Fill the SOL delta for every row (so spends show how much moved, not just
+    /// plain transfers).
     @MainActor
     private func enrichPayments(_ rows: inout [TxRow], myAddress: String,
-                               endpointURL: String, price: SOLPriceService?) async {
+                               endpointURL: String) async {
         for i in rows.indices where !rows[i].isError && rows[i].amountLamports == nil {
             guard let delta = await Self.fetchDelta(signature: rows[i].signature,
                                                     myAddress: myAddress, endpointURL: endpointURL),
                   delta != 0 else { continue }
             rows[i].amountLamports = delta
-            if let price, let date = rows[i].date,
-               let usd = await price.historicalUSD(on: date) {
-                rows[i].usdAtTime = abs(Double(delta) / 1_000_000_000) * usd
-            }
         }
     }
 
@@ -221,7 +217,7 @@ final class TransactionHistoryService {
                                    "maxSupportedTransactionVersion": 0,
                                    "commitment": "confirmed"]]
         ])
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
+        guard let (data, _) = try? await PrivateNetwork.shared.data(for: req),
               let json    = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result  = json["result"] as? [String: Any],
               let meta    = result["meta"] as? [String: Any],

@@ -188,7 +188,13 @@ struct AddContactView: View {
             .overlay(RoundedRectangle(cornerRadius: Theme.radiusSmall)
                 .stroke(Theme.glassStroke, lineWidth: 1))
 
-            Button { performSearch() } label: {
+            // Enabled on an empty query: the tap must answer, not vanish.
+            Button {
+                guard !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty else {
+                    errorMessage = "Введи ник или адрес для поиска"; showError = true; return
+                }
+                performSearch()
+            } label: {
                 HStack(spacing: 8) {
                     if isSearching { ProgressView().tint(.white).scaleEffect(0.85) }
                     Text(LocalizedStringKey(isSearching ? "Ищем…" : "Найти"))
@@ -203,7 +209,7 @@ struct AddContactView: View {
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .disabled(searchQuery.isEmpty || isSearching)
+            .disabled(isSearching)
 
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: "info.circle").font(.system(size: 12)).foregroundStyle(Theme.slate400)
@@ -256,7 +262,13 @@ struct AddContactView: View {
                         .stroke(Theme.glassStroke, lineWidth: 1))
             }
 
-            Button { addFromSearch(result) } label: {
+            // Enabled even with an empty name: the tap must answer, not vanish.
+            Button {
+                guard !searchContactName.isEmpty else {
+                    errorMessage = "Введи имя для контакта"; showError = true; return
+                }
+                addFromSearch(result)
+            } label: {
                 Label("Добавить контакт", systemImage: "person.badge.plus")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
@@ -268,7 +280,6 @@ struct AddContactView: View {
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .disabled(searchContactName.isEmpty)
         }
         .padding(16)
         .background(Theme.glass)
@@ -328,9 +339,9 @@ struct AddContactView: View {
                 Spacer()
             }
             if myBundleBase64.isEmpty {
-                ProgressView().tint(Theme.accent).padding(40)
+                ProgressView().tint(Theme.accentDeep).padding(40)
             } else {
-                QRCodeView(text: myBundleBase64, size: 280)
+                QRCodeView(text: myBundleBase64, size: 200)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
                 Button {
@@ -438,7 +449,13 @@ struct AddContactView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(RoundedRectangle(cornerRadius: 8)
                     .stroke(Theme.glassStroke, lineWidth: 1))
-            Button { addFromQR() } label: {
+            // Enabled even with an empty name: the tap must answer, not vanish.
+            Button {
+                guard !qrContactName.isEmpty else {
+                    errorMessage = "Введи имя для контакта"; showError = true; return
+                }
+                addFromQR()
+            } label: {
                 Label("Добавить контакт", systemImage: "checkmark")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
@@ -450,7 +467,6 @@ struct AddContactView: View {
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .disabled(qrContactName.isEmpty)
         }
         .padding(16)
         .background(Theme.glass)

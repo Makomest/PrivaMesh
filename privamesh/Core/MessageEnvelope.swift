@@ -19,11 +19,19 @@ struct MessageEnvelope {
     enum Kind: UInt8 {
         case regular    = 0x00
         case sessionInit = 0x01
+        /// Post-quantum session init: like sessionInit but also carries an off-chain
+        /// (Irys) reference to the X-Wing KEM ciphertext, which is too large (~1.1KB)
+        /// for a Solana memo. Only ever sent new-build → new-build (the initiator
+        /// uses it solely when the contact published a PQ prekey), so an older build
+        /// never has to parse it. See PQXDH.
+        case sessionInitPQ = 0x02
     }
 
     let kind: Kind
-    let senderIdentityPublic: Data?    // 32 bytes, only present for sessionInit
-    let senderEphemeralPublic: Data?   // 32 bytes, only present for sessionInit
+    let senderIdentityPublic: Data?    // 32 bytes, only present for session init
+    let senderEphemeralPublic: Data?   // 32 bytes, only present for session init
+    /// Irys tx id of the X-Wing KEM ciphertext — only for `.sessionInitPQ`.
+    var pqCiphertextRef: String? = nil
     let message: EncryptedMessage
 
     // MARK: - Serialization
@@ -31,9 +39,15 @@ struct MessageEnvelope {
     func serialize() -> Data {
         var d = Data()
         d.append(kind.rawValue)
-        if kind == .sessionInit {
+        if kind == .sessionInit || kind == .sessionInitPQ {
             d.append(senderIdentityPublic!)
             d.append(senderEphemeralPublic!)
+        }
+        if kind == .sessionInitPQ {
+            // 1-byte length + UTF-8 ref (Irys tx id is short and ASCII).
+            let ref = Data((pqCiphertextRef ?? "").utf8)
+            d.append(UInt8(min(ref.count, 255)))
+            d.append(ref.prefix(255))
         }
         d.append(message.serialized)
         return d
@@ -71,6 +85,18 @@ struct MessageEnvelope {
             let msg = try EncryptedMessage.deserialize(Data(data[65...]))
             return MessageEnvelope(kind: .sessionInit, senderIdentityPublic: ik,
                                    senderEphemeralPublic: ek, message: msg)
+        case .sessionInitPQ:
+            // 1 flag + 32 IK + 32 EK + 1 refLen + ref + EncryptedMessage
+            guard data.count >= 1 + 32 + 32 + 1 else { throw CryptoError.invalidData }
+            let ik  = Data(data[1..<33])
+            let ek  = Data(data[33..<65])
+            let refLen = Int(data[65])
+            let refStart = 66
+            guard data.count >= refStart + refLen + 41 else { throw CryptoError.invalidData }
+            let ref = String(data: Data(data[refStart..<refStart+refLen]), encoding: .utf8)
+            let msg = try EncryptedMessage.deserialize(Data(data[(refStart+refLen)...]))
+            return MessageEnvelope(kind: .sessionInitPQ, senderIdentityPublic: ik,
+                                   senderEphemeralPublic: ek, pqCiphertextRef: ref, message: msg)
         }
     }
 }

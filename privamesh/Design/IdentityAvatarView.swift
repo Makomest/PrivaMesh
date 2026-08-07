@@ -2,132 +2,134 @@
 //  IdentityAvatarView.swift
 //  privamesh
 //
-//  Deterministic mesh-network avatar. Same ID always produces the same
-//  color palette, node layout, and label — matches MeshAvatar.tsx exactly.
+//  Default avatar in the brand's language: a monochrome mesh-network disc — the
+//  same white-hairlines-on-black look as the logo — with the first letter of the
+//  name set large on top. The mesh is seeded by that letter, so every contact
+//  whose name starts with the same letter shares one clean, consistent default
+//  (A always looks like A), and there is one avatar per letter A–Z (0–9 / # too).
 //
 
 import SwiftUI
 
 struct MeshAvatarView: View {
     let id: String
+    /// Display name. Its first letter becomes the glyph and seeds the mesh. When
+    /// nil (older call sites that only have a key), the id is used as the seed and
+    /// its first alphanumeric character as the glyph.
+    var name: String? = nil
     var size: CGFloat = 48
 
-    // MARK: - Palette (matches MeshAvatar.tsx PALETTES)
+    // MARK: - Glyph + seed
 
-    private static let palettes: [(Color, Color)] = [
-        (Color(red: 0.204, green: 0.827, blue: 0.600), Color(red: 0.024, green: 0.714, blue: 0.831)),
-        (Color(red: 0.506, green: 0.549, blue: 0.973), Color(red: 0.220, green: 0.737, blue: 0.973)),
-        (Color(red: 0.957, green: 0.447, blue: 0.714), Color(red: 0.984, green: 0.443, blue: 0.522)),
-        (Color(red: 0.984, green: 0.573, blue: 0.188), Color(red: 0.984, green: 0.749, blue: 0.141)),
-        (Color(red: 0.655, green: 0.545, blue: 0.980), Color(red: 0.204, green: 0.827, blue: 0.600)),
-        (Color(red: 0.220, green: 0.737, blue: 0.973), Color(red: 0.506, green: 0.549, blue: 0.973)),
-        (Color(red: 0.302, green: 0.871, blue: 0.500), Color(red: 0.639, green: 0.894, blue: 0.208)),
-        (Color(red: 0.957, green: 0.247, blue: 0.369), Color(red: 0.655, green: 0.545, blue: 0.980)),
-    ]
-
-    // MARK: - Hash (matches hash() in MeshAvatar.tsx)
+    /// The single character shown — first letter/number of the name (or id).
+    private var glyph: String {
+        if let c = (name ?? "").first(where: { $0.isLetter || $0.isNumber }) {
+            return String(c).uppercased()
+        }
+        if let c = id.first(where: { $0.isLetter || $0.isNumber }) {
+            return String(c).uppercased()
+        }
+        return "#"
+    }
+    /// Everyone sharing a glyph shares a mesh — the default is per-letter, so the
+    /// seed is the glyph, not the full identity.
+    private var seed: UInt32 { Self.hash(glyph) }
 
     private static func hash(_ s: String) -> UInt32 {
         var h: Int32 = 0
-        for c in s.unicodeScalars {
-            h = 31 &* h &+ Int32(truncatingIfNeeded: c.value)
-        }
+        for c in s.unicodeScalars { h = 31 &* h &+ Int32(truncatingIfNeeded: c.value) }
         return UInt32(bitPattern: h)
     }
-
-    private static func seededFloat(seed: UInt32, index: UInt32) -> Double {
-        let s = seed &* 1664525 &+ index &* 1013904223
+    private static func rnd(_ seed: UInt32, _ i: UInt32) -> Double {
+        let s = seed &* 1664525 &+ i &* 1013904223 &+ 12345
         return Double(s) / Double(UInt32.max)
     }
 
-    // MARK: - Mesh data
+    // MARK: - Mesh (seeded by the glyph, projected like the logo sphere)
 
-    private struct MeshData {
-        let from: Color
-        let to: Color
-        let nodes: [CGPoint]
-        let edges: [(Int, Int)]
-        let label: String
-    }
+    private struct Mesh { let nodes: [CGPoint]; let edges: [(Int, Int)]; let focal: Int }
 
-    private func buildMesh() -> MeshData {
-        let h = Self.hash(id)
-        let palette = Self.palettes[Int(h % 8)]
-
-        let count = 5 + Int(h % 3)
+    private func buildMesh() -> Mesh {
+        // Points spread on a disc, biased toward a ring so the mesh reads as the
+        // silhouette of a sphere rather than a flat scatter.
+        let count = 9
+        let c = CGPoint(x: size/2, y: size/2)
         var nodes: [CGPoint] = []
+        var depth: [Double] = []
         for i in 0..<count {
-            let col = i % 3
-            let row = i / 3
-            let base   = size * 0.15
-            let step   = size * 0.30
-            let jx = CGFloat(Self.seededFloat(seed: h, index: UInt32(i * 7 + 1))) * size * 0.12
-            let jy = CGFloat(Self.seededFloat(seed: h, index: UInt32(i * 7 + 2))) * size * 0.12
-            nodes.append(CGPoint(x: base + CGFloat(col) * step + jx,
-                                 y: base + CGFloat(row) * step + jy))
+            let a = Self.rnd(seed, UInt32(i*3 + 1)) * 2 * .pi
+            let rr = 0.30 + 0.62 * Self.rnd(seed, UInt32(i*3 + 2))   // 0.30…0.92 of radius
+            let R = size * 0.46 * rr
+            nodes.append(CGPoint(x: c.x + CGFloat(cos(a)) * R, y: c.y + CGFloat(sin(a)) * R))
+            depth.append(Self.rnd(seed, UInt32(i*3 + 3)))            // fake front/back for shading
         }
-
-        let threshold = size * 0.55
-        var edges: [(Int, Int)] = []
-        for a in 0..<nodes.count {
-            for b in (a + 1)..<nodes.count {
-                let dx = nodes[a].x - nodes[b].x
-                let dy = nodes[a].y - nodes[b].y
-                if sqrt(dx * dx + dy * dy) < threshold { edges.append((a, b)) }
+        // k-nearest-neighbour edges (k=2) — a light cage, never a dense web.
+        var seen = Set<Int>(); var edges: [(Int, Int)] = []
+        for i in 0..<count {
+            let near = (0..<count).filter { $0 != i }
+                .sorted { hypot(nodes[i].x-nodes[$0].x, nodes[i].y-nodes[$0].y)
+                        < hypot(nodes[i].x-nodes[$1].x, nodes[i].y-nodes[$1].y) }
+                .prefix(2)
+            for j in near {
+                let lo = min(i,j), hi = max(i,j), k = lo*100+hi
+                if seen.insert(k).inserted { edges.append((lo, hi)) }
             }
         }
-
-        return MeshData(from: palette.0, to: palette.1,
-                        nodes: nodes, edges: edges,
-                        label: String(id.prefix(4)))
+        let focal = depth.indices.max { depth[$0] < depth[$1] } ?? 0
+        return Mesh(nodes: nodes, edges: edges, focal: focal)
     }
 
     // MARK: - View
 
     var body: some View {
         let mesh = buildMesh()
-
         ZStack {
-            Circle()
-                .fill(LinearGradient(
-                    colors: [mesh.from, mesh.to],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
+            // Logo ground: near-black disc with a faint central lift.
+            Circle().fill(Color(white: 0.10))
+            Circle().fill(RadialGradient(
+                colors: [Color.white.opacity(0.10), .clear],
+                center: .init(x: 0.5, y: 0.44), startRadius: 0, endRadius: size * 0.6))
 
             Canvas { ctx, sz in
                 var path = Path()
                 for (a, b) in mesh.edges {
-                    path.move(to: mesh.nodes[a])
-                    path.addLine(to: mesh.nodes[b])
+                    path.move(to: mesh.nodes[a]); path.addLine(to: mesh.nodes[b])
                 }
-                ctx.stroke(path,
-                           with: .color(.white.opacity(0.35)),
-                           lineWidth: sz.width * 0.025)
-
-                let dotR = sz.width * 0.055
-                for node in mesh.nodes {
-                    let r = CGRect(x: node.x - dotR, y: node.y - dotR,
-                                   width: dotR * 2, height: dotR * 2)
-                    ctx.fill(Path(ellipseIn: r), with: .color(.white.opacity(0.70)))
+                ctx.stroke(path, with: .color(.white.opacity(0.16)), lineWidth: max(0.5, sz.width * 0.014))
+                let r = sz.width * 0.028
+                for (i, n) in mesh.nodes.enumerated() {
+                    let rr = i == mesh.focal ? r * 1.7 : r
+                    let op = i == mesh.focal ? 0.85 : 0.45
+                    ctx.fill(Path(ellipseIn: CGRect(x: n.x-rr, y: n.y-rr, width: rr*2, height: rr*2)),
+                             with: .color(.white.opacity(op)))
                 }
             }
             .clipShape(Circle())
 
-            Text(mesh.label)
-                .font(.system(size: size * 0.22, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.95))
-                .offset(y: size * 0.07)
+            // Hairline rim — the sphere's horizon, in miniature.
+            Circle().strokeBorder(.white.opacity(0.14), lineWidth: max(0.5, size * 0.012))
+
+            Text(glyph)
+                .font(.system(size: size * 0.46, weight: .semibold))
+                .foregroundStyle(.white)
         }
         .frame(width: size, height: size)
     }
 }
 
 #Preview {
-    HStack(spacing: 12) {
-        MeshAvatarView(id: "7xKp...3mQr", size: 64)
-        MeshAvatarView(id: "9nRz...8wKv", size: 64)
-        MeshAvatarView(id: "2pJn...6sLw", size: 64)
+    let letters = ["A","B","C","D","E","F","G","M","R","Z"]
+    return ZStack {
+        Color.black
+        VStack(spacing: 14) {
+            ForEach([0, 5], id: \.self) { row in
+                HStack(spacing: 12) {
+                    ForEach(letters[row..<min(row+5, letters.count)], id: \.self) { l in
+                        MeshAvatarView(id: l, name: l, size: 60)
+                    }
+                }
+            }
+        }
     }
-    .padding()
+    .ignoresSafeArea()
 }

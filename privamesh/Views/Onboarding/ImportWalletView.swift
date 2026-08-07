@@ -91,6 +91,17 @@ struct ImportWalletView: View {
                 }
 
                 VStack(spacing: 12) {
+                    // Errors also live next to the button: the copy inside the
+                    // scroll view can sit off-screen behind the keyboard, which made
+                    // a rejected tap look like no reaction at all.
+                    if let errorMessage {
+                        Text(LocalizedStringKey(errorMessage))
+                            .font(.footnote)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(Theme.negative)
+                            .frame(maxWidth: .infinity)
+                    }
+
                     Button {
                         submit()
                     } label: {
@@ -108,7 +119,10 @@ struct ImportWalletView: View {
                         .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
-                    .disabled(!isReadyToImport || isImporting)
+                    // Never disabled on an incomplete form: a greyed-out button that
+                    // silently swallows taps reads as a broken app (App Review 2.1(a)
+                    // on iPad). Tapping now always answers — with the exact reason.
+                    .disabled(isImporting)
 
                     Button {
                         router.go(to: .welcome)
@@ -176,7 +190,27 @@ struct ImportWalletView: View {
                     }
                 }
                 .onChange(of: words[index]) { _, newValue in
-                    words[index] = newValue.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    // Typing or pasting several words into ANY field spreads them
+                    // across the grid from here. The "paste from clipboard" button
+                    // needs the system pasteboard permission, which a reviewer can
+                    // dismiss; typing into the field always works, so this is the
+                    // reliable path — and a space finishes a word, as in a wallet.
+                    let parsed = Self.parsePhrase(newValue)
+                    let endsWord = newValue.last.map { !$0.isLetter } ?? false
+
+                    if parsed.count >= 2 {
+                        for (offset, word) in parsed.enumerated() where index + offset < 12 {
+                            words[index + offset] = word
+                        }
+                        let next = index + parsed.count
+                        focusedField = next < 12 ? next : nil
+                        errorMessage = nil
+                        return
+                    }
+                    words[index] = parsed.first ?? ""
+                    if endsWord, !words[index].isEmpty, index < 11 {
+                        focusedField = index + 1
+                    }
                 }
         }
         .padding(.vertical, 8)
@@ -212,25 +246,45 @@ struct ImportWalletView: View {
         }
     }
 
+    /// One recovery word: letters only, lowercased. Strips numbering ("1."),
+    /// commas and smart punctuation that a paste or a tablet keyboard adds.
+    static func normalize(_ raw: String) -> String {
+        String(raw.lowercased().unicodeScalars.filter { CharacterSet.letters.contains($0) })
+    }
+
+    /// Split arbitrary pasted text into recovery words. Accepts any separator
+    /// (spaces, newlines, commas) and numbered lists.
+    static func parsePhrase(_ raw: String) -> [String] {
+        raw.split(whereSeparator: { !$0.isLetter })
+            .map { normalize(String($0)) }
+            .filter { !$0.isEmpty }
+    }
+
     #if os(iOS)
     private func pasteAll() {
-        guard let raw = UIPasteboard.general.string else { return }
-        let parts = raw
-            .lowercased()
-            .split(whereSeparator: { $0.isWhitespace || $0.isNewline })
-            .map(String.init)
-        guard parts.count == 12 else {
+        guard let raw = UIPasteboard.general.string, !raw.isEmpty else {
+            errorMessage = String(localized: "Буфер пуст — введи слова вручную или вставь фразу в первое поле")
+            return
+        }
+        let parts = Self.parsePhrase(raw)
+        guard parts.count >= 12 else {
             errorMessage = String(localized: "В буфере не 12 слов (нашёл \(parts.count))")
             return
         }
-        words = parts
+        words = Array(parts.prefix(12))
         errorMessage = nil
         focusedField = nil
     }
     #endif
 
     private func submit() {
-        let cleaned = words.map { $0.trimmingCharacters(in: .whitespaces) }
+        let cleaned = words.map { Self.normalize($0) }
+        let missing = cleaned.enumerated().filter { $0.element.isEmpty }.map { $0.offset + 1 }
+        if !missing.isEmpty {
+            focusedField = missing.first.map { $0 - 1 }
+            errorMessage = String(localized: "Заполни все 12 слов. Пустые: \(missing.map(String.init).joined(separator: ", "))")
+            return
+        }
         let unknown = cleaned.filter { !Wordlists.english.contains($0) }
         if !unknown.isEmpty {
             errorMessage = String(localized: "Не из BIP-39: \(unknown.joined(separator: ", "))")

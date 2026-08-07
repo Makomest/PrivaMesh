@@ -83,7 +83,7 @@ final class SolanaRPCService {
         req.httpBody = try? JSONSerialization.data(withJSONObject: [
             "jsonrpc": "2.0", "id": 1, "method": "getRecentPrioritizationFees", "params": [[String]()]
         ])
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
+        guard let (data, _) = try? await PrivateNetwork.shared.data(for: req),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result = json["result"] as? [[String: Any]], !result.isEmpty else { return }
         let fees = result.compactMap { ($0["prioritizationFee"] as? NSNumber)?.doubleValue }.sorted()

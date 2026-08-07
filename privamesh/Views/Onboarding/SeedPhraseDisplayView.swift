@@ -10,6 +10,7 @@ struct SeedPhraseDisplayView: View {
     @Environment(WalletManager.self) private var wallet
 
     @State private var savedConfirmed = false
+    @State private var errorMessage: String?
 
     private var phrase: [String] {
         if case let .draft(phrase, _) = wallet.state {
@@ -78,10 +79,24 @@ struct SeedPhraseDisplayView: View {
                             .foregroundStyle(Theme.slate700)
                     }
                     .toggleStyle(.switch)
-                    .tint(Theme.accent)
+                    .tint(Theme.accentDeep)
                     .padding(.horizontal, 4)
 
+                    if let errorMessage {
+                        Text(LocalizedStringKey(errorMessage))
+                            .font(.footnote)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(Theme.negative)
+                            .frame(maxWidth: .infinity)
+                    }
+
                     Button {
+                        // Answer the tap instead of swallowing it: a greyed-out
+                        // button that does nothing reads as a broken app.
+                        guard savedConfirmed else {
+                            errorMessage = String(localized: "Сначала подтверди, что записал слова")
+                            return
+                        }
                         router.go(to: .seedPhraseConfirm)
                     } label: {
                         Text("Продолжить")
@@ -95,7 +110,6 @@ struct SeedPhraseDisplayView: View {
                             .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
-                    .disabled(!savedConfirmed)
 
                     Button {
                         wallet.discardDraft()

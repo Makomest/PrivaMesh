@@ -100,7 +100,7 @@ struct QuotaPaywallSheet: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             if subscription.isLoading {
-                ProgressView().tint(Theme.accent)
+                ProgressView().tint(Theme.accentDeep)
                 Text("Загрузка предложений…")
                     .font(.system(size: 14)).foregroundStyle(Theme.slate500)
             } else {
@@ -129,7 +129,7 @@ struct QuotaPaywallSheet: View {
         VStack(spacing: 8) {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 34))
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.accentDeep)
                 .padding(.top, 12)
             Text(quota.remaining > 0 ? "Больше сообщений" : "Сообщения закончились")
                 .font(.system(size: 22, weight: .bold, design: .rounded))

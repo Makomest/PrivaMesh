@@ -9,21 +9,18 @@
 import SwiftUI
 
 struct PrivacyCoverView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ZStack {
-            PastelBackground()
-            VStack(spacing: 16) {
-                ZStack {
-                    Circle()
-                        .fill(Theme.accentGradient)
-                        .frame(width: 80, height: 80)
-                        .blur(radius: 20)
-                        .opacity(0.35)
-                    PrivaLogo(size: 72)
-                }
+            // Match the new brand identity (dark, monochrome geodesic sphere —
+            // the same mark as the app icon), NOT the old teal mesh logo.
+            Color.black.ignoresSafeArea()
+            VStack(spacing: 20) {
+                NetworkSphereView(diameter: 132, reduced: reduceMotion)
                 Text("PrivaMesh")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
-                    .foregroundStyle(Theme.slate800)
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
             }
         }
     }

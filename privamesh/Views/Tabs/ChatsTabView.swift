@@ -155,7 +155,8 @@ struct ChatsTabView: View {
                         if let seed = avatars.activeDesign?.id {
                             NFTAvatarView(seed: seed, size: 52)
                         } else {
-                            MeshAvatarView(id: activeAddress.isEmpty ? "me" : activeAddress, size: 52)
+                            MeshAvatarView(id: activeAddress.isEmpty ? "me" : activeAddress,
+                                           name: nicknameManager.nickname, size: 52)
                         }
                     }
                     .overlay(Circle().stroke(Theme.glassStroke, lineWidth: 1))
@@ -170,7 +171,7 @@ struct ChatsTabView: View {
                             .lineLimit(1)
                         if subscription.isSubscribed {
                             Image(systemName: "checkmark.seal.fill")
-                                .font(.system(size: 15)).foregroundStyle(Theme.accent)
+                                .font(.system(size: 15)).foregroundStyle(Theme.accentDeep)
                         }
                     }
                     HStack(spacing: 4) {
@@ -391,7 +392,7 @@ struct ChatsTabView: View {
             } else if let seed = profile?.activeAvatarSeed {
                 NFTAvatarView(seed: seed, size: 48)
             } else {
-                MeshAvatarView(id: contact.id, size: 48)
+                MeshAvatarView(id: contact.id, name: contact.primaryName, size: 48)
             }
 
             let nick = (profile?.nickname).flatMap { $0.isEmpty ? nil : $0 }
@@ -404,7 +405,7 @@ struct ChatsTabView: View {
                         .foregroundStyle(Theme.slate800)
                     if !contact.isSelf, profile?.isPremium == true {
                         Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 11)).foregroundStyle(Theme.accent)
+                            .font(.system(size: 11)).foregroundStyle(Theme.accentDeep)
                     }
                     if let saved = secondary {
                         Text("· \(saved)")

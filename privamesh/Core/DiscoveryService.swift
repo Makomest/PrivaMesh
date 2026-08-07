@@ -50,7 +50,7 @@ final class DiscoveryService {
 
         let (data, response): (Data, URLResponse)
         do {
-            (data, response) = try await URLSession.shared.data(from: url)
+            (data, response) = try await PrivateNetwork.shared.data(from: url)
         } catch {
             throw DiscoveryError.networkError
         }
@@ -85,7 +85,7 @@ final class DiscoveryService {
         guard let encoded = try? JSONEncoder().encode(body) else { return }
         request.httpBody = encoded
 
-        _ = try? await URLSession.shared.data(for: request)
+        _ = try? await PrivateNetwork.shared.data(for: request)
     }
 
     // MARK: - Codable models

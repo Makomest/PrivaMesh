@@ -25,3 +25,13 @@ docs/store-screenshots/out/
 
 # Private App Store review material - never commit (contains funded test seed)
 review-private/
+
+# Agent / tooling artifacts (never publish)
+.claude/
+CLAUDE.md
+graphify-out/
+
+# Local marketing / working material (large, not part of the product)
+PrivaMesh-screens/
+screens/
+updates/

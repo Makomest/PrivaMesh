@@ -30,13 +30,13 @@ struct ProfileTabView: View {
     @Environment(MessageSender.self) private var messageSender
     @Environment(\.modelContext) private var context
 
-    @AppStorage("privamesh.themeMode") private var themeModeRaw = ThemeMode.system.rawValue
     // "auto" follows the phone language; "ru"/"en" force an override.
     @AppStorage("privamesh.langPref") private var langPref = "auto"
     @State private var showLangRestart = false
     @State private var showRPCEditor = false
     @State private var coverEnabled = false
     @AppStorage("privamesh.shareVerifiedBadge") private var shareVerifiedBadge = true
+    @AppStorage("privamesh.mixnetPreferred") private var mixnetPref = false
     @State private var seedLockEnabled = false
     @State private var notifMuteAll = false
     @State private var notifPreview = true
@@ -72,7 +72,7 @@ struct ProfileTabView: View {
                         // NFT nickname minting / on-chain "secure" removed — no
                         // crypto-asset creation in the app.
                         discoveryCard
-                        appearanceCard
+                        languageCard
                         securityCard
                         privacyCard
                         notificationsCard
@@ -178,7 +178,10 @@ struct ProfileTabView: View {
         Button { showPaywall = true } label: {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(spacing: 8) {
-                    PrivaLogo(size: 28)
+                    // New brand mark (geodesic sphere), dark on the light card,
+                    // static — matches the app icon, not the old teal mesh tile.
+                    NetworkSphereView(diameter: 28, horizon: false,
+                                      color: Theme.slate800, reduced: true)
                     HStack(spacing: 2) {
                         Text("PrivaMesh").font(.system(size: 18, weight: .bold, design: .rounded))
                             .foregroundStyle(Theme.slate800)
@@ -216,7 +219,7 @@ struct ProfileTabView: View {
 
     private func upsellFeature(icon: String, _ text: String) -> some View {
         HStack(spacing: 10) {
-            Image(systemName: icon).font(.system(size: 14)).foregroundStyle(Theme.accent).frame(width: 20)
+            Image(systemName: icon).font(.system(size: 14)).foregroundStyle(Theme.accentDeep).frame(width: 20)
             Text(LocalizedStringKey(text)).font(.system(size: 13)).foregroundStyle(Theme.slate700)
             Spacer(minLength: 0)
         }
@@ -227,7 +230,7 @@ struct ProfileTabView: View {
     private var premiumStatusCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
-                Image(systemName: "checkmark.seal.fill").foregroundStyle(Theme.accent)
+                Image(systemName: "checkmark.seal.fill").foregroundStyle(Theme.accentDeep)
                 Text("PrivaMesh+").font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundStyle(Theme.slate800)
                 Spacer()
@@ -308,7 +311,7 @@ struct ProfileTabView: View {
                     .frame(width: 80, height: 80)
                     .blur(radius: 14)
                     .opacity(0.4)
-                MeshAvatarView(id: publicKey ?? "", size: 72)
+                MeshAvatarView(id: publicKey ?? "", name: nicknameManager.nickname, size: 72)
                     .overlay(Circle().stroke(Color.white.opacity(0.80), lineWidth: 2))
                     .clipShape(Circle())
             }
@@ -320,7 +323,7 @@ struct ProfileTabView: View {
                         .foregroundStyle(Theme.slate800)
                     if subscription.isSubscribed {
                         Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 16)).foregroundStyle(Theme.accent)
+                            .font(.system(size: 16)).foregroundStyle(Theme.accentDeep)
                     }
                 }
 
@@ -451,7 +454,7 @@ struct ProfileTabView: View {
                     get: { biometry.isEnabled },
                     set: { biometry.isEnabled = $0 }
                 ))
-                .tint(Theme.accent)
+                .tint(Theme.accentDeep)
                 .labelsHidden()
                 .disabled(!biometry.isAvailable)
             }
@@ -493,6 +496,18 @@ struct ProfileTabView: View {
                       subtitle: String(localized: "Скрывает, КОГДА ты пишешь. Тратит ~\(CoverTrafficService.approxPerHour) сообщений в час из твоего баланса."),
                       isOn: $coverEnabled)
             cardDivider
+            // Route named-host traffic (relay, photos, discovery) through a mixnet
+            // to hide your IP. Honest by default: disabled and labelled experimental
+            // until a real gateway is wired, so it never implies protection it can't
+            // deliver. NOTE: Solana RPC polling isn't routed yet (separate work).
+            toggleRow(icon: "point.3.filled.connected.trianglepath.dotted",
+                      title: "Скрывать IP через mixnet",
+                      subtitle: PrivateNetwork.shared.isAvailable
+                        ? String(localized: "Прячет твой IP от relay и RPC через Nym. Заметно медленнее.")
+                        : String(localized: "Экспериментально — шлюз ещё не подключён. Пока не активно."),
+                      isOn: $mixnetPref,
+                      enabled: PrivateNetwork.shared.isAvailable)
+            cardDivider
             toggleRow(icon: "checkmark.seal.fill", title: "Галочка верификации контактам",
                       subtitle: "Показывать контактам, что у тебя PrivaMesh+.",
                       isOn: $shareVerifiedBadge)
@@ -523,6 +538,11 @@ struct ProfileTabView: View {
             } else {
                 coverTraffic.stop()
             }
+        }
+        .onChange(of: mixnetPref) { _, v in
+            // Only takes effect when a gateway is configured; otherwise the session
+            // stays direct (isActive == false) and nothing changes.
+            PrivateNetwork.shared.mixnetPreferred = v
         }
         .onChange(of: seedLockEnabled) { _, v in
             SeedLock.isEnabled = v
@@ -590,25 +610,14 @@ struct ProfileTabView: View {
         if err != nil { searchEnabled = false }
     }
 
-    // MARK: - Appearance
+    // MARK: - Language
 
-    private var appearanceCard: some View {
+    private var languageCard: some View {
         cardChrome {
-            HStack {
-                Image(systemName: "moon.stars.fill").font(.system(size: 16))
-                    .foregroundStyle(Theme.accentDeep).frame(width: 28)
-                Text("Тема").font(.system(size: 15)).foregroundStyle(Theme.slate800)
-                Spacer()
-                Picker("", selection: $themeModeRaw) {
-                    ForEach(ThemeMode.allCases, id: \.rawValue) { mode in
-                        Text(mode.label).tag(mode.rawValue)
-                    }
-                }
-                .pickerStyle(.menu)
-                .tint(Theme.accentDeep)
-            }
-            .padding(16)
-            cardDivider
+            // No appearance picker: the app is dark-only. The chat surface is a
+            // single monochrome dark world by design, so a light mode would have
+            // changed the secondary screens only — a setting that visibly does
+            // nothing (App Review 2.1(a)).
             HStack {
                 Image(systemName: "globe").font(.system(size: 16))
                     .foregroundStyle(Theme.accentDeep).frame(width: 28)
@@ -666,7 +675,7 @@ struct ProfileTabView: View {
                 }
             }
             Spacer()
-            Toggle("", isOn: isOn).labelsHidden().tint(Theme.accent).disabled(!enabled)
+            Toggle("", isOn: isOn).labelsHidden().tint(Theme.accentDeep).disabled(!enabled)
         }
         .padding(16)
     }

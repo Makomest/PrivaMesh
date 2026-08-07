@@ -310,7 +310,7 @@ enum MemoTransactionBuilder {
             "params": params
         ])
 
-        let (data, response) = try await URLSession.shared.data(for: req)
+        let (data, response) = try await PrivateNetwork.shared.data(for: req)
         let status = (response as? HTTPURLResponse)?.statusCode ?? -1
         let bodyText = String(data: data, encoding: .utf8) ?? "<\(data.count) bytes>"
 

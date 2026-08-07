@@ -8,29 +8,18 @@ import SwiftUI
 struct PastelBackground: View {
     @Environment(\.colorScheme) private var scheme
 
-    // Static mesh (perf: no per-frame redraw). Adapts to a deep slate/teal mesh
-    // in dark mode so adaptive text + glass surfaces read correctly.
+    // Static mesh (perf: no per-frame redraw). Greyscale only — the mesh now
+    // reads as a soft light gradient rather than a colour field, so it sits under
+    // the monochrome sheets without introducing a hue.
     private let lightColors: [Color] = [
-        Color(red: 0.80, green: 0.96, blue: 0.95),
-        Color(red: 0.74, green: 0.87, blue: 1.00),
-        Color(red: 0.88, green: 0.79, blue: 1.00),
-        Color(red: 0.72, green: 0.97, blue: 0.91),
-        Color(red: 0.93, green: 0.96, blue: 1.00),
-        Color(red: 0.87, green: 0.80, blue: 1.00),
-        Color(red: 0.76, green: 0.97, blue: 0.87),
-        Color(red: 0.79, green: 0.90, blue: 1.00),
-        Color(red: 0.91, green: 0.83, blue: 1.00),
+        Color(white: 0.97), Color(white: 0.93), Color(white: 0.90),
+        Color(white: 0.95), Color(white: 0.99), Color(white: 0.91),
+        Color(white: 0.94), Color(white: 0.96), Color(white: 0.89),
     ]
     private let darkColors: [Color] = [
-        Color(red: 0.05, green: 0.13, blue: 0.16),
-        Color(red: 0.04, green: 0.08, blue: 0.16),
-        Color(red: 0.09, green: 0.06, blue: 0.18),
-        Color(red: 0.04, green: 0.14, blue: 0.14),
-        Color(red: 0.06, green: 0.09, blue: 0.13),
-        Color(red: 0.08, green: 0.06, blue: 0.16),
-        Color(red: 0.04, green: 0.13, blue: 0.12),
-        Color(red: 0.05, green: 0.09, blue: 0.15),
-        Color(red: 0.08, green: 0.06, blue: 0.15),
+        Color(white: 0.09), Color(white: 0.05), Color(white: 0.08),
+        Color(white: 0.06), Color(white: 0.10), Color(white: 0.05),
+        Color(white: 0.07), Color(white: 0.04), Color(white: 0.08),
     ]
 
     var body: some View {
