@@ -71,7 +71,7 @@ struct PrivacyPolicyView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(.regular, in: .rect(cornerRadius: Theme.radiusMedium))
+        .background(.ultraThinMaterial, in: .rect(cornerRadius: Theme.radiusMedium))
     }
 }
 

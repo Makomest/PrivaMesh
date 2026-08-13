@@ -20,6 +20,7 @@ final class PasscodeManager {
     private static let lengthKey = "privamesh.passcode.length"
     private static let attemptsKey  = "privamesh.passcode.failedAttempts"
     private static let lockUntilKey = "privamesh.passcode.lockUntil"
+    private static let migratedKey  = "privamesh.passcode.protectionMigrated"
 
     /// Brute-force throttle: free attempts before a cooldown kicks in.
     private static let freeAttempts = 5
@@ -57,14 +58,46 @@ final class PasscodeManager {
 
     private var backgroundedAt: Date?
 
+    /// Whether this device has a passcode. When the Keychain cannot be read yet,
+    /// assume YES: sending someone to "enter your passcode" one screen too early is
+    /// harmless, while sending them to "create a passcode" overwrites the one they
+    /// already have.
     var isPasscodeSet: Bool {
-        readKeychain(key: Self.hashKey) != nil
+        switch read(key: Self.hashKey) {
+        case .found:       return true
+        case .missing:     return false
+        case .unavailable: return true
+        }
+    }
+
+    /// True only when we positively know there is no passcode. Used before writing
+    /// a new one, so a temporary Keychain failure can never silently replace it.
+    var isPasscodeConfirmedAbsent: Bool {
+        if case .missing = read(key: Self.hashKey) { return true }
+        return false
     }
 
     init() {
-        if !isPasscodeSet {
+        // Only skip the lock screen when we are sure there is nothing to unlock.
+        if isPasscodeConfirmedAbsent {
             isUnlocked = true
         }
+    }
+
+    /// Re-store the passcode hash under the current protection class.
+    ///
+    /// Installs from 1.0 wrote it as WhenUnlocked, which is unreadable until the
+    /// device is unlocked once per boot; that is what made the app occasionally
+    /// think no passcode existed. Rewriting is only possible while the item IS
+    /// readable, so this runs whenever the app becomes active and is a no-op
+    /// afterwards.
+    func migrateProtectionClassIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: Self.migratedKey) else { return }
+        guard case let .found(hash) = read(key: Self.hashKey),
+              case let .found(salt) = read(key: Self.saltKey) else { return }
+        guard writeKeychain(key: Self.saltKey, data: salt),
+              writeKeychain(key: Self.hashKey, data: hash) else { return }
+        UserDefaults.standard.set(true, forKey: Self.migratedKey)
     }
 
     func setPasscode(_ passcode: String, length: Int = 6) throws {
@@ -86,9 +119,10 @@ final class PasscodeManager {
     func verify(_ passcode: String) -> Bool {
         // Refuse during a brute-force cooldown (offline guessing throttle).
         guard lockoutRemaining == 0 else { return false }
-        guard
-            let storedHash = readKeychain(key: Self.hashKey),
-            let salt = readKeychain(key: Self.saltKey)
+        // A Keychain that cannot be read right now is not a wrong passcode, so it
+        // must not burn an attempt or trigger the brute-force cooldown.
+        guard case let .found(storedHash) = read(key: Self.hashKey),
+              case let .found(salt) = read(key: Self.saltKey)
         else {
             return false
         }
@@ -175,7 +209,17 @@ final class PasscodeManager {
 
     // MARK: - Keychain raw helpers (Data values for binary hash/salt)
 
-    private func readKeychain(key: String) -> Data? {
+    /// Outcome of a Keychain read. "Missing" and "temporarily unreadable" are very
+    /// different answers and must never be collapsed into nil: treating an
+    /// unreadable item as missing is what made the app offer to CREATE a passcode
+    /// for someone who already had one.
+    enum KeychainRead {
+        case found(Data)
+        case missing
+        case unavailable(OSStatus)
+    }
+
+    private func read(key: String) -> KeychainRead {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,
@@ -185,8 +229,22 @@ final class PasscodeManager {
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        guard status == errSecSuccess, let data = result as? Data else { return nil }
-        return data
+        switch status {
+        case errSecSuccess:
+            if let data = result as? Data { return .found(data) }
+            return .unavailable(status)
+        case errSecItemNotFound:
+            return .missing
+        default:
+            // errSecInteractionNotAllowed (device still locked after a reboot) and
+            // friends land here.
+            return .unavailable(status)
+        }
+    }
+
+    private func readKeychain(key: String) -> Data? {
+        if case let .found(data) = read(key: key) { return data }
+        return nil
     }
 
     private func writeKeychain(key: String, data: Data) -> Bool {
@@ -199,7 +257,11 @@ final class PasscodeManager {
 
         var attributes = baseQuery
         attributes[kSecValueData as String] = data
-        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        // AfterFirstUnlock, not WhenUnlocked: the app can be launched (or pre-warmed
+        // by iOS) before the device has been unlocked in this boot, and a
+        // WhenUnlocked item is unreadable then. Still device-only and still
+        // unreadable while the phone is off.
+        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
 
         return SecItemAdd(attributes as CFDictionary, nil) == errSecSuccess
     }

@@ -175,7 +175,9 @@ struct CryptoIdentity: Codable {
             signingKeyData: sigIK.rawRepresentation,
             signedPrekeyData: spk.rawRepresentation,
             signedPrekeySignature: Data(sig),
-            pqPrekeySeed: try PQXDH.generate().seed
+            // No PQ prekey below iOS 26 — CryptoKit has no X-Wing there, and a nil
+            // seed is exactly the "classical only" identity this type already handles.
+            pqPrekeySeed: { if #available(iOS 26.0, *) { return try? PQXDH.generate().seed }; return nil }()
         )
     }
 
@@ -220,7 +222,9 @@ struct CryptoIdentity: Codable {
         try .init(rawRepresentation: signedPrekeyData)
     }
 
-    /// The X-Wing PQ prekey, or nil for an identity created before PQXDH.
+    /// The X-Wing PQ prekey, or nil for an identity created before PQXDH or on a
+    /// system without CryptoKit's X-Wing (below iOS 26).
+    @available(iOS 26.0, *)
     func pqKeypair() -> PQXDH.Keypair? {
         guard let seed = pqPrekeySeed else { return nil }
         return try? PQXDH.keypair(fromSeed: seed)
@@ -236,9 +240,10 @@ struct CryptoIdentity: Codable {
             signedPrekeySignature: signedPrekeySignature,
             oneTimePrekeyPublic: nil,
             signingIdentityKey: sigIK.publicKey.rawRepresentation,
-            // Gated OFF for this release (see PQXDH.enabled): nil → bundle is byte-
-            // identical to the classical format, so nothing downstream does PQ.
-            pqPrekeyPublic: PQXDH.enabled ? pqKeypair()?.encapsulationKey : nil
+            // Published only by PQ-capable devices (iOS 26+). On older systems this
+            // stays nil and the bundle is byte-identical to the classical format,
+            // so senders transparently fall back to plain X3DH.
+            pqPrekeyPublic: { if #available(iOS 26.0, *) { return pqKeypair()?.encapsulationKey }; return nil }()
         )
     }
 }

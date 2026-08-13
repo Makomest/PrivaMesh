@@ -123,6 +123,7 @@ struct privameshApp: App {
     @State private var avatars: AvatarService
     @State private var market: MarketService
     @State private var userProfile = UserProfileService()
+    @State private var inviteInbox = InviteInbox()
 
 
     /// Normally the full app. With `-orbitUIPreview` (DEBUG only) it boots
@@ -183,6 +184,25 @@ struct privameshApp: App {
                 .environment(avatars)
                 .environment(market)
                 .environment(userProfile)
+                .environment(inviteInbox)
+                #if DEBUG
+                // Verification hook: -inviteURL <url> feeds the same inbox the real
+                // link does, so the UI path can be tested without tapping the system
+                // "open in app?" prompt. Never compiled into a release build.
+                .task {
+                    let args = CommandLine.arguments
+                    if let i = args.firstIndex(of: "-inviteURL"), i + 1 < args.count,
+                       let url = URL(string: args[i + 1]) {
+                        inviteInbox.accept(url)
+                    }
+                }
+                #endif
+                .onOpenURL { url in
+                    // An invite link (privamesh://add?c=… or privamesh.org/i/…).
+                    // Parked in the inbox because this can fire before any screen
+                    // exists to show it.
+                    inviteInbox.accept(url)
+                }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background { BackgroundRefresh.schedule() }
                     if phase == .active { Task { await blindTokens.ensureStock() } }

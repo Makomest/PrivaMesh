@@ -996,6 +996,7 @@ struct OrbitChatsView: View {
     @Environment(NicknameManager.self) private var nicknameManager
     @Environment(SubscriptionManager.self) private var subscription
     @Environment(ToastManager.self) private var toast
+    @Environment(InviteInbox.self) private var invites
     @Environment(\.modelContext) private var context
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -1163,6 +1164,11 @@ struct OrbitChatsView: View {
             // Sheets don't inherit the scene's colour scheme, so a black surface
             // was throwing up white sheets. Pin them dark to match.
             .sheet(isPresented: $showAdd) { AddContactView().preferredColorScheme(.dark) }
+            // An invite link opens the add-contact sheet with the card already in it.
+            .onChange(of: invites.pendingPayload) { _, payload in
+                if payload != nil { showAdd = true }
+            }
+            .onAppear { if invites.pendingPayload != nil { showAdd = true } }
             .sheet(isPresented: $showProfile) { ProfileTabView().preferredColorScheme(.dark) }  // settings live here
             .sheet(item: $profileContact) { c in ContactProfileView(contact: c).preferredColorScheme(.dark) }
             // Swipe-left-to-delete a chat, confirmed (it's unrecoverable — the

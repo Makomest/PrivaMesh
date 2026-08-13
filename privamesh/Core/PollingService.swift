@@ -192,6 +192,12 @@ final class PollingService {
             // bail and let a later poll retry (Irys is durable).
             var pqSharedSecret: Data? = nil
             if envelope.kind == .sessionInitPQ {
+                // A PQ session-init is undecryptable without X-Wing, so a pre-iOS 26
+                // device simply cannot complete this handshake. Bail rather than fall
+                // back: falling back would derive a different root and corrupt the
+                // session. The sender only commits to PQ when we advertised a PQ
+                // prekey, which such a device never does.
+                guard #available(iOS 26.0, *) else { return }
                 guard let ref = envelope.pqCiphertextRef, let kp = myIdentity.pqKeypair(),
                       let ct = try? await IrysUploader.download(txId: ref),
                       let ss = try? PQXDH.decapsulate(ciphertext: ct, keypair: kp)

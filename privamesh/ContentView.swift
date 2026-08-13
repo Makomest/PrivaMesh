@@ -161,6 +161,13 @@ struct ContentView: View {
                 wallet.reloadFromKeychain()
                 decideInitialRoute()
             }
+            // Same class of failure for the passcode: if we landed on "create a
+            // passcode" only because the hash was unreadable at launch, send the
+            // user to the normal unlock screen now that the Keychain answers.
+            if router.route == .passcodeSetup, passcode.isPasscodeSet {
+                router.go(to: passcode.isUnlocked ? .main : .passcodeEnter)
+            }
+            passcode.migrateProtectionClassIfNeeded()
             if passcode.shouldRelockOnForeground() {
                 passcode.lock()
                 router.go(to: .passcodeEnter)

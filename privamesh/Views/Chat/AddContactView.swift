@@ -24,6 +24,7 @@ struct AddContactView: View {
     @Environment(MarketService.self) private var market
     @Environment(UserProfileService.self) private var userProfile
     @Environment(NicknameManager.self) private var nicknameManager
+    @Environment(InviteInbox.self) private var invites
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
@@ -84,7 +85,15 @@ struct AddContactView: View {
                 }
             }
             #endif
-            .onAppear { loadOwnBundle() }
+            .onAppear {
+                loadOwnBundle()
+                // Arrived through an invite link: jump to the QR tab with the
+                // sender's card already filled in, so it is one tap to save.
+                if let payload = invites.take() {
+                    scannedBase64 = payload
+                    activeTab = .qr
+                }
+            }
             .onChange(of: scannedBase64) { _, new in
                 // Pre-fill the name field with the user's own NFT nick from the card.
                 if qrContactName.isEmpty,
@@ -344,6 +353,23 @@ struct AddContactView: View {
                 QRCodeView(text: myBundleBase64, size: 200)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
+                // A link is the path most people actually take: send it in whatever
+                // messenger you already use, one tap on the other side.
+                if let invite = myInviteURL {
+                    ShareLink(item: invite,
+                              subject: Text("PrivaMesh"),
+                              message: Text("Добавь меня в PrivaMesh")) {
+                        Label("Пригласить ссылкой", systemImage: "square.and.arrow.up")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Theme.accentGradient)
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 Button {
                     #if os(iOS)
                     UIPasteboard.general.string = myBundleBase64
@@ -618,6 +644,13 @@ struct AddContactView: View {
     }
 
     // MARK: - Helpers
+
+    /// Shareable invite link built from my own card. Nil until the card is loaded.
+    private var myInviteURL: URL? {
+        guard !myBundleBase64.isEmpty,
+              let card = ContactCard.fromQRPayload(myBundleBase64) else { return nil }
+        return InviteLink.url(for: card)
+    }
 
     private func shortAddress(_ addr: String) -> String {
         guard addr.count > 12 else { return addr }

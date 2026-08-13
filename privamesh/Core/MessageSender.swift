@@ -412,7 +412,8 @@ final class MessageSender {
             // via Irys, and mix the KEM secret into sk. Only when BOTH the encaps and
             // the upload succeed do we commit to PQ (set pqRef) — otherwise we keep
             // the classical sk so the receiver, seeing no PQ ref, derives the same.
-            if PQXDH.enabled, let pqKey = bundle.pqPrekeyPublic,
+            if #available(iOS 26.0, *),
+               let pqKey = bundle.pqPrekeyPublic,
                let enc = try? PQXDH.encapsulate(toEncapsulationKey: pqKey),
                let ref = try? await IrysUploader.upload(enc.ciphertext, keypair: senderKeyPair) {
                 sk = PQXDH.combine(classicalSecret: sk, pqSharedSecret: enc.sharedSecret)

@@ -26,18 +26,23 @@ import Foundation
 import CryptoKit
 
 enum PQXDH {
-    /// Master switch for the post-quantum handshake. OFF for now: the PQ path is
-    /// wired end-to-end but not yet two-device integration-tested, so this release
-    /// stays classical-only (identical to pre-PQXDH). Flipping this to true — after
-    /// device testing — turns it on with NO migration: the PQ prekey seed is already
-    /// derived deterministically from the phrase, so bundles just start carrying the
-    /// PQ key. While false, the published bundle is byte-identical to the old format
-    /// (so wallet signatures and older builds stay compatible) and every send is
-    /// classical.
-    static let enabled = false
+    /// Whether this device can do the post-quantum handshake at all.
+    ///
+    /// CryptoKit ships X-Wing (ML-KEM-768 + X25519) only from iOS 26, while the app
+    /// itself supports iOS 18 so it actually reaches people. So PQ is not a global
+    /// switch but a per-device capability: iOS 26 devices publish a PQ prekey and
+    /// mix a PQ secret into the root key, older devices keep the classical X3DH
+    /// handshake unchanged. Both interoperate — a PQ-capable sender falls back to
+    /// classical whenever the recipient has no PQ prekey, which is exactly the
+    /// fallback this file was designed around.
+    static var enabled: Bool {
+        if #available(iOS 26.0, *) { return true }
+        return false
+    }
 
     /// One party's post-quantum prekey. The private half stays on device; the
     /// public half (`encapsulationKey`) is published in the prekey bundle.
+    @available(iOS 26.0, *)
     struct Keypair {
         let privateKey: XWingMLKEM768X25519.PrivateKey
         var publicKey: XWingMLKEM768X25519.PublicKey { privateKey.publicKey }
@@ -48,17 +53,20 @@ enum PQXDH {
     }
 
     /// Fresh PQ prekey.
+    @available(iOS 26.0, *)
     static func generate() throws -> Keypair {
         Keypair(privateKey: try XWingMLKEM768X25519.PrivateKey.generate())
     }
 
     /// Restore a PQ prekey from its stored seed.
+    @available(iOS 26.0, *)
     static func keypair(fromSeed seed: Data) throws -> Keypair {
         Keypair(privateKey: try XWingMLKEM768X25519.PrivateKey(seedRepresentation: seed, publicKey: nil))
     }
 
     /// INITIATOR: encapsulate to the responder's published PQ prekey. Returns the
     /// ciphertext (to send off-chain) and the PQ shared secret (to mix in).
+    @available(iOS 26.0, *)
     static func encapsulate(toEncapsulationKey keyData: Data) throws -> (ciphertext: Data, sharedSecret: Data) {
         let pub = try XWingMLKEM768X25519.PublicKey(rawRepresentation: keyData)
         let result = try pub.encapsulate()
@@ -67,6 +75,7 @@ enum PQXDH {
 
     /// RESPONDER: decapsulate the initiator's ciphertext with the local PQ prekey,
     /// recovering the same PQ shared secret.
+    @available(iOS 26.0, *)
     static func decapsulate(ciphertext: Data, keypair: Keypair) throws -> Data {
         dataOf(try keypair.privateKey.decapsulate(ciphertext))
     }
