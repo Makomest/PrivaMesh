@@ -1127,6 +1127,18 @@ struct OrbitChatsView: View {
             }
             .onAppear { boot(reduced: reduceMotion) }
             #if DEBUG
+            // Screenshot helper: -chatShot <a|b> seeds one conversation and opens
+            // it, so the same chat can be captured from both participants' phones.
+            .task {
+                guard let side = ChatScreenshotSeed.requestedSide, !activeAddress.isEmpty else { return }
+                try? await Task.sleep(for: .seconds(1))
+                if let c = ChatScreenshotSeed.seed(side: side, ownerAddress: activeAddress, context: context) {
+                    engine?.sync(contacts: contacts)
+                    selected = c
+                }
+            }
+            #endif
+            #if DEBUG
             // Screenshot helper: -orbitOpenPaywall auto-opens the subscription sheet.
             .task {
                 if CommandLine.arguments.contains("-orbitOpenPaywall") {

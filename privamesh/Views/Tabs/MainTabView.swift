@@ -143,7 +143,12 @@ struct MainTabView: View {
         market.bind(to: address)
         userProfile.bind(to: address)
         gasWallet.bind(to: address)       // per-account gas wallet (no shared fee payer)
+        #if DEBUG
+        // The screenshot run must not be covered by the system notification prompt.
+        if ChatScreenshotSeed.requestedSide == nil { NotificationService.shared.requestAuthorization() }
+        #else
         NotificationService.shared.requestAuthorization()
+        #endif
         polling.start(myAddress: address, identity: identity, rpc: rpc, context: context)
         coverTraffic.start(myAddress: address, wallet: wallet, gasWallet: gasWallet, identity: identity,
                            rpc: rpc, sender: messageSender, context: context)
