@@ -79,11 +79,11 @@ Finding someone by nickname uses a **self-authenticating registry** instead of a
 
 ## Membership
 
-Messaging is metered with a small free monthly allowance. **PrivaMesh+** (optional, via Apple In-App Purchase) unlocks a higher monthly message allowance and a verification badge; consumable message packs are also available. All delivery and infrastructure costs are covered by us, the developer — users never buy, hold, or spend any cryptocurrency, and there is no wallet in the app.
+Messaging is metered. A free account carries no sponsored allowance, because every message is a Solana transaction with a real network fee that the fee worker pays. **PrivaMesh+** ($5.99/month, via Apple In-App Purchase) sponsors 1,200 messages a month and adds a verification badge; **Pro** ($9.99) sponsors 2,000. Consumable packs of 100, 500 and 1,500 messages are also available and do not expire. All delivery and infrastructure costs are covered by us, the developer — users never buy, hold, or spend any cryptocurrency, and there is no wallet in the app.
 
 ## Tech
 
-- **SwiftUI** + SwiftData, iOS 17+
+- **SwiftUI** + SwiftData, iOS 26.5+ (App Store minimum; the post-quantum handshake needs iOS 26)
 - **CryptoKit** — Curve25519 X3DH, HKDF/HMAC-SHA256, AES-256-GCM; TweetNacl for ed25519 signatures
 - iOS **Keychain** (device-only, biometric-lockable) for the recovery phrase + messaging keys
 
