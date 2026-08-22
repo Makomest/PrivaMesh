@@ -84,6 +84,7 @@ struct SafetyNumberView: View {
                 .font(.system(size: 13, weight: .medium)).foregroundStyle(Theme.slate600)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(SafetyNumber.formatted(number))
+                .accessibilityIdentifier("safetyNumberDigits")
                 .font(.system(size: 19, weight: .medium, design: .monospaced))
                 .foregroundStyle(Theme.slate800)
                 .multilineTextAlignment(.center)

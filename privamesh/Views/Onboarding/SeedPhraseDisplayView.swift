@@ -36,6 +36,9 @@ struct SeedPhraseDisplayView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 16)
 
+                        // The words are the account. Cover them while the screen is
+                        // being recorded, mirrored or shared on a call.
+                        CaptureShielded {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                             ForEach(Array(phrase.enumerated()), id: \.offset) { index, word in
                                 HStack(spacing: 8) {
@@ -57,6 +60,7 @@ struct SeedPhraseDisplayView: View {
                                 .overlay(RoundedRectangle(cornerRadius: Theme.radiusSmall)
                                     .stroke(Theme.glassStroke, lineWidth: 1))
                             }
+                        }
                         }
                         .padding(.horizontal, 16)
 

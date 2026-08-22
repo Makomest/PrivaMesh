@@ -40,6 +40,14 @@ final class Contact {
     var isVerified: Bool = false
     /// When the comparison happened, shown next to the mark.
     var verifiedAt: Date?
+    /// The messaging identity key this contact was last seen using. A session-init
+    /// carrying a different one means they reinstalled, switched device, or someone
+    /// took their place — and the user has to be told either way, because a safety
+    /// number checked once is worthless if the key can be replaced in silence.
+    var knownIdentityKey: Data?
+    /// Set when `knownIdentityKey` changed under us and cleared once the user has
+    /// seen it. Blocks nothing by itself; the chat shows a banner while it is set.
+    var keyChangedAt: Date?
     var disappearSeconds: Int = 0          // 0 = off; else auto-delete local msgs older than this
     var paymentAddress: String = ""        // their real main wallet (from encrypted payload); for in-chat SOL
     var createdAt: Date

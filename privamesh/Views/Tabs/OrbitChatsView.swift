@@ -1127,6 +1127,19 @@ struct OrbitChatsView: View {
             }
             .onAppear { boot(reduced: reduceMotion) }
             #if DEBUG
+            // Debug aid: -simulateKeyChange fires the key-rotation path on the
+            // first contact, so the banner and system notice can be seen without
+            // waiting for someone to actually reinstall.
+            .task {
+                guard CommandLine.arguments.contains("-simulateKeyChange") else { return }
+                try? await Task.sleep(for: .seconds(3))
+                guard let victim = contacts.first(where: { !$0.isSelf }) else { return }
+                victim.isVerified = true
+                victim.verifiedAt = Date()
+                PollingService.noteIdentityKey(Data(repeating: 0x11, count: 32), on: victim, context: context)
+                PollingService.noteIdentityKey(Data(repeating: 0x22, count: 32), on: victim, context: context)
+                selected = victim
+            }
             // Screenshot helper: -chatShot <a|b> seeds one conversation and opens
             // it, so the same chat can be captured from both participants' phones.
             .task {

@@ -221,7 +221,13 @@ final class PollingService {
                 ownerAddress: myAddress,
                 in: contacts, context: context
             )
-            contact.sessionData          = try? JSONEncoder().encode(result.ratchet)
+            // A session-init replaces the ratchet, so it is also the moment a
+            // contact's identity key can change under us. Silently accepting a new
+            // key is exactly the hole that makes verifying a safety number
+            // pointless: checked once, swapped later, nobody told.
+            Self.noteIdentityKey(envelope.senderIdentityPublic, on: contact, context: context)
+
+            contact.setRatchet(result.ratchet)
             contact.stealthRoot          = result.stealthRoot
             contact.isInitiator          = false   // we received the sessionInit → responder
             contact.isSessionEstablished = true
@@ -386,6 +392,42 @@ final class PollingService {
     /// Find the contact this sessionInit belongs to, or create a "message
     /// request" contact so an unknown sender's first message still appears.
     @MainActor
+    /// Record the identity key a contact is using, and react if it changed.
+    ///
+    /// First key seen is trust-on-first-use and passes quietly. A DIFFERENT key
+    /// later means a new device or an impersonator, and the two are
+    /// indistinguishable from here — so the verified mark is dropped (the user
+    /// verified the old key, not this one) and the chat gets a system message they
+    /// cannot miss.
+    static func noteIdentityKey(_ key: Data?, on contact: Contact, context: ModelContext) {
+        guard let key, !key.isEmpty else { return }
+
+        guard let known = contact.knownIdentityKey else {
+            contact.knownIdentityKey = key       // first contact: nothing to compare against
+            return
+        }
+        guard known != key else { return }       // same key, nothing happened
+
+        contact.knownIdentityKey = key
+        contact.keyChangedAt = Date()
+        if contact.isVerified {
+            // The number the user compared was for the previous key.
+            contact.isVerified = false
+            contact.verifiedAt = nil
+        }
+
+        let notice = ChatMessage(id: "keychange-\(contact.id)-\(Int(Date().timeIntervalSince1970))",
+                                 body: String(localized: "Ключ безопасности контакта изменился. Это новое устройство — или кто-то другой. Сверьте номер безопасности заново."),
+                                 isOutgoing: false,
+                                 sentAt: Date(),
+                                 status: "received")
+        notice.kind = "system"
+        notice.isRead = false
+        notice.contact = contact
+        context.insert(notice)
+        try? context.save()
+    }
+
     private func findOrCreateContact(
         senderAddress: String?,
         senderIdentityKey: Data?,
@@ -469,13 +511,12 @@ final class PollingService {
         identity: MessagingIdentityManager,
         context:  ModelContext
     ) -> ChatPayload? {
-        guard let sessionData = contact.sessionData,
-              var ratchet = try? JSONDecoder().decode(DoubleRatchet.self, from: sessionData)
+        guard var ratchet = contact.ratchet
         else { return nil }
         do {
             let padded    = try ratchet.decrypt(message: envelope.message)
             let plaintext = try MessagePadding.unpad(padded)
-            contact.sessionData          = try? JSONEncoder().encode(ratchet)
+            contact.setRatchet(ratchet)
             contact.isSessionEstablished = true
             return ChatPayload.decode(from: plaintext)
         } catch {

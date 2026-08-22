@@ -3221,6 +3221,16 @@
         }
       }
     },
+    "Ключ безопасности контакта изменился. Это новое устройство — или кто-то другой. Сверьте номер безопасности заново.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This contact's security key changed. Either they set up a new device, or someone else is now on the other end. Compare safety numbers again."
+          }
+        }
+      }
+    },
     "Ключ газового баланса": {
       "extractionState": "stale",
       "localizations": {
@@ -3228,6 +3238,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gas balance key"
+          }
+        }
+      }
+    },
+    "Ключ контакта изменился": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact's key changed"
           }
         }
       }
@@ -6195,6 +6215,16 @@
         }
       }
     },
+    "Понятно": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it"
+          }
+        }
+      }
+    },
     "Понятно, отправить": {
       "extractionState": "stale",
       "localizations": {
@@ -6808,6 +6838,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reset wallet?"
+          }
+        }
+      }
+    },
+    "Сверьте номер безопасности перед перепиской": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare safety numbers before continuing"
           }
         }
       }
@@ -8096,6 +8136,16 @@
         }
       }
     },
+    "Фраза скрыта, пока идёт запись или трансляция экрана. Останови её, чтобы увидеть слова.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The phrase is hidden while the screen is being recorded or shared. Stop it to see the words."
+          }
+        }
+      }
+    },
     "Хранение: блокчейн Solana · зашифровано · ключи не покидают устройство": {
       "extractionState": "stale",
       "localizations": {
@@ -8231,6 +8281,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Encryption protects the conversation with whoever's key you stored. A matching number confirms that key belongs to your actual contact, not to someone who took a similar handle. Compare it in person or by voice, not through the chat you are checking."
+          }
+        }
+      }
+    },
+    "Экран записывается": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Screen is being recorded"
           }
         }
       }

@@ -145,7 +145,9 @@ struct MainTabView: View {
         gasWallet.bind(to: address)       // per-account gas wallet (no shared fee payer)
         #if DEBUG
         // The screenshot run must not be covered by the system notification prompt.
-        if ChatScreenshotSeed.requestedSide == nil { NotificationService.shared.requestAuthorization() }
+        let debugRun = ChatScreenshotSeed.requestedSide != nil
+            || CommandLine.arguments.contains("-simulateKeyChange")
+        if !debugRun { NotificationService.shared.requestAuthorization() }
         #else
         NotificationService.shared.requestAuthorization()
         #endif

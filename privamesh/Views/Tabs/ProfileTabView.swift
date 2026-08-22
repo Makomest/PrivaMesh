@@ -113,6 +113,7 @@ struct ProfileTabView: View {
                     let addrs = accountManager.accounts.map(\.publicKeyBase58)
                     accountManager.removeAll()       // per-account seeds in Keychain
                     messagingIdentity.wipeAll(addresses: addrs)   // per-account X3DH/DR keys
+                    SessionVault.wipe()                          // ratchet-state key: without it the rows are noise
                     try? context.delete(model: Contact.self)      // contacts (cascade → messages)
                     try? context.delete(model: ChatMessage.self)
                     wallet.wipe()

@@ -54,9 +54,22 @@ enum ChatScreenshotSeed {
 
         let existing = (try? context.fetch(FetchDescriptor<Contact>()))?
             .first { $0.id == peer.id && $0.ownerAddress == ownerAddress }
-        if let existing { return existing }
+        if let existing {
+            // Older runs seeded this contact without a key; give it one so the
+            // screens that need it are not stuck on their empty state.
+            if existing.prekeyBundleBase64.isEmpty,
+               let bundle = try? CryptoIdentity.generate().prekeyBundle().base64Encoded {
+                existing.prekeyBundleBase64 = bundle
+                try? context.save()
+            }
+            return existing
+        }
 
-        let contact = Contact(id: peer.id, displayName: peer.name, prekeyBundleBase64: "")
+        // A real bundle, so screens that depend on the contact's keys (safety
+        // number, session details) show what they would in a live conversation
+        // instead of their empty state.
+        let bundle = (try? CryptoIdentity.generate().prekeyBundle().base64Encoded) ?? ""
+        let contact = Contact(id: peer.id, displayName: peer.name, prekeyBundleBase64: bundle)
         contact.ownerAddress = ownerAddress
         contact.isFavourite = true
         contact.inCircle = true

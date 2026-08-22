@@ -392,8 +392,7 @@ final class MessageSender {
         var stealthRoot: Data?
         var pqRef: String?          // Irys ref of the X-Wing KEM ciphertext (PQ init)
 
-        if let sessionData = contact.sessionData,
-           let existing = try? JSONDecoder().decode(DoubleRatchet.self, from: sessionData) {
+        if let existing = contact.ratchet {
             ratchet  = existing
             isFirst  = false
         } else {
@@ -426,7 +425,8 @@ final class MessageSender {
         }
 
         let message     = try ratchet.encrypt(plaintext: padded)
-        let newSession  = try JSONEncoder().encode(ratchet)
+        // Sealed here, so nothing downstream can write a plaintext session row.
+        let newSession  = SessionVault.seal(try JSONEncoder().encode(ratchet))
 
         // Destination: bootstrap (first message) → real address so the recipient
         // catches it on their own address; afterwards → one-time stealth address

@@ -173,6 +173,7 @@ struct ContactProfileView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("verifyContactRow")
 
             Divider().padding(.leading, 50).background(Theme.glassStroke)
 

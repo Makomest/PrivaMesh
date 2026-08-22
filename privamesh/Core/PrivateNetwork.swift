@@ -67,8 +67,21 @@ final class PrivateNetwork {
         // Until that lands, even an "active" preference stays on the direct session
         // (and `isActive` is false anyway, since no gateway is configured), so the
         // seam never silently pretends to protect traffic it doesn't.
-        return .shared
+        //
+        // The direct session is pinned: this seam is the only place named-host
+        // traffic leaves the app, so one delegate covers the relay, the token
+        // issuer and Irys uploads at once. See CertificatePinning for which hosts
+        // are actually pinned and why the leaf is not.
+        return Self.pinnedSession
     }
+
+    /// Built once. A URLSession with a delegate must be reused, or every request
+    /// leaks a session object and its connection pool.
+    private static let pinnedSession: URLSession = {
+        URLSession(configuration: .default,
+                   delegate: PinningSessionDelegate(),
+                   delegateQueue: nil)
+    }()
 
     // MARK: - The seam every named-host service should call
 

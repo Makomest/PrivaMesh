@@ -78,6 +78,9 @@ struct SeedPhraseRevealView: View {
                 .foregroundStyle(Color(red: 245/255, green: 158/255, blue: 11/255))
                 .padding(.top, 12)
 
+                // Same protection as when the phrase is first shown: recording or
+                // mirroring the screen must not carry the words off the device.
+                CaptureShielded {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(Array(phrase.enumerated()), id: \.offset) { index, word in
                         HStack(spacing: 8) {
@@ -96,6 +99,7 @@ struct SeedPhraseRevealView: View {
                         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusSmall))
                         .overlay(RoundedRectangle(cornerRadius: Theme.radiusSmall).stroke(Theme.glassStroke, lineWidth: 1))
                     }
+                }
                 }
                 .padding(.horizontal, 16)
 

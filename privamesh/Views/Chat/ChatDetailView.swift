@@ -98,7 +98,10 @@ struct ChatDetailView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            inputBar
+            VStack(spacing: 0) {
+                keyChangeBanner
+                inputBar
+            }
         }
         #if os(iOS)
         .navigationBarHidden(true)
@@ -194,6 +197,7 @@ struct ChatDetailView: View {
                         MeshAvatarView(id: contact.id, name: contact.primaryName, size: 36)
                     }
                 }
+                .accessibilityIdentifier("contactHeaderButton")
                 .buttonStyle(.plain)
             }
 
@@ -335,6 +339,61 @@ struct ChatDetailView: View {
         .padding(.vertical, 10)
     }
 
+    /// Centred plate for something the app is telling you, not a chat bubble.
+    private func systemNotice(_ msg: ChatMessage) -> some View {
+        HStack {
+            Spacer(minLength: 0)
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "exclamationmark.shield.fill")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white)
+                Text(LocalizedStringKey(msg.body))
+                    .font(.system(size: 12))
+                    .foregroundStyle(.white.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.22), lineWidth: 0.75))
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 8)
+    }
+
+    /// Sits above the input while a key change is unacknowledged. Deliberately not
+    /// dismissible by scrolling past it: the user has to say they saw it.
+    @ViewBuilder
+    private var keyChangeBanner: some View {
+        if contact.keyChangedAt != nil {
+            HStack(spacing: 10) {
+                Image(systemName: "exclamationmark.shield.fill")
+                    .font(.system(size: 15)).foregroundStyle(.white)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ключ контакта изменился")
+                        .font(.system(size: 13, weight: .semibold)).foregroundStyle(.white)
+                    Text("Сверьте номер безопасности перед перепиской")
+                        .font(.system(size: 11)).foregroundStyle(.white.opacity(0.75))
+                }
+                Spacer(minLength: 8)
+                Button {
+                    contact.keyChangedAt = nil
+                    try? context.save()
+                } label: {
+                    Text("Понятно")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Orbit.ink)
+                        .padding(.horizontal, 12).padding(.vertical, 7)
+                        .background(Color.white, in: Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 14).padding(.vertical, 10)
+            .background(Color.white.opacity(0.10))
+            .overlay(alignment: .top) { Rectangle().fill(.white.opacity(0.16)).frame(height: 0.75) }
+        }
+    }
+
     // MARK: - Message list
 
     private var messageList: some View {
@@ -345,7 +404,13 @@ struct ChatDetailView: View {
                 LazyVStack(spacing: 10) {
                     if sortedCache.isEmpty { emptyState.padding(.top, 60) }
                     ForEach(sortedCache) { msg in
-                        messageBubble(msg).id(msg.id)
+                        Group {
+                            // A key-change notice is not a message from anyone: it
+                            // is the app speaking, so it gets a centred plate
+                            // rather than a bubble on one side.
+                            if msg.kind == "system" { systemNotice(msg) } else { messageBubble(msg) }
+                        }
+                        .id(msg.id)
                             // A new message eases in — a soft rise + scale from the
                             // side it belongs to. Only NEW ones: the initial history
                             // is drawn flat (didInitialLoad gates the animation), so
