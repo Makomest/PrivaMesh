@@ -1,0 +1,161 @@
+скинь мне тз что надо сделать
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ТЗ на обновление карточки PrivaMesh в App Store
+Сайт не трогаем. Работаем только с версией 1.1 в App Store Connect. Изменения сохраняем, но пока не нажимаем «Добавить для проверки».
+1. Основная информация — EN-US
+Открыть Общая информация → Информация о приложении.
+Название:
+PrivaMesh: Private Messenger
+Подзаголовок:
+Encrypted chat, no phone
+Основная категория:
+Social Networking
+Дополнительная категория:
+Utilities
+Privacy Policy URL:
+https://privamesh.org/privacy-policy
+2. Метаданные версии 1.1 — EN-US
+Рекламный текст:
+No phone number. No email. No company-run account or message server. End-to-end encrypted conversations with keys that stay on your iPhone.
+Ключевые слова — ровно 100 байт:
+secure,privacy,anonymous,e2e,serverless,decentralized,metadata,texting,secret,email,open source,keys
+Удалить старые keywords:
+private,secure,chat,anonymous,messaging,no phone,privacy,secret,e2e,safe,vault,cipher,offgrid,nolog
+Причины удаления:
+private, messenger, chat, phone уже используются в названии и подзаголовке;
+offgrid вводит в заблуждение;
+vault, cipher, safe, nolog слабые или неестественные запросы.
+3. Новое описание EN-US
+Private messaging without a phone number, email, or company-run account server.
+
+PrivaMesh is an end-to-end encrypted messenger for iPhone, built for conversations that should never become someone else’s data. Your identity, contacts, encryption keys, and chat history stay on your device.
+
+NO PHONE NUMBER OR EMAIL
+
+Create a private identity without linking a SIM, email address, or contact list. Friends find you by nickname, and your address book is never uploaded.
+
+NO COMPANY-RUN MESSAGE SERVER
+
+PrivaMesh does not operate an account server or message database. Encrypted messages travel through a public, decentralized transport and can be read only on the intended recipient’s device.
+
+END-TO-END ENCRYPTION
+
+Every message is encrypted before it leaves your iPhone. X3DH establishes secure sessions, the Double Ratchet generates a fresh key for every message, and AES-256-GCM protects content against reading or tampering. Forward secrecy helps protect earlier messages even if a key is compromised later.
+
+METADATA PROTECTION
+
+One-time delivery addresses, cover traffic, and fixed-size padding are designed to reduce exposure of who you contact, when you message, and how much you send. There are no ads, trackers, or in-app analytics.
+
+YOUR DEVICE, YOUR KEYS
+
+Encryption keys are stored in the iOS Keychain and protected with Face ID or Touch ID. Your recovery phrase can restore your identity on another device. Chat history intentionally stays local and is not restored.
+
+PRIVATE MESSAGING THAT FEELS FAMILIAR
+
+• Private one-to-one conversations
+• Nickname discovery without phone numbers
+• Disappearing messages
+• Search, message details, block, and report controls
+• A private visual view of your contacts
+• No contact-list upload
+
+OPEN SOURCE BY DESIGN
+
+PrivaMesh’s source code and protocol are public for inspection. Privacy should be verifiable in the architecture, not dependent on a company promise.
+
+Install PrivaMesh and keep your conversations private by design.
+
+Terms of Use (EULA):
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+4. «Что нового» для версии 1.1
+PrivaMesh 1.1 makes private messaging more secure and easier to use:
+
+• Added post-quantum protection to the secure handshake
+• Added private invitation links for connecting with contacts
+• Improved passcode protection and account security
+• Added support for iOS 18 and later
+• Improved messaging reliability and performance
+• Fixed interface and stability issues
+
+Your messages remain end-to-end encrypted, with no phone number, email, contact upload, ads, or tracking.
+Не писать просто “Bug fixes and improvements” — конкретный текст лучше объясняет ценность обновления.
+5. Русская локализация
+Название:
+PrivaMesh: Приватный чат
+Подзаголовок:
+Без номера и почты
+Keywords — 100 байт:
+мессенджер,шифрование,анонимный,безопасный,переписка
+Рекламный текст:
+Приватный чат без номера телефона, почты и базы аккаунтов. Сквозное шифрование, защита метаданных и ключи только на вашем iPhone.
+6. Порядок существующих скриншотов
+Поставить в следующем порядке:
+No phone. No email. Just you.
+Private from the first tap
+Nothing in the middle
+Locked to your device
+Chat like normal
+A globe of contacts
+Первые три важнее остальных: они отображаются непосредственно в результатах поиска App Store.
+7. ТЗ на будущую переработку скриншотов
+Новые заголовки:
+Private chat. No phone number.
+Encrypted before it leaves
+No account or message server
+Your keys stay on-device
+Messages that disappear
+Connect privately by nickname
+Убрать со скриншотов:
+Military-grade encryption;
+основной акцент на blockchain и on-chain;
+слишком мелкий дополнительный текст.
+Увеличить изображение интерфейса и добавить более заметный контраст между телефоном и чёрным фоном.
+8. Перед отправкой
+Проверить:
+сборка 14 выбрана;
+все 6 скриншотов загрузились;
+EN-US и RU локализации заполнены;
+Privacy Policy ведёт на privamesh.org;
+сохранена текущая оценка;
+выбран выпуск сразу для всех;
+только после проверки нажимать «Добавить для проверки».
+
+
+11:06 PM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ask for approval
+
+
+
+
+
+
+
+5.6 SolHigh

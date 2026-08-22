@@ -18,6 +18,7 @@ struct ContactProfileView: View {
     /// Needed to count pins — the cap is global, not per-contact.
     @Query private var allContacts: [Contact]
     @State private var showEdit = false
+    @State private var showSafetyNumber = false
 
     private var profile: ProfileSnapshot? { contact.profile }
     private let cols = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
@@ -59,6 +60,9 @@ struct ContactProfileView: View {
             }
             .sheet(isPresented: $showEdit) {
                 ContactEditSheet(contact: contact)
+            }
+            .sheet(isPresented: $showSafetyNumber) {
+                SafetyNumberView(contact: contact)
             }
         }
     }
@@ -146,6 +150,32 @@ struct ContactProfileView: View {
 
     private var safetyCard: some View {
         VStack(spacing: 0) {
+            // Verification first: it is the only item here that answers "is this
+            // even the right person", which the rest of the card assumes.
+            Button { showSafetyNumber = true } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: contact.isVerified ? "checkmark.shield.fill" : "shield.lefthalf.filled")
+                        .font(.system(size: 13))
+                        .foregroundStyle(contact.isVerified ? Theme.positive : Theme.accentDeep)
+                        .frame(width: 18)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Проверить контакт").font(.system(size: 14)).foregroundStyle(Theme.slate800)
+                        Text(LocalizedStringKey(contact.isVerified
+                             ? "Номер безопасности подтверждён"
+                             : "Сравнить номер безопасности"))
+                            .font(.system(size: 11)).foregroundStyle(Theme.slate500)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Theme.slate400)
+                }
+                .padding(16)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            Divider().padding(.leading, 50).background(Theme.glassStroke)
+
             Toggle(isOn: Binding(
                 get: { contact.isBlocked },
                 set: { contact.isBlocked = $0; try? context.save() }

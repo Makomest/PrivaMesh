@@ -33,6 +33,13 @@ final class Contact {
     /// off, and it carries no favourite status. Defaults false (in-place migration).
     var inCircle: Bool = false
     var isBlocked: Bool = false            // stop receiving from + hide this contact (UGC moderation)
+    /// You compared safety numbers with this person out of band and they matched.
+    /// Set by hand only: nothing in the app may mark a contact verified on the
+    /// user's behalf, or the mark stops meaning anything. Defaults false so
+    /// SwiftData migrates existing stores in place.
+    var isVerified: Bool = false
+    /// When the comparison happened, shown next to the mark.
+    var verifiedAt: Date?
     var disappearSeconds: Int = 0          // 0 = off; else auto-delete local msgs older than this
     var paymentAddress: String = ""        // their real main wallet (from encrypted payload); for in-chat SOL
     var createdAt: Date

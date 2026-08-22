@@ -203,6 +203,15 @@ struct ChatDetailView: View {
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.white)
                         .lineLimit(1)
+                    // Two different claims, so two different marks: the shield
+                    // means YOU compared safety numbers, the seal only means the
+                    // person pays for PrivaMesh+. Sharing one glyph would let a
+                    // subscription read as a verified identity.
+                    if !contact.isSelf, contact.isVerified {
+                        Image(systemName: "checkmark.shield.fill")
+                            .font(.system(size: 12)).foregroundStyle(.white)
+                            .accessibilityLabel("Контакт проверен")
+                    }
                     if !contact.isSelf, contact.profile?.isPremium == true {
                         Image(systemName: "checkmark.seal.fill")
                             .font(.system(size: 12)).foregroundStyle(.white.opacity(0.8))
