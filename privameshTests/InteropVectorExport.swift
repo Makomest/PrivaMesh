@@ -365,6 +365,44 @@ struct InteropVectorExport {
 
     // MARK: 5. Contact card + invite link
 
+    /// The safety number two humans compare out of band.
+    ///
+    /// This vector matters more than most: the whole feature is someone reading
+    /// digits off an iPhone and checking them against a desktop, so an
+    /// implementation that differs by a byte would look like an attack to a user
+    /// who is simply on two different clients.
+    @Test func exportSafetyNumber() throws {
+        let alice = try CryptoIdentity.derive(fromSeedPhrase: Fixture.alicePhrase).prekeyBundle()
+        let bob = try CryptoIdentity.derive(fromSeedPhrase: Fixture.bobPhrase).prekeyBundle()
+        let aliceAddress = Fixture.walletAddress
+        let bobAddress = "AoxpJiPLVQbkYzghChb1UNXzq9HcLCprf3645kTFKHoG"
+
+        let onAlicesPhone = try #require(
+            SafetyNumber.digits(myBundle: alice, myAddress: aliceAddress,
+                                theirBundle: bob, theirAddress: bobAddress))
+        let onBobsPhone = try #require(
+            SafetyNumber.digits(myBundle: bob, myAddress: bobAddress,
+                                theirBundle: alice, theirAddress: aliceAddress))
+
+        // Both ends derive the same string; that is the property being exported.
+        #expect(onAlicesPhone == onBobsPhone)
+        #expect(onAlicesPhone.count == 60)
+
+        try VectorWriter.write([
+            "note": "60 digits, both sides identical. Fingerprint = 5200 rounds of "
+                  + "SHA-512 over (version byte, signingIdentityKey, dhIdentityKey, address), "
+                  + "folding the input back in each round; first 30 bytes, five bytes per "
+                  + "five digits; the two fingerprints sorted then concatenated.",
+            "aliceAddress": aliceAddress,
+            "bobAddress": bobAddress,
+            "aliceBundleBase64": alice.base64Encoded,
+            "bobBundleBase64": bob.base64Encoded,
+            "digits": onAlicesPhone,
+            "formatted": SafetyNumber.formatted(onAlicesPhone),
+            "qrPayload": SafetyNumber.qrPayload(onAlicesPhone),
+        ], to: "safety-number.json")
+    }
+
     @Test func exportContactCardAndInviteLink() throws {
         let identity = try CryptoIdentity.derive(fromSeedPhrase: Fixture.alicePhrase)
         // The published card carries the classical bundle; the PQ prekey is dropped
