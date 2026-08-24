@@ -95,6 +95,17 @@
         }
       }
     },
+    "%lld с": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld s"
+          }
+        }
+      }
+    },
     "%lld слов": {
       "localizations": {
         "en": {
@@ -1952,6 +1963,17 @@
         }
       }
     },
+    "Второй код, который стирает аккаунт вместо того, чтобы открыть его. С этого устройства уходит всё: переписка, контакты, ключи, оба кода. Остаётся экран, как будто приложение только что установили.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A second code that erases your account instead of unlocking it. Everything on this device goes: messages, contacts, keys, both codes. What is left looks like the app was just installed."
+          }
+        }
+      }
+    },
     "Входящая транзакция": {
       "localizations": {
         "en": {
@@ -2267,6 +2289,17 @@
           "stringUnit": {
             "state": "new",
             "value": "Готово %1$lld/%2$lld. Ошибка: %3$@"
+          }
+        }
+      }
+    },
+    "Готово. Если ввести этот код на экране входа, аккаунт будет стёрт с этого устройства.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done. Entering that code on the lock screen erases this account from this device."
           }
         }
       }
@@ -2589,6 +2622,17 @@
         }
       }
     },
+    "Другой код, не тот, которым ты входишь": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A different code from the one you unlock with"
+          }
+        }
+      }
+    },
     "Ежемесячно · авто-продление": {
       "extractionState": "stale",
       "localizations": {
@@ -2617,6 +2661,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "More"
+          }
+        }
+      }
+    },
+    "Ещё раз, чтобы не ошибиться": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once more, so there is no mistake"
           }
         }
       }
@@ -2734,6 +2789,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Close"
+          }
+        }
+      }
+    },
+    "Заменить код": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace code"
           }
         }
       }
@@ -3270,6 +3336,61 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keys and chats stay protected even if the phone falls into the wrong hands."
+          }
+        }
+      }
+    },
+    "Код на случай принуждения": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duress code"
+          }
+        }
+      }
+    },
+    "Код принуждения": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duress code"
+          }
+        }
+      }
+    },
+    "Код принуждения убран.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The duress code has been removed."
+          }
+        }
+      }
+    },
+    "Код принуждения установлен.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A duress code is set."
+          }
+        }
+      }
+    },
+    "Коды не совпали": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Those codes did not match"
           }
         }
       }
@@ -3978,6 +4099,17 @@
         }
       }
     },
+    "Не достаёт копию. Если с телефона уже сняли резервную копию, стирание сейчас до неё не дотянется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It cannot reach a copy. If a backup of this phone was already taken, wiping now does not touch it."
+          }
+        }
+      }
+    },
     "Не из BIP-39: %@": {
       "localizations": {
         "en": {
@@ -3999,6 +4131,17 @@
         }
       }
     },
+    "Не отменяется. Фраза восстановления вернёт аккаунт, но переписка на этом устройстве пропадёт навсегда.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It cannot be undone. Your recovery phrase brings the account back, but the conversations on this device are gone."
+          }
+        }
+      }
+    },
     "Не сейчас": {
       "extractionState": "stale",
       "localizations": {
@@ -4006,6 +4149,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not now"
+          }
+        }
+      }
+    },
+    "Не стирает блокчейн. Отправленные сообщения остаются там навсегда. Без ключей их никто не прочитает, но сам факт переписки с твоего адреса виден всем и не удаляется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It cannot erase the chain. Messages you already sent stay there for good. Without your keys nobody can read them, but the fact that your address sent messages is public and permanent."
           }
         }
       }
@@ -4162,6 +4316,17 @@
         }
       }
     },
+    "Не удалось проверить пароль. Попробуй ещё раз.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not check the passcode. Try again."
+          }
+        }
+      }
+    },
     "Не удалось прочитать seed phrase": {
       "extractionState": "stale",
       "localizations": {
@@ -4201,6 +4366,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Couldn't create account: %@"
+          }
+        }
+      }
+    },
+    "Не удалось сохранить код": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save the code"
           }
         }
       }
@@ -5515,6 +5691,17 @@
         }
       }
     },
+    "Повтори код": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat the code"
+          }
+        }
+      }
+    },
     "Повтори новый": {
       "extractionState": "stale",
       "localizations": {
@@ -5782,6 +5969,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Confirm this is your wallet"
+          }
+        }
+      }
+    },
+    "Подтверди, что это ты": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm it is you"
           }
         }
       }
@@ -6276,6 +6474,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Try again"
+          }
+        }
+      }
+    },
+    "Попробуй через %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again in %@"
           }
         }
       }
@@ -7128,6 +7337,17 @@
         }
       }
     },
+    "Слишком много попыток": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts"
+          }
+        }
+      }
+    },
     "Слово №%lld": {
       "localizations": {
         "en": {
@@ -7859,6 +8079,17 @@
         }
       }
     },
+    "Убрать код": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove code"
+          }
+        }
+      }
+    },
     "Уведомления": {
       "extractionState": "stale",
       "localizations": {
@@ -8093,6 +8324,17 @@
         }
       }
     },
+    "Установить код": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set code"
+          }
+        }
+      }
+    },
     "Установлено": {
       "extractionState": "stale",
       "localizations": {
@@ -8206,6 +8448,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chats"
+          }
+        }
+      }
+    },
+    "Чего он не делает": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What it cannot do"
           }
         }
       }
@@ -8355,6 +8608,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "This is your lot"
+          }
+        }
+      }
+    },
+    "Этот код совпадает с паролем входа": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That is the same as your unlock passcode"
           }
         }
       }

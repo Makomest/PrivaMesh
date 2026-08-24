@@ -10,6 +10,9 @@ struct PasscodeKeypadView: View {
     let subtitle: String?
     let errorMessage: String?
     let length: Int
+    /// Seconds left in a brute-force cooldown. While this is above zero the pad
+    /// takes no input: a keypad that quietly ignores taps reads as a broken app.
+    let lockoutSeconds: Int
     let onComplete: (String) -> Void
 
     @State private var entered: String = ""
@@ -20,13 +23,25 @@ struct PasscodeKeypadView: View {
         subtitle: String? = nil,
         errorMessage: String? = nil,
         length: Int = 6,
+        lockoutSeconds: Int = 0,
         onComplete: @escaping (String) -> Void
     ) {
         self.title = title
         self.subtitle = subtitle
         self.errorMessage = errorMessage
         self.length = length
+        self.lockoutSeconds = lockoutSeconds
         self.onComplete = onComplete
+    }
+
+    private var isLockedOut: Bool { lockoutSeconds > 0 }
+
+    /// "0:45" while the wait is long, "12 с" while it is short.
+    private var countdown: String {
+        if lockoutSeconds < 60 {
+            return String(localized: "\(lockoutSeconds) с")
+        }
+        return String(format: "%d:%02d", lockoutSeconds / 60, lockoutSeconds % 60)
     }
 
     var body: some View {
@@ -53,7 +68,17 @@ struct PasscodeKeypadView: View {
                 .offset(x: shake)
                 .animation(.default, value: entered)
 
-            if let errorMessage {
+            if isLockedOut {
+                VStack(spacing: 4) {
+                    Text("Слишком много попыток")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Theme.negative)
+                    Text("Попробуй через \(countdown)")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.slate500)
+                }
+                .padding(.top, 16)
+            } else if let errorMessage {
                 Text(LocalizedStringKey(errorMessage))
                     .font(.footnote)
                     .foregroundStyle(Theme.negative)
@@ -65,6 +90,13 @@ struct PasscodeKeypadView: View {
             keypad
                 .padding(.horizontal, 32)
                 .padding(.bottom, 32)
+                .disabled(isLockedOut)
+                .opacity(isLockedOut ? 0.4 : 1)
+        }
+        .onChange(of: isLockedOut) { _, locked in
+            // Drop whatever was half-typed when the wait starts, so nobody keeps
+            // pressing digits into a pad that is not listening.
+            if locked { entered = "" }
         }
         .onChange(of: errorMessage) { _, newValue in
             if newValue != nil {

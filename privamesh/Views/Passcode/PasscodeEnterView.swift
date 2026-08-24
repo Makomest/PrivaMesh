@@ -4,16 +4,25 @@
 //
 
 import SwiftUI
+import Combine
+import SwiftData
 
 struct PasscodeEnterView: View {
     @Environment(AppRouter.self) private var router
     @Environment(PasscodeManager.self) private var passcode
     @Environment(WalletManager.self) private var wallet
     @Environment(BiometryService.self) private var biometry
+    @Environment(\.modelContext) private var modelContext
 
     @State private var errorMessage: String?
     @State private var attempts: Int = 0
     @State private var didAutoPrompt = false
+    /// Counted down while a brute-force cooldown is running, so the screen can
+    /// say how long the wait is instead of just refusing taps.
+    @State private var lockoutSeconds: Int = 0
+
+    /// Fires only while a cooldown is on screen.
+    private let ticker = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
@@ -23,7 +32,8 @@ struct PasscodeEnterView: View {
                     title: "PrivaMesh",
                     subtitle: "Введи пароль",
                     errorMessage: errorMessage,
-                    length: passcode.passcodeLength
+                    length: passcode.passcodeLength,
+                    lockoutSeconds: lockoutSeconds
                 ) { code in
                     attempt(code)
                 }
@@ -45,7 +55,7 @@ struct PasscodeEnterView: View {
                         .buttonStyle(.plain)
                     }
 
-                    if attempts >= 3 {
+                    if attempts >= 3 && lockoutSeconds == 0 {
                         Button {
                             resetWallet()
                         } label: {
@@ -64,21 +74,56 @@ struct PasscodeEnterView: View {
             }
         }
         .onAppear {
-            if biometry.isAvailable && biometry.isEnabled && !didAutoPrompt {
+            refreshLockout()
+            // Biometry during a cooldown would hand back the shortcut the wait
+            // exists to remove.
+            if biometry.isAvailable && biometry.isEnabled && !didAutoPrompt && lockoutSeconds == 0 {
                 didAutoPrompt = true
                 Task { await tryBiometry() }
             }
         }
+        .onReceive(ticker) { _ in refreshLockout() }
     }
 
     private func attempt(_ code: String) {
-        if passcode.verify(code) {
+        switch passcode.check(code) {
+        case .correct:
             errorMessage = nil
             router.go(to: .main)
-        } else {
+
+        // The duress code. No warning, no confirmation, nothing on screen
+        // afterwards: what is left has to look like a fresh install, because
+        // someone is watching this screen.
+        case .duress:
+            AccountDestroyer.destroy(context: modelContext,
+                                     wallet: wallet,
+                                     passcode: passcode,
+                                     biometry: biometry)
+            errorMessage = nil
+            attempts = 0
+            router.go(to: .welcome)
+
+        case .incorrect:
             attempts += 1
             errorMessage = "Неверный пароль"
+            refreshLockout()
+
+        case .lockedOut:
+            refreshLockout()
+
+        case .unavailable:
+            // Not a wrong passcode: the Keychain could not answer, so nothing is
+            // counted and nothing is locked.
+            errorMessage = "Не удалось проверить пароль. Попробуй ещё раз."
+
+        case .notSet:
+            router.go(to: .main)
         }
+    }
+
+    private func refreshLockout() {
+        lockoutSeconds = Int(ceil(passcode.lockoutRemaining))
+        if lockoutSeconds > 0 { errorMessage = nil }
     }
 
     private func tryBiometry() async {
@@ -91,10 +136,16 @@ struct PasscodeEnterView: View {
         }
     }
 
+    /// "Forgot the passcode" - the same erase, but asked for out loud.
+    ///
+    /// It is the same destruction the duress code performs, because there is no
+    /// way to recover an account without its phrase, and pretending otherwise
+    /// would mean keeping a back door that works for anyone holding the phone.
     private func resetWallet() {
-        wallet.wipe()
-        passcode.wipe()
-        biometry.disable()
+        AccountDestroyer.destroy(context: modelContext,
+                                 wallet: wallet,
+                                 passcode: passcode,
+                                 biometry: biometry)
         router.go(to: .welcome)
     }
 }

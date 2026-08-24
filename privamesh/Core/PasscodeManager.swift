@@ -17,6 +17,8 @@ final class PasscodeManager {
     private static let service = "com.privamesh.passcode"
     private static let hashKey = "passcodeHash"
     private static let saltKey = "passcodeSalt"
+    private static let duressHashKey = "passcodeDuressHash"
+    private static let duressSaltKey = "passcodeDuressSalt"
     private static let lengthKey = "privamesh.passcode.length"
     private static let attemptsKey  = "privamesh.passcode.failedAttempts"
     private static let lockUntilKey = "privamesh.passcode.lockUntil"
@@ -116,23 +118,67 @@ final class PasscodeManager {
         resetAttempts()
     }
 
+    /// What a code turned out to be.
+    ///
+    /// `duress` is the second code the user may set: entering it means "destroy
+    /// this account", and the caller must wipe without warning, confirmation or
+    /// any message afterwards. Someone is standing over them, and each of those
+    /// tells that person a second code exists.
+    enum Verification: Equatable {
+        case correct
+        case duress
+        case incorrect
+        /// Refused without being checked, because a cooldown is running.
+        case lockedOut
+        /// The Keychain could not answer. Never counted as a failed attempt.
+        case unavailable
+        case notSet
+    }
+
+    @discardableResult
     func verify(_ passcode: String) -> Bool {
-        // Refuse during a brute-force cooldown (offline guessing throttle).
-        guard lockoutRemaining == 0 else { return false }
+        check(passcode) == .correct
+    }
+
+    func check(_ passcode: String) -> Verification {
+        // Refuse during a brute-force cooldown (offline guessing throttle). This
+        // covers the duress code too: it must not be a way around the wait.
+        guard lockoutRemaining == 0 else { return .lockedOut }
+
         // A Keychain that cannot be read right now is not a wrong passcode, so it
         // must not burn an attempt or trigger the brute-force cooldown.
-        guard case let .found(storedHash) = read(key: Self.hashKey),
-              case let .found(salt) = read(key: Self.saltKey)
-        else {
-            return false
-        }
+        switch (read(key: Self.hashKey), read(key: Self.saltKey)) {
+        case let (.found(storedHash), .found(salt)):
+            var duressHash: Data?
+            var duressSalt: Data?
+            if case let .found(hash) = read(key: Self.duressHashKey) { duressHash = hash }
+            if case let .found(salt) = read(key: Self.duressSaltKey) { duressSalt = salt }
 
-        let attemptHash = Self.derive(passcode: passcode, salt: salt)
-        let match = constantTimeCompare(storedHash, attemptHash)
-        if match {
-            isUnlocked = true
-            resetAttempts()
-        } else {
+            // BOTH derivations always run, and nothing is acted on until both are
+            // done. A short-circuit would make the duress code measurably faster
+            // or slower than the real one, and the person watching the screen is
+            // exactly who would notice.
+            let attemptHash = Self.derive(passcode: passcode, salt: salt)
+            let duressAttempt = duressSalt.map { Self.derive(passcode: passcode, salt: $0) }
+
+            let matchesReal = constantTimeCompare(storedHash, attemptHash)
+            let matchesDuress: Bool = {
+                guard let duressHash, let duressAttempt else { return false }
+                return constantTimeCompare(duressHash, duressAttempt)
+            }()
+
+            if matchesReal {
+                isUnlocked = true
+                resetAttempts()
+                return .correct
+            }
+            if matchesDuress {
+                // Clear the throttle on the way out: a freshly-installed app that
+                // refuses passcodes for four minutes is not a freshly-installed app.
+                resetAttempts()
+                return .duress
+            }
+
             failedAttempts += 1
             if failedAttempts >= Self.freeAttempts {
                 // Escalating cooldown: 30s, 60s, 2m, 4m … capped at 1h.
@@ -140,8 +186,58 @@ final class PasscodeManager {
                 let delay = min(3600, 30 * pow(2.0, Double(over)))
                 lockUntil = Date(timeIntervalSinceNow: delay)
             }
+            return .incorrect
+
+        case (.unavailable, _), (_, .unavailable):
+            return .unavailable
+        default:
+            return .notSet
         }
-        return match
+    }
+
+    // MARK: - Duress code
+
+    /// True unless we positively know there is no duress code.
+    var isDuressSet: Bool {
+        switch read(key: Self.duressHashKey) {
+        case .found:       return true
+        case .missing:     return false
+        case .unavailable: return true
+        }
+    }
+
+    /// Set the code that wipes the account.
+    ///
+    /// Requires the real passcode, because this is the setting an attacker would
+    /// want to change: quietly pointing the wipe at a code of their own turns a
+    /// safety feature into a way to destroy someone's account.
+    ///
+    /// Refuses a code equal to the passcode. That collision resolves as "unlock",
+    /// which would leave someone believing they have a way out that does nothing.
+    @discardableResult
+    func setDuressPasscode(_ duress: String, currentPasscode: String) -> Bool {
+        guard !duress.isEmpty else { return false }
+        guard check(currentPasscode) == .correct else { return false }
+        guard check(duress) != .correct else { return false }
+
+        let salt = Self.randomSalt()
+        let hash = Self.derive(passcode: duress, salt: salt)
+        guard writeKeychain(key: Self.duressSaltKey, data: salt),
+              writeKeychain(key: Self.duressHashKey, data: hash)
+        else {
+            // Half-written state would make the code unverifiable, so undo it.
+            deleteKeychain(key: Self.duressSaltKey)
+            return false
+        }
+        return true
+    }
+
+    @discardableResult
+    func removeDuressPasscode(currentPasscode: String) -> Bool {
+        guard check(currentPasscode) == .correct else { return false }
+        deleteKeychain(key: Self.duressHashKey)
+        deleteKeychain(key: Self.duressSaltKey)
+        return true
     }
 
     func lock() {
@@ -172,6 +268,8 @@ final class PasscodeManager {
     func wipe() {
         deleteKeychain(key: Self.hashKey)
         deleteKeychain(key: Self.saltKey)
+        deleteKeychain(key: Self.duressHashKey)
+        deleteKeychain(key: Self.duressSaltKey)
         UserDefaults.standard.removeObject(forKey: Self.lengthKey)
         resetAttempts()
         isUnlocked = true

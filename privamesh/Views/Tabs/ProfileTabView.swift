@@ -431,6 +431,19 @@ struct ProfileTabView: View {
             } label: {
                 settingsRow(icon: "lock.rotation", title: "Изменить пароль", color: Theme.accentDeep)
             }
+            // Only offered once a passcode exists: the duress code is checked
+            // against the same lock screen, so without one there is nothing for
+            // it to be the second of.
+            if passcode.isPasscodeSet {
+                Divider().padding(.leading, 56).background(Theme.slate300.opacity(0.4))
+                NavigationLink {
+                    DuressCodeView()
+                } label: {
+                    settingsRow(icon: "exclamationmark.shield.fill",
+                                title: "Код на случай принуждения",
+                                color: Theme.accentDeep)
+                }
+            }
         }
         .background(Theme.glass)
         .clipShape(RoundedRectangle(cornerRadius: Theme.radiusLarge))
