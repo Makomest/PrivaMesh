@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Invite links. Without this iOS hands privamesh.org/i/<card> to Safari,
+	     and a link someone was sent lands on the marketing site with no way to
+	     act on it. The site serves the matching apple-app-site-association. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:privamesh.org</string>
+		<string>applinks:www.privamesh.org</string>
+	</array>
+</dict>
+</plist>
