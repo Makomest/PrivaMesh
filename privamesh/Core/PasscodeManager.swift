@@ -103,6 +103,12 @@ final class PasscodeManager {
     }
 
     func setPasscode(_ passcode: String, length: Int = 6) throws {
+        // Refuse a passcode that is already the duress code. `check` tests the real
+        // passcode first, so the collision would resolve as "unlock": the duress
+        // code would stop working silently, and the person relying on it would find
+        // out at the moment they need it.
+        if matchesDuress(passcode) { throw PasscodeError.storageFailed }
+
         let salt = Self.randomSalt()
         let hash = Self.derive(passcode: passcode, salt: salt)
 
@@ -195,6 +201,23 @@ final class PasscodeManager {
         }
     }
 
+    /// Check a passcode without counting it against the throttle.
+    ///
+    /// For "confirm it is you" inside an app that is already unlocked: changing the
+    /// passcode, setting the duress code, revealing the phrase. The throttle is
+    /// there to make guessing expensive at the lock screen; applying it here lets
+    /// someone lock themselves out of their own account by mistyping in Settings.
+    ///
+    /// The duress code deliberately does NOT satisfy this: it is not a passcode,
+    /// and accepting it here would let it authorise changes to the settings it is
+    /// meant to be protected by.
+    func confirms(_ passcode: String) -> Bool {
+        guard case let .found(storedHash) = read(key: Self.hashKey),
+              case let .found(salt) = read(key: Self.saltKey)
+        else { return false }
+        return constantTimeCompare(storedHash, Self.derive(passcode: passcode, salt: salt))
+    }
+
     // MARK: - Duress code
 
     /// True unless we positively know there is no duress code.
@@ -217,8 +240,10 @@ final class PasscodeManager {
     @discardableResult
     func setDuressPasscode(_ duress: String, currentPasscode: String) -> Bool {
         guard !duress.isEmpty else { return false }
-        guard check(currentPasscode) == .correct else { return false }
-        guard check(duress) != .correct else { return false }
+        // confirms, not check: a mistyped passcode in Settings must not burn an
+        // attempt or start a cooldown on the lock screen.
+        guard confirms(currentPasscode) else { return false }
+        guard !confirms(duress) else { return false }
 
         let salt = Self.randomSalt()
         let hash = Self.derive(passcode: duress, salt: salt)
@@ -232,9 +257,17 @@ final class PasscodeManager {
         return true
     }
 
+    /// True when this code is the stored duress code.
+    private func matchesDuress(_ candidate: String) -> Bool {
+        guard case let .found(hash) = read(key: Self.duressHashKey),
+              case let .found(salt) = read(key: Self.duressSaltKey)
+        else { return false }
+        return constantTimeCompare(hash, Self.derive(passcode: candidate, salt: salt))
+    }
+
     @discardableResult
     func removeDuressPasscode(currentPasscode: String) -> Bool {
-        guard check(currentPasscode) == .correct else { return false }
+        guard confirms(currentPasscode) else { return false }
         deleteKeychain(key: Self.duressHashKey)
         deleteKeychain(key: Self.duressSaltKey)
         return true

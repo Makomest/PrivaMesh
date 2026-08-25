@@ -158,6 +158,29 @@ struct DuressCodeTests {
         let fastest = min(correct, duress)
         #expect(slowest < fastest * 3)
     }
-}
 
+    /**
+     * Changing the passcode into the duress code must be refused.
+     *
+     * `check` tests the real passcode first, so the collision resolves as
+     * "unlock": the duress code stops working silently, and the person relying on
+     * it finds out at the moment they need it.
+     */
+    @Test func thePasscodeCannotSwallowTheDuressCode() throws {
+        let manager = fresh()
+        defer { manager.wipe() }
+
+        try manager.setPasscode("1234", length: 4)
+        #expect(manager.setDuressPasscode("9999", currentPasscode: "1234"))
+
+        #expect(throws: (any Error).self) {
+            try manager.setPasscode("9999", length: 4)
+        }
+
+        // Both still do what they did.
+        #expect(manager.check("1234") == .correct)
+        #expect(manager.check("9999") == .duress)
+    }
+
+}
 }
