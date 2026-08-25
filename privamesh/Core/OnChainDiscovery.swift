@@ -120,14 +120,34 @@ final class OnChainDiscovery {
 
     // MARK: - Search
 
-    /// Find a contact by nickname (case-insensitive) or exact address. Newest
-    /// record wins. Returns nil if not found.
+    /// Find a contact by nickname (case-insensitive) or exact address.
+    ///
+    /// FIRST CLAIM WINS, decided by the chain rather than by the record.
+    ///
+    /// The registry is a public address anyone can write a memo to, and the relay
+    /// only sees the publishes that go through it - so a direct publish never
+    /// passed its ownership check at all. Ranking by the record's own `at` field
+    /// then handed the result to whoever wrote the largest number in it: an
+    /// attacker could claim any existing handle for one network fee and receive
+    /// the opening messages meant for its owner. Reported by Mudit
+    /// (mudit.raj32@gmail.com).
+    ///
+    /// What a chain can prove without a server is order. The earliest valid
+    /// record for a handle fixes which wallet owns it, and later records are
+    /// accepted only from that same wallet - which is how a key rotation still
+    /// works. Every record is checked for a wallet signature binding the bundle
+    /// to its address before any of this, so a record cannot claim someone else's
+    /// keys either.
+    ///
+    /// What this still cannot do: prove that the wallet which got there first is
+    /// the person you have in mind. Compare a safety number for that.
     func search(query: String, rpc: SolanaRPCService) async -> DiscoveryService.DiscoveryUser? {
         guard Self.isConfigured else { return nil }
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         guard !q.isEmpty else { return nil }
 
-        var best: DiscoveryRecord?
+        // Every matching record, with the time the chain says it landed.
+        var matches: [(record: DiscoveryRecord, at: Int64)] = []
         var before: String?
         for _ in 0..<Self.maxPages {
             let config = RequestConfiguration(commitment: "confirmed", limit: Self.pageSize, before: before)
@@ -135,14 +155,26 @@ final class OnChainDiscovery {
                   !sigs.isEmpty else { break }
             for info in sigs {
                 guard info.err == nil, let memo = info.memo, let rec = Self.decode(memo) else { continue }
-                if rec.nickname.lowercased() == q || rec.address.lowercased() == q {
-                    if best == nil || rec.at > best!.at { best = rec }
-                }
+                guard rec.nickname.lowercased() == q || rec.address.lowercased() == q else { continue }
+                // A record whose bundle is not signed by the wallet it names is
+                // not a candidate for anything.
+                guard Self.isSelfConsistent(rec) else { continue }
+                // No block time means the transaction is too fresh to be ordered
+                // against anything, and a record that cannot be ordered cannot be
+                // allowed to win a first-claim contest.
+                guard let blockTime = info.blockTime else { continue }
+                matches.append((rec, Int64(blockTime)))
             }
             before = sigs.last?.signature
             if sigs.count < Self.pageSize { break }
         }
-        guard let r = best else { return nil }
+
+        guard let owner = matches.min(by: { $0.at < $1.at })?.record.address else { return nil }
+        // The owner's most recent record, so rotating keys still works.
+        guard let r = matches
+            .filter({ $0.record.address == owner })
+            .max(by: { $0.at < $1.at })?.record
+        else { return nil }
         // Rebuild the canonical base64(JSON) bundle from the packed record so the
         // rest of the app (Contact storage, isBoundTo) keeps its usual format.
         guard let packed = Data(base64Encoded: r.bundle),
@@ -150,6 +182,17 @@ final class OnChainDiscovery {
         return DiscoveryService.DiscoveryUser(
             address: r.address, nickname: r.nickname, bundleBase64: bundle.base64Encoded,
             avatarSeed: r.avatarSeed)
+    }
+
+    /// True when the record's bundle is signed by the wallet the record names.
+    ///
+    /// This is what stops a record from claiming somebody else's keys. It says
+    /// nothing about whether that wallet is entitled to the handle - that is what
+    /// the first-claim rule above is for.
+    private static func isSelfConsistent(_ record: DiscoveryRecord) -> Bool {
+        guard let packed = Data(base64Encoded: record.bundle),
+              let bundle = PrekeyBundle(discoveryPacked: packed) else { return false }
+        return bundle.isBoundTo(address: record.address)
     }
 
     // MARK: - Codec

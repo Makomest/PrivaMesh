@@ -29,6 +29,41 @@
 
 // ------------------------------------------------------------ base64url <-> bytes
 
+/**
+ * The one spelling of a nonce we accept.
+ *
+ * base64 has several encodings for the same bytes: `-` and `+` are the same
+ * value, as are `_` and `/`, and padding can be present or not. The signature is
+ * over the decoded bytes, so every spelling verifies - while the spent-token
+ * record was keyed by the string, giving each spelling its own slot and letting
+ * one paid token buy several transactions. Reported by Mudit
+ * (mudit.raj32@gmail.com).
+ *
+ * Returns the canonical form, or null when the input is not exactly a 32-byte
+ * nonce in unpadded base64url. Callers must use the returned value for both
+ * verification and spend-tracking.
+ */
+export function canonicalNonce(submitted: string): string | null {
+  if (!/^[A-Za-z0-9_-]{43}$/.test(submitted)) return null;
+
+  let bytes: Uint8Array;
+  try {
+    bytes = b64uToBytes(submitted);
+  } catch {
+    return null;
+  }
+  if (bytes.length !== NONCE_BYTES) return null;
+
+  // Re-encoding catches the last case the character test cannot: the final
+  // character of a 43-character base64url string carries only 2 significant
+  // bits, so several characters decode to the same 32 bytes.
+  const canonical = bytesToB64u(bytes);
+  return canonical === submitted ? canonical : null;
+}
+
+/** A nonce is 32 bytes, which is 43 unpadded base64url characters. */
+const NONCE_BYTES = 32;
+
 export function b64uToBytes(s: string): Uint8Array {
   const pad = (4 - (s.length % 4)) % 4;
   const b64 = s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat(pad);

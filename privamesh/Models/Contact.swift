@@ -3,6 +3,7 @@
 //  privamesh
 //
 
+import CryptoKit
 import Foundation
 import SwiftData
 
@@ -48,6 +49,20 @@ final class Contact {
     /// Set when `knownIdentityKey` changed under us and cleared once the user has
     /// seen it. Blocks nothing by itself; the chat shows a banner while it is set.
     var keyChangedAt: Date?
+    /// Digests of session-opening envelopes already accepted from this contact.
+    ///
+    /// A session-init is self-contained by design: it carries everything needed
+    /// to derive the shared secret, so it decrypts again every time it is seen.
+    /// Replay detection used to rely on the Solana transaction signature, and a
+    /// copy of the same memo in a new transaction has a new signature - so anyone
+    /// who could read the public chain could make an old opener reappear as a new
+    /// message from a trusted contact, and replace the live ratchet with it.
+    /// Reported by Mudit (mudit.raj32@gmail.com).
+    ///
+    /// Stored as concatenated 32-byte SHA-256 digests, newest last, capped at
+    /// `Contact.maxConsumedInits`. See `hasConsumedSessionInit` / `noteConsumedSessionInit`.
+    var consumedInitDigests: Data?
+
     var disappearSeconds: Int = 0          // 0 = off; else auto-delete local msgs older than this
     var paymentAddress: String = ""        // their real main wallet (from encrypted payload); for in-chat SOL
     var createdAt: Date
@@ -126,5 +141,50 @@ final class Contact {
     var secondaryName: String? {
         guard let nick = nftNick, nick != displayName else { return nil }
         return nick
+    }
+}
+
+// MARK: - Session-init replay protection
+
+extension Contact {
+    /// How many openers to remember. Enough for a contact who legitimately
+    /// re-initialises a session now and then, small enough that the row stays
+    /// small: 32 digests is one kilobyte.
+    static let maxConsumedInits = 32
+
+    /// Digest of the parts of a session-init that decide what it decrypts to.
+    ///
+    /// The sender's identity and ephemeral keys fix the X3DH secret; the
+    /// ciphertext fixes the message. A replay must reproduce all three to decrypt
+    /// at all, so a copy cannot dodge this by changing anything else in the
+    /// envelope - and two genuinely different openers never collide.
+    static func sessionInitDigest(_ envelope: MessageEnvelope) -> Data {
+        var input = Data()
+        input.append(envelope.senderIdentityPublic ?? Data())
+        input.append(envelope.senderEphemeralPublic ?? Data())
+        // The ratchet header is inside the digest too: it is authenticated as
+        // associated data, so a replay cannot alter it either.
+        input.append(envelope.message.headerBytes)
+        input.append(envelope.message.ciphertext)
+        return Data(SHA256.hash(data: input))
+    }
+
+    func hasConsumedSessionInit(_ digest: Data) -> Bool {
+        guard let stored = consumedInitDigests, !stored.isEmpty else { return false }
+        return stride(from: 0, to: stored.count, by: 32).contains { offset in
+            guard offset + 32 <= stored.count else { return false }
+            return stored[offset..<(offset + 32)] == digest
+        }
+    }
+
+    /// Record an opener as used. Oldest entries fall off the front.
+    func noteConsumedSessionInit(_ digest: Data) {
+        var stored = consumedInitDigests ?? Data()
+        stored.append(digest)
+        let maxBytes = Contact.maxConsumedInits * 32
+        if stored.count > maxBytes {
+            stored = Data(stored.suffix(maxBytes))
+        }
+        consumedInitDigests = stored
     }
 }

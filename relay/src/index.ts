@@ -25,7 +25,7 @@ import bs58 from 'bs58';
 import { jwtVerify, decodeProtectedHeader } from 'jose';
 import { X509Certificate } from '@peculiar/x509';
 import {
-  loadPublicKey, loadPrivateKey, blindSign, verifyToken,
+  loadPublicKey, loadPrivateKey, blindSign, verifyToken, canonicalNonce,
   type IssuerKey,
 } from './blindtokens';
 import { SpentTokenDO } from './spenttokens';
@@ -357,9 +357,14 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
 
   // ---- Anonymous blind-token path: no account, no receipt, no identity. -------
   if (useToken) {
-    const nonce = String(token.t ?? '');
+    const submitted = String(token.t ?? '');
     const sig = String(token.sig ?? '');
-    if (!nonce || !sig) return json({ error: 'malformed token' }, 400);
+    if (!submitted || !sig) return json({ error: 'malformed token' }, 400);
+    // Canonicalised before anything else. The signature covers the decoded bytes,
+    // so alternate spellings of the same nonce all verify - and the spent record
+    // is keyed by string, so each spelling used to get its own slot.
+    const nonce = canonicalNonce(submitted);
+    if (!nonce) return json({ error: 'malformed token' }, 400);
     // The token's own signature IS the quota proof (already paid at /issue).
     if (!(await verifyToken(nonce, sig, issuerPub!))) {
       return json({ error: 'invalid token' }, 402);
@@ -443,14 +448,14 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
   if (grant.tier === 'free') {
     const freeCap = parseInt(env.FREE_DAILY_CAP ?? '', 10) || DEFAULT_FREE_DAILY_CAP;
     if ((await reserveN(env, freeCapKey, freeCap, 1, TTL_DAY_MS)) <= 0) {
-      await refundMessage(env, account);
+      await refundCounter(env, grant.usedKey);
       return json({ error: 'free tier busy, try later' }, 503);
     }
   }
 
   // Atomically reserve daily-cap headroom before submitting.
   if ((await reserveN(env, capKey, cap, 1, TTL_DAY_MS)) <= 0) {
-    await refundMessage(env, account);
+    await refundCounter(env, grant.usedKey);
     if (grant.tier === 'free') await refundCounter(env, freeCapKey);
     return json({ error: 'daily cap reached' }, 503);
   }
@@ -467,7 +472,7 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
     return json({ signature });
   } catch (e) {
     console.error('submit failed', e);
-    await refundMessage(env, account);            // don't burn quota on submit failure
+    await refundCounter(env, grant.usedKey);       // don't burn quota on submit failure
     await refundCounter(env, capKey);             // uncount the reserved daily slot
     if (grant.tier === 'free') await refundCounter(env, freeCapKey);
     return json({ error: 'submit failed' }, 502);
@@ -518,6 +523,36 @@ async function handleCredit(req: Request, env: Env): Promise<Response> {
  * a SOL debit (e.g. SystemProgram.transfer from the treasury) and drain it — so
  * we refuse to co-sign such a transaction.
  */
+/** Compute Budget program, whose instructions carry no accounts at all. */
+const COMPUTE_BUDGET_PROGRAM = 'ComputeBudget111111111111111111111111111111';
+
+/**
+ * Ceilings for the priority fee the treasury will pay.
+ *
+ * The client asks for 600k units at 1000 micro-lamports, which is 600 lamports of
+ * priority on top of the two signatures. These leave room for a congested network
+ * without leaving room for anything else: the cap on the calculated fee is what
+ * actually binds, since limit and price multiply.
+ */
+const MAX_COMPUTE_UNITS = 1_400_000;          // Solana's own per-transaction ceiling
+const MAX_MICRO_LAMPORTS_PER_UNIT = 20_000n;  // 20x the client's normal price
+const MAX_PRIORITY_LAMPORTS = 20_000n;        // ~2 signatures' worth, hard stop
+
+/**
+ * Refuse to sign anything that spends treasury money beyond an ordinary fee.
+ *
+ * Two separate things are checked, and the second one was missing.
+ *
+ * The treasury must be the fee payer and must not appear in any instruction's
+ * account list, so no instruction can move its lamports.
+ *
+ * AND the priority fee has to be one we chose. Compute Budget instructions carry
+ * no accounts, so they sailed past the account-list check while setting a
+ * treasury-paid price per compute unit - a caller could name a number close to
+ * the whole balance and have it paid in one request. Reported by Mudit
+ * (mudit.raj32@gmail.com), with a proof of concept against a local validator that
+ * charged 14,010,000 lamports for a single message.
+ */
 function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair): void {
   const t = treasury.publicKey.toBase58();
   if (!transaction.feePayer || transaction.feePayer.toBase58() !== t) {
@@ -530,20 +565,109 @@ function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair)
       }
     }
   }
+  assertPriorityFeeIsOurs(transaction);
+}
+
+/**
+ * Parse every Compute Budget instruction and hold it to a server-side ceiling.
+ *
+ * Duplicates are refused rather than merged: Solana keeps the last one, so
+ * accepting two would mean checking a value the network then ignores.
+ */
+function assertPriorityFeeIsOurs(transaction: Transaction): void {
+  let unitLimit: number | null = null;
+  let microLamports: bigint | null = null;
+
+  for (const ix of transaction.instructions) {
+    if (ix.programId.toBase58() !== COMPUTE_BUDGET_PROGRAM) continue;
+
+    const data = ix.data;
+    if (data.length < 1) throw new Error('empty compute budget instruction');
+    const kind = data[0];
+
+    switch (kind) {
+      case 2: { // SetComputeUnitLimit(u32)
+        if (data.length !== 5) throw new Error('malformed SetComputeUnitLimit');
+        if (unitLimit !== null) throw new Error('duplicate SetComputeUnitLimit');
+        unitLimit = readU32LE(data, 1);
+        if (unitLimit > MAX_COMPUTE_UNITS) {
+          throw new Error(`compute unit limit ${unitLimit} above ceiling`);
+        }
+        break;
+      }
+      case 3: { // SetComputeUnitPrice(u64 micro-lamports per unit)
+        if (data.length !== 9) throw new Error('malformed SetComputeUnitPrice');
+        if (microLamports !== null) throw new Error('duplicate SetComputeUnitPrice');
+        microLamports = readU64LE(data, 1);
+        if (microLamports > MAX_MICRO_LAMPORTS_PER_UNIT) {
+          throw new Error(`compute unit price ${microLamports} above ceiling`);
+        }
+        break;
+      }
+      default:
+        // RequestUnits (deprecated) and RequestHeapFrame both cost the treasury
+        // in ways we have no reason to pay for. Nothing else is expected here.
+        throw new Error(`unsupported compute budget instruction ${kind}`);
+    }
+  }
+
+  if (microLamports === null || microLamports === 0n) return;
+
+  // The two multiply, so neither ceiling alone is a bound on what gets paid.
+  const units = BigInt(unitLimit ?? MAX_COMPUTE_UNITS);
+  const priority = (units * microLamports + 999_999n) / 1_000_000n;
+  if (priority > MAX_PRIORITY_LAMPORTS) {
+    throw new Error(`priority fee ${priority} lamports above ceiling`);
+  }
+}
+
+function readU32LE(data: Uint8Array, offset: number): number {
+  return (
+    data[offset] |
+    (data[offset + 1] << 8) |
+    (data[offset + 2] << 16) |
+    (data[offset + 3] << 24)
+  ) >>> 0;
+}
+
+function readU64LE(data: Uint8Array, offset: number): bigint {
+  let value = 0n;
+  for (let i = 7; i >= 0; i--) value = (value << 8n) | BigInt(data[offset + i]);
+  return value;
 }
 
 // ------------------------------------------------------------ quota core
 
-type Grant = { ok: boolean; tier: 'free' | 'sub' | 'pack' | null };
+type Grant = { ok: boolean; tier: 'free' | 'sub' | 'pack' | null; usedKey: string };
 
+/**
+ * Reserve one message of allowance.
+ *
+ * The counter a paid subscription draws from is keyed by the subscription itself,
+ * not by the `account` field in the request. That field is chosen by the caller
+ * and signed by nobody: keying on it meant one Apple subscription got a fresh
+ * monthly allowance for every value someone cared to send, which is the whole
+ * allowance rendered decorative. Reported by Mudit (mudit.raj32@gmail.com).
+ *
+ * `/issue` already keyed on the verified transaction id; this is the legacy path
+ * catching up with it.
+ */
 async function reserveMessage(env: Env, account: string, jws?: string): Promise<Grant> {
   let allowance = 0;
+  let subscriptionId: string | null = null;
   if (jws) {
     try {
       const claims = await verifyAppleJWS(jws, env);
       if (claims.productId === PRO_ID) allowance = parseInt(env.PRO_MONTHLY, 10);
       else if (claims.productId === PLUS_ID) allowance = parseInt(env.PLUS_MONTHLY, 10);
       if (claims.expiresDate && claims.expiresDate < Date.now()) allowance = 0;
+      // Apple's own identifier for the subscription, stable across renewals and
+      // across every device signed into that Apple ID.
+      const verifiedId = String(claims.originalTransactionId ?? '').trim();
+      if (allowance > 0 && verifiedId) subscriptionId = verifiedId;
+      // A paid receipt we cannot pin to a subscription buys nothing beyond free:
+      // its counter would have to be keyed on caller input again.
+      if (allowance > 0 && !verifiedId) allowance = 0;
     } catch {
       allowance = 0; // invalid receipt → no subscription allowance
     }
@@ -551,7 +675,7 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
   const hasSub = allowance > 0;
 
   const month = new Date().toISOString().slice(0, 7);
-  const usedKey = `used:${account}:${month}`;
+  const usedKey = quotaKeyFor({ subscriptionId, account, month });
   const effectiveAllowance = Math.max(allowance, FREE_MONTHLY);
 
   // Atomically reserve one message of the monthly allowance. reserveN grants only
@@ -559,14 +683,29 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
   // can't push an account past its quota.
   if ((await reserveN(env, usedKey, effectiveAllowance, 1, TTL_MONTH_MS)) > 0) {
     // Without an active subscription the message comes from the free allowance.
-    return { ok: true, tier: hasSub ? 'sub' : 'free' };
+    return { ok: true, tier: hasSub ? 'sub' : 'free', usedKey };
   }
 
   // Allowance exhausted — draw from a purchased consumable pack (atomic spend).
   if (await spendBalance(env, `pack:${account}`)) {
-    return { ok: true, tier: 'pack' };
+    return { ok: true, tier: 'pack', usedKey };
   }
-  return { ok: false, tier: null };
+  return { ok: false, tier: null, usedKey };
+}
+
+/**
+ * Which counter a message is drawn from.
+ *
+ * A paid subscription meters on Apple's own identifier, which is stable across
+ * renewals and devices. Only the free tier falls back to the request's account
+ * field, where the worst case is one free allowance per made-up account - which
+ * is what the separate free-tier daily cap exists to bound.
+ */
+function quotaKeyFor(
+  { subscriptionId, account, month }:
+  { subscriptionId: string | null; account: string; month: string },
+): string {
+  return subscriptionId ? `used:sub:${subscriptionId}:${month}` : `used:${account}:${month}`;
 }
 
 // ------------------------------------------------------ discovery nick parse
@@ -599,11 +738,6 @@ function extractDiscoveryNick(transaction: Transaction): string | null {
     }
   }
   return null;
-}
-
-async function refundMessage(env: Env, account: string): Promise<void> {
-  const month = new Date().toISOString().slice(0, 7);
-  await refundCounter(env, `used:${account}:${month}`);
 }
 
 // --------------------------------------------------------------- rate limit
@@ -709,3 +843,15 @@ function json(obj: unknown, status = 200): Response {
     headers: { 'content-type': 'application/json' },
   });
 }
+
+/**
+ * Exposed for `test/security-reports.test.mjs`.
+ *
+ * The fee guard and the quota key are the two places where a mistake costs
+ * money, and both were reported as exploitable. They are worth testing directly
+ * rather than through a whole request.
+ */
+export const __testing = {
+  assertTreasuryOnlyPaysFees,
+  quotaKeyFor,
+};

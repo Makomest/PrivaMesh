@@ -221,6 +221,25 @@ final class PollingService {
                 ownerAddress: myAddress,
                 in: contacts, context: context
             )
+
+            // An opener we have already accepted is ignored, whatever transaction
+            // carries it.
+            //
+            // A session-init is self-contained: it decrypts again every time it is
+            // seen. Replay detection used to be the Solana transaction signature,
+            // and a copy of the same memo in a new transaction has a new one - so
+            // anyone reading the public chain could make an old message reappear
+            // as newly received from a trusted contact, with the original identity
+            // key so no key-change warning fired, and the reconstructed ratchet
+            // installed over the live session. Reported by Mudit
+            // (mudit.raj32@gmail.com).
+            //
+            // Checked after decryption, because only a real opener produces a
+            // digest at all, and before anything is stored or replaced.
+            let initDigest = Contact.sessionInitDigest(envelope)
+            if contact.hasConsumedSessionInit(initDigest) { return }
+            contact.noteConsumedSessionInit(initDigest)
+
             // A session-init replaces the ratchet, so it is also the moment a
             // contact's identity key can change under us. Silently accepting a new
             // key is exactly the hole that makes verifying a safety number

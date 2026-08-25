@@ -7,7 +7,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "keygen": "node scripts/keygen.mjs",
-    "test": "npx tsx test/blindtokens.test.mjs && npx tsx test/spenttokens.test.mjs && npx tsx test/quotado.test.mjs"
+    "test": "npx tsx test/blindtokens.test.mjs && npx tsx test/spenttokens.test.mjs && npx tsx test/quotado.test.mjs && npx tsx test/security-reports.test.mjs"
   },
   "dependencies": {
     "@peculiar/x509": "^1.12.3",

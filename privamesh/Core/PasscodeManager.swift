@@ -112,6 +112,12 @@ final class PasscodeManager {
         let salt = Self.randomSalt()
         let hash = Self.derive(passcode: passcode, salt: salt)
 
+        // The duress code is stored under this salt, so changing it invalidates
+        // that hash. Dropped rather than silently kept: a duress code that no
+        // longer matches anything is worse than none, because the person relying
+        // on it does not know.
+        deleteKeychain(key: Self.duressHashKey)
+
         guard
             writeKeychain(key: Self.saltKey, data: salt),
             writeKeychain(key: Self.hashKey, data: hash)
@@ -156,21 +162,23 @@ final class PasscodeManager {
         switch (read(key: Self.hashKey), read(key: Self.saltKey)) {
         case let (.found(storedHash), .found(salt)):
             var duressHash: Data?
-            var duressSalt: Data?
             if case let .found(hash) = read(key: Self.duressHashKey) { duressHash = hash }
-            if case let .found(salt) = read(key: Self.duressSaltKey) { duressSalt = salt }
 
-            // BOTH derivations always run, and nothing is acted on until both are
-            // done. A short-circuit would make the duress code measurably faster
-            // or slower than the real one, and the person watching the screen is
-            // exactly who would notice.
+            // One derivation, checked against both stored hashes.
+            //
+            // The duress code shares the passcode's salt for exactly this reason:
+            // a second salt would mean a second key derivation on every unlock,
+            // doubling the wait for everyone - and skipping it when the code did
+            // not match would make the duress path measurably faster, which the
+            // person standing over the user's shoulder is the one who would
+            // notice. A salt's job is to make precomputation useless, and one per
+            // device does that for both codes.
             let attemptHash = Self.derive(passcode: passcode, salt: salt)
-            let duressAttempt = duressSalt.map { Self.derive(passcode: passcode, salt: $0) }
 
             let matchesReal = constantTimeCompare(storedHash, attemptHash)
             let matchesDuress: Bool = {
-                guard let duressHash, let duressAttempt else { return false }
-                return constantTimeCompare(duressHash, duressAttempt)
+                guard let duressHash else { return false }
+                return constantTimeCompare(duressHash, attemptHash)
             }()
 
             if matchesReal {
@@ -245,22 +253,16 @@ final class PasscodeManager {
         guard confirms(currentPasscode) else { return false }
         guard !confirms(duress) else { return false }
 
-        let salt = Self.randomSalt()
-        let hash = Self.derive(passcode: duress, salt: salt)
-        guard writeKeychain(key: Self.duressSaltKey, data: salt),
-              writeKeychain(key: Self.duressHashKey, data: hash)
-        else {
-            // Half-written state would make the code unverifiable, so undo it.
-            deleteKeychain(key: Self.duressSaltKey)
-            return false
-        }
-        return true
+        // Stored under the passcode's own salt, so an unlock derives once and
+        // compares twice. See the note in check().
+        guard case let .found(salt) = read(key: Self.saltKey) else { return false }
+        return writeKeychain(key: Self.duressHashKey, data: Self.derive(passcode: duress, salt: salt))
     }
 
     /// True when this code is the stored duress code.
     private func matchesDuress(_ candidate: String) -> Bool {
         guard case let .found(hash) = read(key: Self.duressHashKey),
-              case let .found(salt) = read(key: Self.duressSaltKey)
+              case let .found(salt) = read(key: Self.saltKey)
         else { return false }
         return constantTimeCompare(hash, Self.derive(passcode: candidate, salt: salt))
     }
@@ -269,7 +271,6 @@ final class PasscodeManager {
     func removeDuressPasscode(currentPasscode: String) -> Bool {
         guard confirms(currentPasscode) else { return false }
         deleteKeychain(key: Self.duressHashKey)
-        deleteKeychain(key: Self.duressSaltKey)
         return true
     }
 
