@@ -24,13 +24,24 @@ class_name = "SpentTokenDO"
 name = "QUOTA_DO"
 class_name = "QuotaDO"
 
+# SQLite-backed Durable Objects.
+#
+# These classes had never actually been created: the account is on the free
+# plan, where only `new_sqlite_classes` is allowed, so every deploy that
+# declared them failed and the relay ran on the eventually-consistent KV
+# fallback instead. That fallback is exactly what the single-spend and quota
+# code was written to stop relying on - a KV check-then-set lets two concurrent
+# spends of one token both read "not spent".
+#
+# The storage API is the same one these classes already use, so nothing in them
+# changes.
 [[migrations]]
 tag = "v1"
-new_classes = ["SpentTokenDO"]
+new_sqlite_classes = ["SpentTokenDO"]
 
 [[migrations]]
 tag = "v2"
-new_classes = ["QuotaDO"]
+new_sqlite_classes = ["QuotaDO"]
 
 [vars]
 # Solana RPC endpoint. Set as a SECRET (contains an API key), NOT here:
