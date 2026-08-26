@@ -17,6 +17,7 @@
 //  service stays disabled and the app falls back to the legacy receipt path.
 //
 
+import CryptoKit
 import Foundation
 
 @Observable
@@ -39,6 +40,16 @@ final class BlindTokenService {
 
     private static let poolKey = "privamesh.relay.blindTokens.v1"
 
+    /// Where the issuer key this device has committed to is remembered.
+    private static let issuerPinKey = "privamesh.relay.issuerPin.v1"
+
+    /// Issuer keys this build accepts, as SHA-256 over the raw modulus and
+    /// exponent bytes. Empty means none is baked in yet.
+    ///
+    /// A pin belongs here once the relay has a stable issuer key. Until then the
+    /// device pins the first key it is given - see `refreshIssuerKey`.
+    private static let pinnedIssuerDigests: Set<String> = []
+
     private var refilling = false
 
     init() { stock = loadPool().count }
@@ -46,6 +57,23 @@ final class BlindTokenService {
     // MARK: pubkey
 
     /// Fetch and cache the issuer public key. Idempotent; safe to call on launch.
+    ///
+    /// The key is pinned, because the relay choosing it per client is a way to
+    /// undo the whole point of blind tokens. A key served to one device and no
+    /// other is a tag: the blinded values and the returned signatures are encoded
+    /// at that modulus width, so recognising the width later maps an anonymous
+    /// send back to the exact purchase that issued it - no cookie, no account
+    /// field, no shared connection. Reported by Mudit (mudit.raj32@gmail.com),
+    /// which is the issuance-consistency problem in RFC 9576 section 6.2.
+    ///
+    /// Two levels, in order. A digest baked into the build wins, and nothing else
+    /// is accepted. With none baked in, the device pins the first key it sees and
+    /// refuses any later change: an operator then gets one attempt, on first
+    /// contact, instead of one per issuance.
+    ///
+    /// What this still does not give is consistency ACROSS devices - proving that
+    /// everyone was handed the same key needs a commitment in the build or a
+    /// transparency log. That limit is worth stating rather than implying.
     func refreshIssuerKey() async {
         guard RelayConfig.isConfigured,
               let url = URL(string: RelayConfig.baseURL + "/pubkey") else { return }
@@ -55,7 +83,8 @@ final class BlindTokenService {
                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   obj["enabled"] as? Bool == true,
                   let n = obj["n"] as? String, let e = obj["e"] as? String,
-                  let key = BlindIssuerKey(nB64u: n, eB64u: e) else {
+                  let key = BlindIssuerKey(nB64u: n, eB64u: e),
+                  Self.accept(issuerDigest: Self.issuerDigest(nB64u: n, eB64u: e)) else {
                 enabled = false
                 return
             }
@@ -64,6 +93,35 @@ final class BlindTokenService {
         } catch {
             enabled = false
         }
+    }
+
+    /// SHA-256 over the key as served, so two spellings of one key are one pin.
+    private static func issuerDigest(nB64u: String, eB64u: String) -> String {
+        var input = Data()
+        input.append(contentsOf: Array(nB64u.utf8))
+        input.append(0x00)
+        input.append(contentsOf: Array(eB64u.utf8))
+        return Data(SHA256.hash(data: input)).base64EncodedString()
+    }
+
+    /// True when this device may use the key behind [digest].
+    private static func accept(issuerDigest digest: String) -> Bool {
+        if !pinnedIssuerDigests.isEmpty {
+            return pinnedIssuerDigests.contains(digest)
+        }
+
+        guard let stored = KeychainStorage.load(key: issuerPinKey),
+              let known = String(data: stored, encoding: .utf8) else {
+            // First contact: commit to this key. A device that has never seen one
+            // has nothing to compare against, and refusing outright would turn a
+            // fresh install into a broken one.
+            KeychainStorage.save(key: issuerPinKey, data: Data(digest.utf8))
+            return true
+        }
+        // A changed key is refused rather than adopted. Rotation therefore needs a
+        // build that carries the new pin - which is the point: an operator must
+        // not be able to rotate one device onto a key of its own.
+        return known == digest
     }
 
     // MARK: pool storage

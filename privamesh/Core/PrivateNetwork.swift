@@ -77,11 +77,36 @@ final class PrivateNetwork {
 
     /// Built once. A URLSession with a delegate must be reused, or every request
     /// leaks a session object and its connection pool.
+    ///
+    /// Carries no state between requests, which matters more here than anywhere
+    /// else in the app. The blind-token design exists so the relay cannot connect
+    /// a purchase to a send: `/issue` shows an Apple receipt, `/send` shows only
+    /// an unlinkable token. HTTP happily undoes that on its own.
+    ///
+    /// A `.default` configuration shares `HTTPCookieStorage.shared` and sends
+    /// cookies back automatically, so the relay could set one during `/issue` and
+    /// read it during `/send` - a direct purchase-to-send link, with the token
+    /// cryptography untouched. Reported by Mudit (mudit.raj32@gmail.com).
+    ///
+    /// The URL cache is disabled for the same reason and it is not a theoretical
+    /// one: an `ETag` handed out at `/issue` comes back as `If-None-Match`, which
+    /// is a cookie by another name. Credential and connection reuse are left to
+    /// the system, but nothing the server chooses is stored.
     private static let pinnedSession: URLSession = {
-        URLSession(configuration: .default,
-                   delegate: PinningSessionDelegate(),
-                   delegateQueue: nil)
+        let configuration = URLSessionConfiguration.default
+        configuration.httpCookieStorage = nil
+        configuration.httpShouldSetCookies = false
+        configuration.httpCookieAcceptPolicy = .never
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+
+        return URLSession(configuration: configuration,
+                          delegate: PinningSessionDelegate(),
+                          delegateQueue: nil)
     }()
+
+    /// The one session, for the test that checks it carries no server state.
+    static var sessionForTesting: URLSession { pinnedSession }
 
     // MARK: - The seam every named-host service should call
 

@@ -406,6 +406,8 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
 
     // --- Fallback: KV spent-set (best-effort, eventually consistent) when the
     //     DO namespace isn't bound (e.g. a partial deploy). ---------------------
+    // Kept, not expired: a token has no lifetime, so a spent record that expires
+    // makes it spendable again. See the note in spenttokens.ts.
     const spentKey = `spent:${nonce}`;
     if (await env.QUOTA.get(spentKey)) return json({ error: 'token already spent' }, 409);
     if ((await reserveN(env, capKey, cap, 1, TTL_DAY_MS)) <= 0) {
@@ -416,7 +418,8 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
       const raw = transaction.serialize();
       const conn = new Connection(env.RPC_URL, 'confirmed');
       const signature = await conn.sendRawTransaction(raw, { skipPreflight: false });
-      await env.QUOTA.put(spentKey, '1', { expirationTtl: 60 * 60 * 24 * 90 });
+      // No expirationTtl: the token stays valid forever, so the record has to.
+      await env.QUOTA.put(spentKey, '1');
       return json({ signature });
     } catch (e) {
       console.error('submit failed (token)', e);

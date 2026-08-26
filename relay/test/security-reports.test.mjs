@@ -14,6 +14,7 @@ import assert from 'node:assert';
 import { Keypair, Transaction, PublicKey, ComputeBudgetProgram, SystemProgram } from '@solana/web3.js';
 import { canonicalNonce, bytesToB64u, b64uToBytes } from '../src/blindtokens.ts';
 import { __testing } from '../src/index.ts';
+import { SpentTokenDO } from '../src/spenttokens.ts';
 
 const { assertTreasuryOnlyPaysFees, quotaKeyFor } = __testing;
 
@@ -148,5 +149,40 @@ console.log('PASS: two subscriptions keep separate counters');
 const free = quotaKeyFor({ subscriptionId: null, account: 'accountA', month });
 assert.ok(free.includes('accountA'), 'the free tier is metered per account');
 console.log('PASS: the free tier is still metered per account');
+
+// --- 4. A spent token stays spent ------------------------------------------
+
+// The report: the spent record self-deleted after 90 days while the signature
+// stayed valid, so the same token bought a second sponsored transaction - once
+// per cleanup cycle, indefinitely.
+{
+  const storage = new Map();
+  let alarmAt = null;
+  const state = {
+    storage: {
+      async get(key) { return storage.get(key); },
+      async put(key, value) { storage.set(key, value); },
+      async delete(key) { return storage.delete(key); },
+      async deleteAll() { storage.clear(); },
+      async setAlarm(time) { alarmAt = time; },
+    },
+    async blockConcurrencyWhile(cb) { return cb(); },
+  };
+
+  const object = new SpentTokenDO(state);
+  const call = (path) => object.fetch(new Request(`https://do${path}`));
+
+  assert.equal((await call('/claim')).status, 200, 'a fresh token must be claimable');
+  assert.equal((await call('/commit')).status, 200);
+  assert.equal((await call('/claim')).status, 409, 'an immediate reuse must be refused');
+
+  assert.equal(alarmAt, null, 'a spent record must not schedule its own deletion');
+
+  // Even if an alarm was scheduled by an older deployment, firing it must not
+  // hand the token back.
+  await object.alarm();
+  assert.equal((await call('/claim')).status, 409, 'the cleanup made a spent token spendable again');
+  console.log('PASS: a spent token stays spent, including after its old alarm fires');
+}
 
 console.log('\nALL SECURITY-REPORT REGRESSIONS PASSED');
