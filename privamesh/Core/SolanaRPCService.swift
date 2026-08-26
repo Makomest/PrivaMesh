@@ -103,6 +103,34 @@ final class SolanaRPCService {
         client = JSONRPCAPIClient(endpoint: endpoints[currentIndex])
     }
 
+    /**
+     Ask a *different* node than the last one, for reads that would otherwise
+     draw a map.
+
+     Stealth addresses hide the conversation graph from someone reading the
+     chain. They hide nothing from the node being asked: polling every contact's
+     stealth chain from one endpoint hands that operator the whole set of
+     addresses this user watches, which is the graph in another form, along with
+     how active each conversation is.
+
+     Spreading the queries does not make any single node blind - it sees the
+     addresses it was asked about - but it stops one node from holding all of
+     them. Someone who runs their own node in Settings gets the real answer, and
+     that remains the honest advice.
+     */
+    func spreadClient(for salt: String) -> JSONRPCAPIClient {
+        guard endpoints.count > 1 else { return client }
+        // Stable per address: asking the same node for one chain keeps a lookup
+        // consistent, while different chains land on different nodes.
+        var hash: UInt64 = 1469598103934665603
+        for byte in salt.utf8 {
+            hash ^= UInt64(byte)
+            hash = hash &* 1099511628211
+        }
+        let index = Int(hash % UInt64(endpoints.count))
+        return JSONRPCAPIClient(endpoint: endpoints[index])
+    }
+
     /// Set (or clear with nil/empty) the user's custom RPC and rebuild the pool.
     /// Returns false if the URL is invalid.
     @discardableResult

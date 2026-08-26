@@ -94,3 +94,31 @@ struct CaptureShielded<Content: View>: View {
         .animation(.easeInOut(duration: 0.15), value: monitor.isCaptured)
     }
 }
+
+/// What the app switcher photographs instead of the conversation.
+///
+/// iOS takes a snapshot when an app leaves the foreground and stores it for the
+/// switcher. Whatever is on screen at that moment ends up as a file: an open
+/// chat is a picture of the messages, readable by a backup extraction or by
+/// anyone holding the unlocked phone.
+///
+/// Drawn at `.inactive` rather than `.background`, because the snapshot is taken
+/// during the transition - by the time the app is in the background it has
+/// already been photographed. The mark is the app's own, so the switcher still
+/// shows something recognisable rather than a blank rectangle.
+struct AppSwitcherCover: View {
+    let phase: ScenePhase
+
+    var body: some View {
+        if phase != .active {
+            ZStack {
+                Color.black
+                Text("PrivaMesh")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.white.opacity(0.55))
+            }
+            .ignoresSafeArea()
+            .transition(.identity)   // no fade: a fading cover is a readable frame
+        }
+    }
+}

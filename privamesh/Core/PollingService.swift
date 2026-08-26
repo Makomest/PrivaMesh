@@ -279,10 +279,15 @@ final class PollingService {
         let label = contact.theirStealthLabel
         var index = contact.recvIndex
         var processed = 0
+        // Spread across the endpoint pool. Stealth addresses hide the conversation
+        // graph from a chain observer; they hide nothing from the node being
+        // asked, and polling every contact through one endpoint hands that
+        // operator the full set of addresses this user watches.
+        let client = rpc.spreadClient(for: contact.id)
         while processed < Self.stealthWindow {
             guard let addr = StealthAddress.address(root: root, label: label, index: index) else { break }
             let config = RequestConfiguration(commitment: "confirmed", limit: 10)
-            guard let sigs = try? await rpc.client.getSignaturesForAddress(address: addr, configs: config),
+            guard let sigs = try? await client.getSignaturesForAddress(address: addr, configs: config),
                   !sigs.isEmpty else { break }   // in-order: empty index → stop
 
             var consumed = false

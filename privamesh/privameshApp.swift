@@ -12,10 +12,15 @@ struct privameshApp: App {
     /// Shared so the BGAppRefreshTask handler can build a ModelContext too.
     private let sharedModelContainer: ModelContainer
 
+    /// Where that store lives, so its protection can be re-applied once the file
+    /// actually exists.
+    private let storeURL: URL
+
     init() {
         let storeConfig = ModelConfiguration()
         sharedModelContainer = try! ModelContainer(for: Contact.self, ChatMessage.self,
                                                    configurations: storeConfig)
+        storeURL = storeConfig.url
         // Encrypt the local message store at rest. `.completeUntilFirstUserAuthentication`
         // keeps it readable for background polling after first unlock, while
         // protecting it before first unlock / when powered off. (`.complete`
@@ -93,10 +98,29 @@ struct privameshApp: App {
         ]
         for suffix in ["", "-wal", "-shm"] {
             let path = url.path + suffix
-            if fm.fileExists(atPath: path) {
-                try? fm.setAttributes(attrs, ofItemAtPath: path)
-            }
+            guard fm.fileExists(atPath: path) else { continue }
+            try? fm.setAttributes(attrs, ofItemAtPath: path)
+            excludeFromBackup(URL(fileURLWithPath: path))
         }
+    }
+
+    /// Keep the message store out of iCloud and iTunes backups.
+    ///
+    /// It was not excluded, so every conversation on the device was copied into
+    /// whatever backup the user has - which for most people is iCloud, encrypted
+    /// with a key Apple holds unless Advanced Data Protection is on. The app says
+    /// nothing leaves the device; this is what made that untrue.
+    ///
+    /// The account keys were never affected: Keychain items are stored
+    /// `ThisDeviceOnly`, which excludes them from backups already. Recovery is
+    /// the phrase, and only the phrase - a restored copy of someone else's
+    /// ratchet would be a second live copy of a session both sides believe is
+    /// unique.
+    private static func excludeFromBackup(_ url: URL) {
+        var target = url
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try? target.setResourceValues(values)
     }
     @State private var router   = AppRouter()
     @State private var wallet   = WalletManager()
@@ -155,6 +179,16 @@ struct privameshApp: App {
     var body: some Scene {
         WindowGroup {
             rootView
+                // Cover the screen the moment the app stops being frontmost.
+                //
+                // iOS photographs the app when it goes to the background and keeps
+                // that image on disk for the app switcher. With an open chat on
+                // screen, that is a picture of the conversation sitting in the file
+                // system - readable by a backup extraction or by anyone who picks
+                // up an unlocked phone and swipes up. The cover is applied at
+                // .inactive, which is before the snapshot is taken; .background is
+                // too late.
+                .overlay { AppSwitcherCover(phase: scenePhase) }
                 // Dark-only product: the chat surface is a single monochrome dark
                 // world, so light mode would only have repainted the secondary
                 // screens. Matches UIUserInterfaceStyle=Dark in Info.plist.
@@ -205,7 +239,15 @@ struct privameshApp: App {
                 }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background { BackgroundRefresh.schedule() }
-                    if phase == .active { Task { await blindTokens.ensureStock() } }
+                    if phase == .active {
+                        // Re-applied on every activation, not only at launch.
+                        // SwiftData creates the store lazily, so on a first run
+                        // there is no file yet when the app starts - and a store
+                        // that never gets these attributes is one that goes into
+                        // iCloud unprotected.
+                        Self.protectStore(at: storeURL)
+                        Task { await blindTokens.ensureStock() }
+                    }
                 }
                 .task {
                     // Fetch the issuer key and top up the anonymous-token pool so a
