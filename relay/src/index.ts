@@ -444,6 +444,21 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
   const grant = await reserveMessage(env, account, jws);
   if (!grant.ok) return json({ error: 'quota exceeded' }, 402);
 
+  // Throttle the subscription, not just the account string.
+  //
+  // The per-minute limiter above is keyed on `account`, which the caller picks,
+  // so rotating that string rotates the limiter with it. Metering the monthly
+  // allowance on the subscription already bounds the volume one receipt can
+  // spend; this bounds the rate as well, so a paid caller cannot empty the
+  // shared daily sponsorship budget in a burst. It runs after the receipt is
+  // verified because until then there is no subscription to key on, and the
+  // reservation is handed back when the limit bites.
+  const subRateKey = rateKeyFor(grant.subscriptionId);
+  if (subRateKey && !(await underRateLimit(env, subRateKey))) {
+    await refundCounter(env, grant.usedKey);
+    return json({ error: 'rate limited' }, 429);
+  }
+
   // FREE-tier sybil ceiling: unauthenticated sends draw from a SEPARATE, much
   // lower global daily cap, so an attacker minting seed accounts can never spend
   // more than FREE_DAILY_CAP of the treasury per day. Reserved atomically.
@@ -641,7 +656,15 @@ function readU64LE(data: Uint8Array, offset: number): bigint {
 
 // ------------------------------------------------------------ quota core
 
-type Grant = { ok: boolean; tier: 'free' | 'sub' | 'pack' | null; usedKey: string };
+type Grant = {
+  ok: boolean;
+  tier: 'free' | 'sub' | 'pack' | null;
+  usedKey: string;
+  /** Apple's originalTransactionId when a paid receipt was verified, else null.
+   *  Carried out so the caller can throttle the subscription rather than the
+   *  account string, which the caller picks. */
+  subscriptionId: string | null;
+};
 
 /**
  * Reserve one message of allowance.
@@ -686,14 +709,14 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
   // can't push an account past its quota.
   if ((await reserveN(env, usedKey, effectiveAllowance, 1, TTL_MONTH_MS)) > 0) {
     // Without an active subscription the message comes from the free allowance.
-    return { ok: true, tier: hasSub ? 'sub' : 'free', usedKey };
+    return { ok: true, tier: hasSub ? 'sub' : 'free', usedKey, subscriptionId };
   }
 
   // Allowance exhausted — draw from a purchased consumable pack (atomic spend).
   if (await spendBalance(env, `pack:${account}`)) {
-    return { ok: true, tier: 'pack', usedKey };
+    return { ok: true, tier: 'pack', usedKey, subscriptionId };
   }
-  return { ok: false, tier: null, usedKey };
+  return { ok: false, tier: null, usedKey, subscriptionId };
 }
 
 /**
@@ -704,6 +727,15 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
  * field, where the worst case is one free allowance per made-up account - which
  * is what the separate free-tier daily cap exists to bound.
  */
+/**
+ * Which bucket the second, subscription-level throttle counts in, or null when
+ * there is no verified subscription to throttle. Kept separate from the call
+ * site so a test can assert that two account strings on one receipt share it.
+ */
+function rateKeyFor(subscriptionId: string | null): string | null {
+  return subscriptionId ? `sub:${subscriptionId}` : null;
+}
+
 function quotaKeyFor(
   { subscriptionId, account, month }:
   { subscriptionId: string | null; account: string; month: string },
@@ -857,4 +889,5 @@ function json(obj: unknown, status = 200): Response {
 export const __testing = {
   assertTreasuryOnlyPaysFees,
   quotaKeyFor,
+  rateKeyFor,
 };

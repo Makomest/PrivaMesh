@@ -16,7 +16,7 @@ import { canonicalNonce, bytesToB64u, b64uToBytes } from '../src/blindtokens.ts'
 import { __testing } from '../src/index.ts';
 import { SpentTokenDO } from '../src/spenttokens.ts';
 
-const { assertTreasuryOnlyPaysFees, quotaKeyFor } = __testing;
+const { assertTreasuryOnlyPaysFees, quotaKeyFor, rateKeyFor } = __testing;
 
 const treasury = Keypair.generate();
 const ephemeral = Keypair.generate();
@@ -149,6 +149,22 @@ console.log('PASS: two subscriptions keep separate counters');
 const free = quotaKeyFor({ subscriptionId: null, account: 'accountA', month });
 assert.ok(free.includes('accountA'), 'the free tier is metered per account');
 console.log('PASS: the free tier is still metered per account');
+
+// The same report's second half: rotating the account also rotated the
+// per-minute limiter. A verified subscription is now throttled as one caller,
+// so the volume cap has a rate cap beside it.
+assert.equal(
+  rateKeyFor('apple-original-tx-1'),
+  rateKeyFor('apple-original-tx-1'),
+  'one subscription must throttle in one bucket',
+);
+assert.notEqual(
+  rateKeyFor('apple-original-tx-1'),
+  rateKeyFor('apple-original-tx-2'),
+  'two subscriptions must not share a throttle bucket',
+);
+assert.equal(rateKeyFor(null), null, 'the free tier has no subscription to throttle');
+console.log('PASS: one subscription throttles as one caller, whatever account is sent');
 
 // --- 4. A spent token stays spent ------------------------------------------
 
