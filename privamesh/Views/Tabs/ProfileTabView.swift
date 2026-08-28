@@ -738,9 +738,19 @@ private struct NicknameEditorSheet: View {
                     Text("Твой ник")
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundStyle(Theme.slate800)
-                    Text("Этот ник будут видеть твои контакты. Свободный ник закрепляется за тобой.")
+                    // The old wording here said contacts would see this nickname.
+                    // That was wrong in the way that matters: reserving it writes
+                    // the name and your public key to a registry on a public chain,
+                    // where anyone can read the whole list and nothing can be
+                    // deleted. People chose their real first names on the strength
+                    // of that sentence.
+                    Text("Ник записывается в публичный реестр в блокчейне — навсегда, для всех, а не только для контактов.")
                         .font(.system(size: 14))
                         .foregroundStyle(Theme.slate500)
+                        .multilineTextAlignment(.center)
+                    Text("Кто угодно может выгрузить список всех ников и адресов и увидеть, когда с тобой начинали переписку. Удалить запись нельзя. Не бери имя, по которому тебя узнают, если это важно.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.slate400)
                         .multilineTextAlignment(.center)
                     Text("Только буквы — цифры можно добавить по желанию (напр. Alex42)")
                         .font(.system(size: 12))

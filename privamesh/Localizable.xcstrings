@@ -3620,6 +3620,17 @@
         }
       }
     },
+    "Кто угодно может выгрузить список всех ников и адресов и увидеть, когда с тобой начинали переписку. Удалить запись нельзя. Не бери имя, по которому тебя узнают, если это важно.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone can download the full list of handles and addresses, and see when conversations with you were started. The record cannot be deleted. Do not pick a name you can be recognised by, if that matters to you."
+          }
+        }
+      }
+    },
     "Купи уникальный аватар в маркете": {
       "extractionState": "stale",
       "localizations": {
@@ -4796,6 +4807,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nickname minted: %@"
+          }
+        }
+      }
+    },
+    "Ник записывается в публичный реестр в блокчейне — навсегда, для всех, а не только для контактов.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your handle is written to a public registry on the blockchain - permanently, for everyone, not only for your contacts."
           }
         }
       }
