@@ -99,6 +99,15 @@ PrivaMesh is available on the App Store for iPhone and iPad:
 
 **[apps.apple.com/app/privamesh-messenger](https://apps.apple.com/app/privamesh-messenger/id6785997584)**
 
+## License
+
+[MIT](LICENSE). Use it, fork it, ship it, sell it. Keep the copyright notice.
+
+The licence covers the code in this repository. It is not permission to use the
+name PrivaMesh, the logo, or the App Store listing for a fork, and it carries no
+warranty: a build you did not make from source you have read is a build you are
+trusting someone else with.
+
 ## Support
 
 Questions, bug reports and account help: **[privamesh.org/support](https://privamesh.org/support)**
