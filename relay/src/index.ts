@@ -83,7 +83,18 @@ export interface Env {
 // TTLs (ms) for self-cleaning DO counters. Match the old KV expirations.
 const TTL_MONTH_MS = 62 * 24 * 60 * 60 * 1000;
 const TTL_DAY_MS = 26 * 60 * 60 * 1000;
-const TTL_CREDIT_MS = 400 * 24 * 60 * 60 * 1000;
+/**
+ * Pack redemptions are kept, not expired.
+ *
+ * They used to self-delete after 400 days. An Apple transaction id does not
+ * expire and its receipt stays validly signed, so when the dedup record went
+ * away the same purchase credited a second pack, and a third, once per cleanup
+ * cycle forever. This is the spent-token retention bug on the credit path, and
+ * it has the same answer: a record that proves something was already redeemed
+ * can only be dropped once the thing it describes can no longer be presented.
+ * Reported by Mudit (mudit.raj32@gmail.com).
+ */
+const TTL_CREDIT_MS = 0;   // 0 = no alarm, no expiry
 
 // --------------------------------------------------- atomic counter helpers
 // Backed by QuotaDO (strongly consistent) when bound; otherwise fall back to the
@@ -124,7 +135,10 @@ async function claimOnce(env: Env, key: string, ttlMs: number): Promise<boolean>
     return !!r.ok;
   }
   if (await env.QUOTA.get(key)) return false;
-  await env.QUOTA.put(key, '1', { expirationTtl: Math.floor(ttlMs / 1000) });
+  // ttlMs of 0 means keep it: passing expirationTtl: 0 would be rejected, and
+  // passing any expiry at all is how the record silently stops being a record.
+  const opts = ttlMs > 0 ? { expirationTtl: Math.floor(ttlMs / 1000) } : undefined;
+  await env.QUOTA.put(key, '1', opts);
   return true;
 }
 
@@ -165,6 +179,8 @@ const FREE_MONTHLY = 10;
 const DEFAULT_DAILY_CAP = 5000;
 const DEFAULT_FREE_DAILY_CAP = 500;   // global ceiling on FREE-tier sponsored tx/day
 const DEFAULT_RATE_PER_MIN = 20;
+/** Two minutes: long enough to outlive the bucket it counts, short enough not to pile up. */
+const RATE_BUCKET_TTL_MS = 120_000;
 
 /**
  * Guard against shipping with pinning disabled. DEV_SKIP_PINNING bypasses Apple
@@ -298,7 +314,14 @@ async function handleIssue(req: Request, env: Env): Promise<Response> {
   // over-mint: reserveN grants only up to (allowance - already) inside a single
   // serialized DO op, so the sum of grants across racers can't exceed allowance.
   const month = new Date().toISOString().slice(0, 7);
-  const issuedKey = `issued:${subject}:${month}`;
+  // The SAME counter the legacy /send path draws from. Two keys meant one
+  // subscription got two monthly allowances: 1200 messages on the receipt path
+  // and 1200 more minted as anonymous tokens, because reserveN caps each key
+  // separately and neither knew about the other. Reported by Mudit
+  // (mudit.raj32@gmail.com). Metering both here costs nothing in anonymity: a
+  // token is charged when it is MINTED, against a subscription that is already
+  // authenticated, and spending it later touches this counter not at all.
+  const issuedKey = quotaKeyFor({ subscriptionId: subject, account: subject, month });
   const allSigs: string[] = [];
   for (let i = 0; i < blinded.length; i++) {
     try {
@@ -583,6 +606,7 @@ function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair)
       }
     }
   }
+  assertBaseFeeIsOurs(transaction);
   assertPriorityFeeIsOurs(transaction);
 }
 
@@ -592,6 +616,38 @@ function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair)
  * Duplicates are refused rather than merged: Solana keeps the last one, so
  * accepting two would mean checking a value the network then ignores.
  */
+/**
+ * Bound the BASE fee, which is the half of the fee the priority guard does not
+ * cover.
+ *
+ * Solana charges 5000 lamports per required signature, from the fee payer - us.
+ * Nothing in the account list has to belong to the treasury for that to cost us
+ * money: a caller can name any number of its own keypairs as signers, sign with
+ * them, and every one adds 5000 lamports to our bill. The instruction-account
+ * check above does not see it, because those accounts are the caller's.
+ *
+ * A sponsored message needs exactly two signatures: the sender's ephemeral key
+ * and ours as fee payer. A discovery publish is the same shape. So two is not a
+ * limit chosen for headroom, it is the shape of every transaction we agreed to
+ * pay for, and anything above it is someone else's transaction wearing ours.
+ *
+ * Reported by Mudit (mudit.raj32@gmail.com) with a proof of concept that took
+ * one message from 10,000 to 55,000 lamports without the guard objecting.
+ */
+const MAX_SIGNATURES = 2;
+
+function assertBaseFeeIsOurs(transaction: Transaction): void {
+  // Read the count off the compiled header rather than the signatures array:
+  // that is the number the runtime charges for, and it is what a deserialized
+  // transaction carries whether or not the slots are filled in yet.
+  const required = transaction.compileMessage().header.numRequiredSignatures;
+  if (required > MAX_SIGNATURES) {
+    throw new Error(
+      `too many signatures: ${required} > ${MAX_SIGNATURES}, base fee is not ours to pay`,
+    );
+  }
+}
+
 function assertPriorityFeeIsOurs(transaction: Transaction): void {
   let unitLimit: number | null = null;
   let microLamports: bigint | null = null;
@@ -777,14 +833,25 @@ function extractDiscoveryNick(transaction: Transaction): string | null {
 
 // --------------------------------------------------------------- rate limit
 
+/**
+ * One request out of the per-minute bucket, reserved the same way money is.
+ *
+ * This was a KV read, a comparison and a KV write. KV has no compare-and-set,
+ * so concurrent callers all read the same count and all wrote count+1: thirty
+ * simultaneous requests passed a gate set to ten and left the counter at one.
+ * The throttle held only against traffic that was already polite. Reported by
+ * Mudit (mudit.raj32@gmail.com).
+ *
+ * reserveN grants inside a single serialized Durable Object op, so racers see
+ * each other. Without the DO bound it falls back to the same KV read-modify-
+ * write, which is the documented fallback and still loses updates - the fix
+ * that matters there was making the objects actually exist (6e342ef).
+ */
 async function underRateLimit(env: Env, account: string): Promise<boolean> {
   const perMin = parseInt(env.RATE_PER_MIN ?? '', 10) || DEFAULT_RATE_PER_MIN;
   const bucket = Math.floor(Date.now() / 60000); // per-minute bucket
   const key = `rl:${account}:${bucket}`;
-  const n = parseInt((await env.QUOTA.get(key)) ?? '0', 10);
-  if (n >= perMin) return false;
-  await env.QUOTA.put(key, String(n + 1), { expirationTtl: 120 });
-  return true;
+  return (await reserveN(env, key, perMin, 1, RATE_BUCKET_TTL_MS)) > 0;
 }
 
 // ------------------------------------------------------- Apple JWS verify

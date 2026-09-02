@@ -115,8 +115,21 @@ export class QuotaDO {
     });
   }
 
-  /** Self-cleanup once the key can no longer be relevant. */
+  /**
+   * Self-cleanup once the key can no longer be relevant.
+   *
+   * Counters expire. A claim does not, and this used to delete both: the flag
+   * that said "this Apple transaction id was already redeemed" went away after
+   * 400 days while the receipt stayed validly signed, so the same purchase
+   * credited another pack, once per cleanup cycle, forever. Reported by Mudit
+   * (mudit.raj32@gmail.com).
+   *
+   * index.ts no longer schedules an alarm for a redemption, but objects created
+   * before that change still have one pending, so the flag has to survive the
+   * alarm as well as not attract one.
+   */
   async alarm(): Promise<void> {
-    await this.state.storage.deleteAll();
+    await this.state.storage.delete(VAL);
+    await this.state.storage.delete(ALARM_SET);
   }
 }

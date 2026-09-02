@@ -91,6 +91,10 @@ Reported by Mudit (mudit.raj32@gmail.com), August 2026:
 | A spent blind token became spendable again after the 90-day retention alarm deleted its record, while its signature stayed valid | Fixed | `47a5c80` |
 | An old session-opening message could be replayed as a new message, because replay detection used the transaction signature and a copy changes it | Fixed | `e0a462b` |
 | Any funded wallet could take over a nickname in the on-chain registry, because the winner was chosen by a timestamp the publisher writes | Fixed | `e0a462b` |
+| The treasury paid the BASE fee for every signature a caller chose to add, since the guard bounded only the priority fee and the extra signers belong to the caller | Fixed | `HEAD` |
+| One subscription drew two monthly allowances, because `/issue` and `/send` metered it on separate keys | Fixed | `HEAD` |
+| A redeemed consumable pack became redeemable again when its dedup record expired after 400 days, while the Apple receipt stayed valid | Fixed | `HEAD` |
+| The per-minute limiter was a KV read-modify-write, so a concurrent burst passed a gate set well below it | Fixed | `HEAD` |
 
 Found in our own audits and listed here for the same reason:
 
