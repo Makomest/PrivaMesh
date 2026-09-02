@@ -1,13 +1,13 @@
 /**
- * Regressions for the reports from Mudit (mudit.raj32@gmail.com), 25 Aug 2026.
+ * Regressions for externally reported issues.
  * Run: npx tsx test/security-reports.test.mjs   (from relay/)
- *
+
  * Three of the six reports were about this Worker:
- *
+
  *   - a caller could choose the priority fee the treasury pays,
  *   - one blind token could be spent once per spelling of its nonce,
  *   - one subscription could get a fresh monthly allowance per `account` value.
- *
+
  * Each test below fails against the code as it was.
  */
 import assert from 'node:assert';

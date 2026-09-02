@@ -1,7 +1,7 @@
 //
 //  Contact.swift
 //  privamesh
-//
+
 
 import CryptoKit
 import Foundation
@@ -50,15 +50,15 @@ final class Contact {
     /// seen it. Blocks nothing by itself; the chat shows a banner while it is set.
     var keyChangedAt: Date?
     /// Digests of session-opening envelopes already accepted from this contact.
-    ///
+
     /// A session-init is self-contained by design: it carries everything needed
     /// to derive the shared secret, so it decrypts again every time it is seen.
     /// Replay detection used to rely on the Solana transaction signature, and a
     /// copy of the same memo in a new transaction has a new signature - so anyone
     /// who could read the public chain could make an old opener reappear as a new
     /// message from a trusted contact, and replace the live ratchet with it.
-    /// Reported by Mudit (mudit.raj32@gmail.com).
-    ///
+    /// Reported externally.
+
     /// Stored as concatenated 32-byte SHA-256 digests, newest last, capped at
     /// `Contact.maxConsumedInits`. See `hasConsumedSessionInit` / `noteConsumedSessionInit`.
     var consumedInitDigests: Data?
@@ -153,7 +153,7 @@ extension Contact {
     static let maxConsumedInits = 32
 
     /// Digest of the parts of a session-init that decide what it decrypts to.
-    ///
+
     /// The sender's identity and ephemeral keys fix the X3DH secret; the
     /// ciphertext fixes the message. A replay must reproduce all three to decrypt
     /// at all, so a copy cannot dodge this by changing anything else in the

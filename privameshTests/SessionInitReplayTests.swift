@@ -1,20 +1,20 @@
 //
 //  SessionInitReplayTests.swift
 //  privameshTests
-//
-//  Reported by Mudit (mudit.raj32@gmail.com) on 25 August 2026.
-//
+
+//  Reported externally on 25 August 2026.
+
 //  A session-opening envelope is self-contained on purpose: it carries the
 //  sender's identity and ephemeral keys, so the recipient can derive the same
 //  X3DH secret again and read it without any stored state. That also means it
 //  decrypts every time it is seen.
-//
+
 //  Replay detection was the Solana transaction signature. Copying the same memo
 //  into a new transaction produces a new signature, so an old opener came back
 //  looking like a fresh message from a saved contact - with the original
 //  identity key, so no key-change warning fired - and the reconstructed ratchet
 //  was installed over the live session.
-//
+
 
 import Testing
 import Foundation

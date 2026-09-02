@@ -1,22 +1,22 @@
 /**
  * PrivaMesh sponsoring relay (Cloudflare Worker).
- *
+
  * The app pays every message's Solana network fee from a shared treasury wallet;
  * users never hold or spend crypto. Access is metered by Apple IAP. This relay:
- *
+
  *   POST /send    { tx, jws, account }  → verify entitlement + quota, co-sign the
  *                                         fee-payer slot with the treasury key,
  *                                         submit to Solana, return { signature }.
  *   POST /credit  { jws, account }      → verify a consumable-pack receipt and
  *                                         add its messages to the account balance.
- *
+
  * Treasury protection (all serverless, inside this Worker):
  *   1. Apple cert-chain PINNING — the receipt JWS is verified up to Apple Root
  *      CA G3 (env.APPLE_ROOT_G3), so a forged leaf cert can't mint entitlements.
  *   2. Rate-limit — per account token, KV sliding window.
  *   3. Circuit-breaker — a global daily cap on sponsored transactions, so no
  *      vector can drain the treasury faster than the cap.
- *
+
  * Quota is AUTHORITATIVE here; the app's on-device counter is only a UX mirror.
  */
 
@@ -85,14 +85,14 @@ const TTL_MONTH_MS = 62 * 24 * 60 * 60 * 1000;
 const TTL_DAY_MS = 26 * 60 * 60 * 1000;
 /**
  * Pack redemptions are kept, not expired.
- *
+
  * They used to self-delete after 400 days. An Apple transaction id does not
  * expire and its receipt stays validly signed, so when the dedup record went
  * away the same purchase credited a second pack, and a third, once per cleanup
  * cycle forever. This is the spent-token retention bug on the credit path, and
  * it has the same answer: a record that proves something was already redeemed
  * can only be dropped once the thing it describes can no longer be presented.
- * Reported by Mudit (mudit.raj32@gmail.com).
+ * Reported externally.
  */
 const TTL_CREDIT_MS = 0;   // 0 = no alarm, no expiry
 
@@ -256,11 +256,11 @@ function handlePubkey(env: Env): Response {
 
 /**
  * POST /issue { jws, blinded: [b64u,...] } → { sigs: [b64u,...] }
- *
+
  * Proves entitlement ONCE with the Apple receipt, then blind-signs up to the
  * tier's remaining monthly token budget. The relay never sees the token values
  * (they are blinded), so it cannot later link a spent token to this receipt.
- *
+
  * Issuance is metered per Apple ORIGINAL transaction id + month, so a single
  * subscription can't mint more than its monthly allowance regardless of how many
  * times /issue is called or how many device accounts request tokens.
@@ -317,8 +317,8 @@ async function handleIssue(req: Request, env: Env): Promise<Response> {
   // The SAME counter the legacy /send path draws from. Two keys meant one
   // subscription got two monthly allowances: 1200 messages on the receipt path
   // and 1200 more minted as anonymous tokens, because reserveN caps each key
-  // separately and neither knew about the other. Reported by Mudit
-  // (mudit.raj32@gmail.com). Metering both here costs nothing in anonymity: a
+  // separately and neither knew about the other. Reported externally. Metering
+  // both here costs nothing in anonymity: a
   // token is charged when it is MINTED, against a subscription that is already
   // authenticated, and spending it later touches this counter not at all.
   const issuedKey = quotaKeyFor({ subscriptionId: subject, account: subject, month });
@@ -468,7 +468,7 @@ async function handleSend(req: Request, env: Env): Promise<Response> {
   if (!grant.ok) return json({ error: 'quota exceeded' }, 402);
 
   // Throttle the subscription, not just the account string.
-  //
+
   // The per-minute limiter above is keyed on `account`, which the caller picks,
   // so rotating that string rotates the limiter with it. Metering the monthly
   // allowance on the subscription already bounds the volume one receipt can
@@ -569,7 +569,7 @@ const COMPUTE_BUDGET_PROGRAM = 'ComputeBudget111111111111111111111111111111';
 
 /**
  * Ceilings for the priority fee the treasury will pay.
- *
+
  * The client asks for 600k units at 1000 micro-lamports, which is 600 lamports of
  * priority on top of the two signatures. These leave room for a congested network
  * without leaving room for anything else: the cap on the calculated fee is what
@@ -581,17 +581,17 @@ const MAX_PRIORITY_LAMPORTS = 20_000n;        // ~2 signatures' worth, hard stop
 
 /**
  * Refuse to sign anything that spends treasury money beyond an ordinary fee.
- *
+
  * Two separate things are checked, and the second one was missing.
- *
+
  * The treasury must be the fee payer and must not appear in any instruction's
  * account list, so no instruction can move its lamports.
- *
+
  * AND the priority fee has to be one we chose. Compute Budget instructions carry
  * no accounts, so they sailed past the account-list check while setting a
  * treasury-paid price per compute unit - a caller could name a number close to
- * the whole balance and have it paid in one request. Reported by Mudit
- * (mudit.raj32@gmail.com), with a proof of concept against a local validator that
+ * the whole balance and have it paid in one request. Reported externally, with
+ * a proof of concept against a local validator that
  * charged 14,010,000 lamports for a single message.
  */
 function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair): void {
@@ -612,26 +612,26 @@ function assertTreasuryOnlyPaysFees(transaction: Transaction, treasury: Keypair)
 
 /**
  * Parse every Compute Budget instruction and hold it to a server-side ceiling.
- *
+
  * Duplicates are refused rather than merged: Solana keeps the last one, so
  * accepting two would mean checking a value the network then ignores.
  */
 /**
  * Bound the BASE fee, which is the half of the fee the priority guard does not
  * cover.
- *
+
  * Solana charges 5000 lamports per required signature, from the fee payer - us.
  * Nothing in the account list has to belong to the treasury for that to cost us
  * money: a caller can name any number of its own keypairs as signers, sign with
  * them, and every one adds 5000 lamports to our bill. The instruction-account
  * check above does not see it, because those accounts are the caller's.
- *
+
  * A sponsored message needs exactly two signatures: the sender's ephemeral key
  * and ours as fee payer. A discovery publish is the same shape. So two is not a
  * limit chosen for headroom, it is the shape of every transaction we agreed to
  * pay for, and anything above it is someone else's transaction wearing ours.
- *
- * Reported by Mudit (mudit.raj32@gmail.com) with a proof of concept that took
+
+ * Reported externally with a proof of concept that took
  * one message from 10,000 to 55,000 lamports without the guard objecting.
  */
 const MAX_SIGNATURES = 2;
@@ -724,13 +724,13 @@ type Grant = {
 
 /**
  * Reserve one message of allowance.
- *
+
  * The counter a paid subscription draws from is keyed by the subscription itself,
  * not by the `account` field in the request. That field is chosen by the caller
  * and signed by nobody: keying on it meant one Apple subscription got a fresh
  * monthly allowance for every value someone cared to send, which is the whole
- * allowance rendered decorative. Reported by Mudit (mudit.raj32@gmail.com).
- *
+ * allowance rendered decorative. Reported externally.
+
  * `/issue` already keyed on the verified transaction id; this is the legacy path
  * catching up with it.
  */
@@ -777,7 +777,7 @@ async function reserveMessage(env: Env, account: string, jws?: string): Promise<
 
 /**
  * Which counter a message is drawn from.
- *
+
  * A paid subscription meters on Apple's own identifier, which is stable across
  * renewals and devices. Only the free tier falls back to the request's account
  * field, where the worst case is one free allowance per made-up account - which
@@ -835,13 +835,12 @@ function extractDiscoveryNick(transaction: Transaction): string | null {
 
 /**
  * One request out of the per-minute bucket, reserved the same way money is.
- *
+
  * This was a KV read, a comparison and a KV write. KV has no compare-and-set,
  * so concurrent callers all read the same count and all wrote count+1: thirty
  * simultaneous requests passed a gate set to ten and left the counter at one.
- * The throttle held only against traffic that was already polite. Reported by
- * Mudit (mudit.raj32@gmail.com).
- *
+ * The throttle held only against traffic that was already polite. Reported externally.
+
  * reserveN grants inside a single serialized Durable Object op, so racers see
  * each other. Without the DO bound it falls back to the same KV read-modify-
  * write, which is the documented fallback and still loses updates - the fix
@@ -948,7 +947,7 @@ function json(obj: unknown, status = 200): Response {
 
 /**
  * Exposed for `test/security-reports.test.mjs`.
- *
+
  * The fee guard and the quota key are the two places where a mistake costs
  * money, and both were reported as exploitable. They are worth testing directly
  * rather than through a whole request.

@@ -1,12 +1,12 @@
 //
 //  PollingService.swift
 //  privamesh
-//
+
 //  Polls getSignaturesForAddress every 30 seconds.
 //  For each new memo transaction:
 //    • Kind 0x02 → self-encrypted message (Saved Messages)
 //    • Kind 0x00/0x01 → X3DH + Double Ratchet message from a contact
-//
+
 
 import Foundation
 import SwiftData
@@ -224,16 +224,15 @@ final class PollingService {
 
             // An opener we have already accepted is ignored, whatever transaction
             // carries it.
-            //
+
             // A session-init is self-contained: it decrypts again every time it is
             // seen. Replay detection used to be the Solana transaction signature,
             // and a copy of the same memo in a new transaction has a new one - so
             // anyone reading the public chain could make an old message reappear
             // as newly received from a trusted contact, with the original identity
             // key so no key-change warning fired, and the reconstructed ratchet
-            // installed over the live session. Reported by Mudit
-            // (mudit.raj32@gmail.com).
-            //
+            // installed over the live session. Reported externally.
+
             // Checked after decryption, because only a real opener produces a
             // digest at all, and before anything is stored or replaced.
             let initDigest = Contact.sessionInitDigest(envelope)
@@ -417,7 +416,7 @@ final class PollingService {
     /// request" contact so an unknown sender's first message still appears.
     @MainActor
     /// Record the identity key a contact is using, and react if it changed.
-    ///
+
     /// First key seen is trust-on-first-use and passes quietly. A DIFFERENT key
     /// later means a new device or an impersonator, and the two are
     /// indistinguishable from here — so the verified mark is dropped (the user

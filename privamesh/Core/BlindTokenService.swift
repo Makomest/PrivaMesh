@@ -1,21 +1,21 @@
 //
 //  BlindTokenService.swift
 //  privamesh
-//
+
 //  Maintains a device-local pool of anonymous, unlinkable message tokens (RSA
 //  blind signatures — see BlindTokenCrypto). The pool is refilled by proving the
 //  Apple subscription ONCE to the relay's /issue endpoint; from then on each
 //  message spends a token that the relay cannot link back to the purchase or to
 //  any other message. This replaces sending the Apple receipt on every /send.
-//
+
 //  Tokens are anonymous by construction, so the pool is device-global (NOT keyed
 //  per account) and is kept in the Keychain. Losing the pool costs nothing but a
 //  re-issue; it is never a secret that identifies the user.
-//
+
 //  Wired to SubscriptionManager (for the receipt) and RelayService (which spends
 //  tokens) at the app root. When the relay has no issuer key configured, the
 //  service stays disabled and the app falls back to the legacy receipt path.
-//
+
 
 import CryptoKit
 import Foundation
@@ -45,7 +45,7 @@ final class BlindTokenService {
 
     /// Issuer keys this build accepts, as SHA-256 over the raw modulus and
     /// exponent bytes. Empty means none is baked in yet.
-    ///
+
     /// A pin belongs here once the relay has a stable issuer key. Until then the
     /// device pins the first key it is given - see `refreshIssuerKey`.
     private static let pinnedIssuerDigests: Set<String> = []
@@ -57,20 +57,20 @@ final class BlindTokenService {
     // MARK: pubkey
 
     /// Fetch and cache the issuer public key. Idempotent; safe to call on launch.
-    ///
+
     /// The key is pinned, because the relay choosing it per client is a way to
     /// undo the whole point of blind tokens. A key served to one device and no
     /// other is a tag: the blinded values and the returned signatures are encoded
     /// at that modulus width, so recognising the width later maps an anonymous
     /// send back to the exact purchase that issued it - no cookie, no account
-    /// field, no shared connection. Reported by Mudit (mudit.raj32@gmail.com),
+    /// field, no shared connection. Reported externally,
     /// which is the issuance-consistency problem in RFC 9576 section 6.2.
-    ///
+
     /// Two levels, in order. A digest baked into the build wins, and nothing else
     /// is accepted. With none baked in, the device pins the first key it sees and
     /// refuses any later change: an operator then gets one attempt, on first
     /// contact, instead of one per issuance.
-    ///
+
     /// What this still does not give is consistency ACROSS devices - proving that
     /// everyone was handed the same key needs a commitment in the build or a
     /// transparency log. That limit is worth stating rather than implying.

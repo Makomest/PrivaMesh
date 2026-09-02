@@ -1,19 +1,19 @@
 /**
  * QuotaDO — strongly-consistent atomic counters for the money-critical paths.
- *
+
  * Cloudflare KV is eventually consistent and has no compare-and-set: a
  * `get`-then-`put` counter can be raced by concurrent requests that all read the
  * same stale value and all act on it. That is fine for a UX mirror, but NOT for
  * the counters that gate treasury spend — issuance budget, pack credit dedup,
  * per-account quota, and the daily circuit-breaker. A raced counter there means
  * over-issued tokens, double-credited packs, or a blown daily cap.
- *
+
  * SpentTokenDO already solved exactly this for single-spend. QuotaDO generalises
  * it: each logical counter key maps to its OWN Durable Object instance
  * (`idFromName(key)`), and every mutation runs inside `blockConcurrencyWhile`, so
  * check-and-set is serialized and strongly consistent. Distinct keys hit distinct
  * DOs (full parallelism); the same key always hits the same DO (no race).
- *
+
  * Ops (POST, JSON body):
  *   /reserve   { max, want?, ttlMs? } → { granted } — atomically grant up to
  *              `want` (default 1) units without exceeding `max`. granted may be 0.
@@ -23,7 +23,7 @@
  *   /get                              → { value }
  *   /claim     { ttlMs? }             → { ok }       — one-time flag; ok only the
  *              first time (idempotent dedup, e.g. an Apple transactionId).
- *
+
  * ttlMs, when given on a mutating op, schedules a self-delete alarm that far in
  * the future so per-key storage doesn't grow forever. It is set once (the first
  * mutation) and never pulled earlier, so a long-lived monthly/daily key survives
@@ -117,13 +117,12 @@ export class QuotaDO {
 
   /**
    * Self-cleanup once the key can no longer be relevant.
-   *
+
    * Counters expire. A claim does not, and this used to delete both: the flag
    * that said "this Apple transaction id was already redeemed" went away after
    * 400 days while the receipt stayed validly signed, so the same purchase
-   * credited another pack, once per cleanup cycle, forever. Reported by Mudit
-   * (mudit.raj32@gmail.com).
-   *
+   * credited another pack, once per cleanup cycle, forever. Reported externally.
+
    * index.ts no longer schedules an alarm for a redemption, but objects created
    * before that change still have one pending, so the flag has to survive the
    * alarm as well as not attract one.

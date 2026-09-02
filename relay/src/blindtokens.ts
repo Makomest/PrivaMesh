@@ -2,7 +2,7 @@
  * RSA blind signatures for anonymous, unlinkable message tokens (RSA-FDH,
  * Chaum-style; the RFC 9474 RSABSSA family without the deterministic PSS
  * encoding — a plain full-domain hash into Z_n).
- *
+
  * WHY: today the client sends its Apple IAP receipt (JWS) on every /send, so the
  * relay can link an account token to an Apple purchase. Blind tokens break that
  * link entirely. The issuing step proves entitlement ONCE (with the receipt) and
@@ -10,7 +10,7 @@
  * values it signed. The spending step (/send) presents an unblinded token whose
  * signature the relay can verify but cannot correlate to any issuance. So the
  * relay learns "a valid token was spent", never "which account / which purchase".
- *
+
  * SECURITY NOTES (must hold before production):
  *   • Unlinkability is information-theoretic in the blinding factor r — it does
  *     NOT depend on constant-time bignum, so the non-CT BigInt below is fine for
@@ -21,7 +21,7 @@
  *     handleSend in index.ts.
  *   • This is hand-rolled bignum crypto. It is deliberately small and auditable,
  *     but a vetted RSABSSA library is preferable long-term.
- *
+
  * No key material is hardcoded: the modulus/exponents come from env
  * (TOKEN_RSA_N / TOKEN_RSA_E / TOKEN_RSA_D), each base64url of a big-endian
  * integer. Only N and E are ever exposed (GET /pubkey); D stays a Worker secret.
@@ -31,14 +31,13 @@
 
 /**
  * The one spelling of a nonce we accept.
- *
+
  * base64 has several encodings for the same bytes: `-` and `+` are the same
  * value, as are `_` and `/`, and padding can be present or not. The signature is
  * over the decoded bytes, so every spelling verifies - while the spent-token
  * record was keyed by the string, giving each spelling its own slot and letting
- * one paid token buy several transactions. Reported by Mudit
- * (mudit.raj32@gmail.com).
- *
+ * one paid token buy several transactions. Reported externally.
+
  * Returns the canonical form, or null when the input is not exactly a 32-byte
  * nonce in unpadded base64url. Callers must use the returned value for both
  * verification and spend-tracking.

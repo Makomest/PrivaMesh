@@ -1,17 +1,17 @@
 /**
  * SpentTokenDO — strongly-consistent single-spend for anonymous blind tokens.
- *
+
  * The token /send path used a KV `spent:<nonce>` check-then-set, but KV is
  * eventually consistent: two concurrent spends of ONE token can both read "not
  * spent" and both get co-signed, double-charging the treasury. A Durable Object
  * gives serialized, strongly-consistent storage, so a token can be spent exactly
  * once even under a concurrent race.
- *
+
  * Sharding: the caller derives the DO id from the token nonce
  * (`idFromName(nonce)`), so each token maps to its OWN DO instance. Distinct
  * tokens hit distinct DOs (full parallelism); the same token always hits the same
  * DO (serialized → single-spend).
- *
+
  * Protocol (all atomic via blockConcurrencyWhile — no interleaving mid-op):
  *   /claim   reserve the token BEFORE submitting the tx. Fails if already spent
  *            or a fresh claim is in flight. A stale claim (older than CLAIM_TTL,
@@ -27,15 +27,15 @@ export const CLAIM_TTL_MS = 60_000;
 
 /**
  * Spent records are kept, not expired.
- *
+
  * They used to self-delete after 90 days, on the reasoning that the record had
  * to outlive the token. But a token has no lifetime: its signature covers the
  * nonce alone, with no issue time, expiry or key epoch, and the issuer key does
  * not rotate. So the signature was still valid when the record vanished, and the
  * same token bought a second sponsored transaction - once per cleanup cycle,
- * indefinitely. Reported by Mudit (mudit.raj32@gmail.com) with a proof of
+ * indefinitely. Reported externally with a proof of
  * concept that moved the alarm forward and spent the same token twice.
- *
+
  * A spent record can only be dropped once the token that produced it can no
  * longer be accepted. That means giving tokens an authenticated expiry or an
  * issuer epoch and refusing them past it; until one of those exists, keeping the
@@ -107,7 +107,7 @@ export class SpentTokenDO {
 
   /**
    * Left in place for objects that still have the old alarm scheduled.
-   *
+
    * Deleting here is what made a spent token spendable again, so this now does
    * nothing but let the alarm pass. Removing the handler entirely would throw
    * when one of those alarms fires.

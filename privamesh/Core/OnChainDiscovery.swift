@@ -1,16 +1,16 @@
 //
 //  OnChainDiscovery.swift
 //  privamesh
-//
+
 //  Serverless contact discovery. Instead of an HTTP directory, each user
 //  publishes a {nickname, address, bundle} record as a memo transaction to a
 //  shared registry address. Search scans that address's history (RPC) and
 //  matches by nickname — no backend, same mechanism as chat + market.
-//
+
 //  Wire format:  "PDIR1:" + base64(zlib(JSON(DiscoveryRecord)))
 //  The bundle is already wallet-signed, so an added contact is verified against
 //  its address (anti-MITM) — see PrekeyBundle.isBoundTo.
-//
+
 
 import Foundation
 import SolanaSwift
@@ -121,24 +121,23 @@ final class OnChainDiscovery {
     // MARK: - Search
 
     /// Find a contact by nickname (case-insensitive) or exact address.
-    ///
+
     /// FIRST CLAIM WINS, decided by the chain rather than by the record.
-    ///
+
     /// The registry is a public address anyone can write a memo to, and the relay
     /// only sees the publishes that go through it - so a direct publish never
     /// passed its ownership check at all. Ranking by the record's own `at` field
     /// then handed the result to whoever wrote the largest number in it: an
     /// attacker could claim any existing handle for one network fee and receive
-    /// the opening messages meant for its owner. Reported by Mudit
-    /// (mudit.raj32@gmail.com).
-    ///
+    /// the opening messages meant for its owner. Reported externally.
+
     /// What a chain can prove without a server is order. The earliest valid
     /// record for a handle fixes which wallet owns it, and later records are
     /// accepted only from that same wallet - which is how a key rotation still
     /// works. Every record is checked for a wallet signature binding the bundle
     /// to its address before any of this, so a record cannot claim someone else's
     /// keys either.
-    ///
+
     /// What this still cannot do: prove that the wallet which got there first is
     /// the person you have in mind. Compare a safety number for that.
     func search(query: String, rpc: SolanaRPCService) async -> DiscoveryService.DiscoveryUser? {
@@ -185,7 +184,7 @@ final class OnChainDiscovery {
     }
 
     /// True when the record's bundle is signed by the wallet the record names.
-    ///
+
     /// This is what stops a record from claiming somebody else's keys. It says
     /// nothing about whether that wallet is entitled to the handle - that is what
     /// the first-claim rule above is for.

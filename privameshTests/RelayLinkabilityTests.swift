@@ -1,14 +1,14 @@
 //
 //  RelayLinkabilityTests.swift
 //  privameshTests
-//
-//  Reported by Mudit (mudit.raj32@gmail.com) on 26 August 2026.
-//
+
+//  Reported externally on 26 August 2026.
+
 //  The blind-token design exists so the relay cannot connect a purchase to a
 //  send: `/issue` carries an Apple receipt, `/send` carries only an unlinkable
 //  token. HTTP undoes that by itself unless it is told not to - a cookie set
 //  during issuance comes back during the send, and so does a cached ETag.
-//
+
 
 import Testing
 import Foundation
