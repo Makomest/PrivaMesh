@@ -22,9 +22,29 @@ Copy-paste fields for App Store Connect. Position the app as a **private messeng
 - EN: `Private messaging with no servers, no phone number, no email. End-to-end encrypted. Your keys and chats never leave your device.`
 - RU: `Приватные сообщения без серверов, без номера телефона, без email. Сквозное шифрование. Ключи и переписка не покидают устройство.`
 
-## Keywords (max 100 chars, comma-separated, no spaces — no brand names, no crypto terms)
-- EN: `private,secure,chat,anonymous,messaging,no phone,privacy,secret,e2e,safe,vault,cipher,offgrid,nolog`
-- RU: `мессенджер,приватный,шифрование,анонимный,безопасный,чат,без телефона,приватность,секрет,защита`
+## Keywords (max 100 bytes, comma-separated, no spaces — no brand names, no crypto terms)
+- EN: `secure,privacy,encryption,e2e,serverless,decentralized,metadata,texting,messaging,keys,no ads` (93 bytes)
+- RU: `мессенджер,шифрование,безопасный,переписка,ключи` (92 bytes)
+
+### Two words that must not go back in
+
+**`anonymous` and `secret`** — with their Russian equivalents `анонимный` and
+`секрет`. The 1.1 version was rejected on 2 September 2026 under guideline 1.1,
+Objectionable Content, naming the keywords field and nothing else. The
+description, the screenshots and the name were not questioned.
+
+Apple is not disputing the encryption. Anonymous-and-secret messaging is a
+product category it has repeatedly pulled — apps where people send messages
+nobody can attribute, which turn into harassment tools. The rejection's own
+words are "any service that provides, or could be used to create, objectionable
+content", and two keywords put the app in that category by themselves.
+
+What replaced them says the same thing without the claim: the app needs no phone
+number, keeps keys on the device and runs no account server. Those are
+properties, not promises of unattributable speech.
+
+The rejection also warns that resubmitting with similar marketing draws the same
+or additional violations, so this is not a place to argue the point.
 
 ---
 
