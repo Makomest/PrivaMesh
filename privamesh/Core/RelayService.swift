@@ -37,6 +37,11 @@ final class RelayService {
         case quotaExceeded
         case http(Int, String)
         case badResponse
+        /// This device has the anonymous path and the relay would not let it be
+        /// used. The message is not sent: the alternative is to re-send it with
+        /// the Apple receipt attached, which is the linkage the token exists to
+        /// prevent.
+        case anonymityUnavailable
 
         var errorDescription: String? {
             switch self {
@@ -45,6 +50,8 @@ final class RelayService {
             case .http(let code, let msg):
                 return String(localized: "Ошибка доставки (\(code)). \(msg)")
             case .badResponse: return String(localized: "Некорректный ответ сервиса доставки.")
+            case .anonymityUnavailable:
+                return String(localized: "Анонимная отправка сейчас недоступна. Сообщение не отправлено — иначе оно ушло бы вместе с чеком Apple.")
             }
         }
     }
@@ -64,6 +71,25 @@ final class RelayService {
     /// no-ops by default, which keeps the legacy receipt path working unchanged.
     var takeBlindToken: () async -> BlindToken? = { nil }
     var returnBlindToken: (BlindToken) async -> Void = { _ in }
+
+    /// True when this device should be able to spend a token: it has been served
+    /// the relay's issuer key, and StoreKit says the subscription that pays for
+    /// tokens is active. Such a device does not fall back to the identifying path
+    /// — see `sendMessage`.
+
+    /// Entitlement is read from StoreKit rather than from the relay's answer to
+    /// /issue on purpose. The relay only mints tokens for an active subscription,
+    /// so "no subscription" is a legitimate reason to have none — and letting the
+    /// relay assert it would hand back the lever this guard takes away.
+
+    /// Wired at the app root; false by default, which is the state of a device
+    /// that has never seen a key.
+    var anonymityExpected: () -> Bool = { false }
+
+    /// Refill the token pool. Called when the pool has run dry on a device that
+    /// has the anonymous path, so an empty pool costs a refill rather than the
+    /// sender's anonymity. Wired to BlindTokenService.ensureStock at the app root.
+    var replenishBlindTokens: () async -> Void = { }
 
     /// Opaque token unique to the ACTIVE account. DERIVED from the account's SEED
     /// (a secret only the owner holds) as `HKDF(seed, info: pubkey)`, persisted in
@@ -143,15 +169,40 @@ final class RelayService {
             to: recipientAddress, memoBase64: memoBase64,
             treasury: treasury, endpointURL: endpointURL, computeUnitLimit: computeUnitLimit)
 
-        // Preferred path: spend an anonymous token. On ANY failure, hand the
-        // (still-unspent — the relay only burns it on submit success) token back
-        // and fall through to the legacy receipt path so the message still sends.
-        if allowAnonymousToken, let token = await takeBlindToken() {
-            do {
-                return try await post(txBase64: txBase64, jws: nil, token: token)
-            } catch {
-                await returnBlindToken(token)
-                // fall through to legacy path below
+        // Preferred path: spend an anonymous token.
+
+        // The fall-back to the receipt path is NOT unconditional. It used to be,
+        // and that handed the relay the switch: answer `enabled: false` at
+        // /pubkey, or simply reject every token at /send, and every client
+        // quietly re-sent the same message with the Apple receipt attached —
+        // exactly the purchase-to-send link the blind signatures exist to break,
+        // obtained without touching the signatures. Reported externally.
+
+        // So a device that has the anonymous path keeps it: an empty pool costs a
+        // refill, and a relay that refuses the token costs the send. A device that
+        // has never been served an issuer key has no anonymity to lose and still
+        // takes the receipt path, which is what keeps free-tier and
+        // never-configured-relay installs working.
+        if allowAnonymousToken {
+            var token = await takeBlindToken()
+            if token == nil, anonymityExpected() {
+                await replenishBlindTokens()
+                token = await takeBlindToken()
+            }
+            if let token {
+                do {
+                    return try await post(txBase64: txBase64, jws: nil, token: token)
+                } catch {
+                    // Still unspent — the relay only burns it on submit success.
+                    await returnBlindToken(token)
+                    // Report what went wrong; do not re-send the same message with
+                    // the receipt attached.
+                    if !Self.mayUseReceiptPath(allowAnonymousToken: true,
+                                               anonymityExpected: anonymityExpected()) { throw error }
+                }
+            } else if !Self.mayUseReceiptPath(allowAnonymousToken: true,
+                                              anonymityExpected: anonymityExpected()) {
+                throw RelayError.anonymityUnavailable
             }
         }
 
@@ -204,6 +255,40 @@ final class RelayService {
 
     // MARK: - Transport
 
+    /// Whether this send may fall back to the identifying path: the Apple receipt
+    /// plus the per-account token.
+
+    /// Two cases may. A discovery publish (`allowAnonymousToken: false`) claims a
+    /// public nickname and needs the account path for ownership — it is
+    /// identifying by construction and the relay rejects it on the token path. And
+    /// a device with no token to expect — it has never been served an issuer key,
+    /// or it is on the free tier, which the relay meters per account precisely
+    /// because it mints no tokens for it — has no anonymity to preserve here;
+    /// refusing would only mean it could not send at all.
+
+    /// Everything else may not, which is the fix: whether a send carries the
+    /// receipt is no longer something the relay can decide by withholding tokens.
+    static func mayUseReceiptPath(allowAnonymousToken: Bool, anonymityExpected: Bool) -> Bool {
+        !allowAnonymousToken || !anonymityExpected
+    }
+
+    /// The body a /send carries, as a pure function so the property that matters
+    /// can be asserted in a test: the token path carries NO receipt and NO account
+    /// token, and the two are never sent together. `account` is an autoclosure
+    /// because reading it provisions a device token on first use — the token path
+    /// must not cause that.
+    static func sendBody(txBase64: String, jws: String?, token: BlindToken?,
+                         account: @autoclosure () -> String) -> [String: Any] {
+        var body: [String: Any] = ["tx": txBase64]
+        if let token {
+            body["token"] = ["t": token.t, "sig": token.sig]
+        } else {
+            body["jws"] = jws ?? ""
+            body["account"] = account()
+        }
+        return body
+    }
+
     private func post(txBase64: String, jws: String?, token: BlindToken?) async throws -> String {
         guard let url = URL(string: RelayConfig.baseURL + "/send") else {
             throw RelayError.notConfigured
@@ -212,16 +297,9 @@ final class RelayService {
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.timeoutInterval = 30
-        // Anonymous token path carries NO identity — no receipt, no account token.
-        // Legacy path sends the receipt + per-account token as before.
-        var body: [String: Any] = ["tx": txBase64]
-        if let token {
-            body["token"] = ["t": token.t, "sig": token.sig]
-        } else {
-            body["jws"] = jws ?? ""
-            body["account"] = accountToken
-        }
-        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+        req.httpBody = try JSONSerialization.data(
+            withJSONObject: Self.sendBody(txBase64: txBase64, jws: jws, token: token,
+                                          account: accountToken))
 
         let (data, resp) = try await PrivateNetwork.shared.data(for: req)
         guard let http = resp as? HTTPURLResponse else { throw RelayError.badResponse }

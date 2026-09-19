@@ -14,6 +14,8 @@ struct ChangePasscodeView: View {
         case current
         case newCode
         case confirm(newCode: String)
+        /// Shown only when the change removed a duress code.
+        case duressCleared
     }
 
     @State private var step: Step = .current
@@ -80,6 +82,38 @@ struct ChangePasscodeView: View {
                     step = .newCode
                 }
             }
+
+        case .duressCleared:
+            duressClearedNotice
+        }
+    }
+
+    /// The duress code is stored under the passcode's salt, so a new passcode
+    /// invalidates it and it is dropped. Saying so is the whole point: a duress
+    /// code someone believes is armed, and is not, is worse than never having set
+    /// one — they find out at the moment they were counting on it.
+    private var duressClearedNotice: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "exclamationmark.shield.fill")
+                .font(.system(size: 40))
+                .foregroundStyle(Theme.accentDeep)
+
+            Text("Пароль изменён. Код на случай принуждения удалён — задай его заново в настройках безопасности.")
+                .font(.system(size: 16))
+                .foregroundStyle(Theme.slate800)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            Button { dismiss() } label: {
+                Text("Понятно")
+                    .font(.system(size: 16, weight: .semibold))
+                    .padding(.horizontal, 40)
+                    .padding(.vertical, 14)
+                    .background(Theme.accent)
+                    .foregroundStyle(.white)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -106,9 +140,14 @@ struct ChangePasscodeView: View {
     }
 
     private func save(_ newCode: String, length: Int) {
+        let hadDuressCode = passcode.isDuressSet
         do {
             try passcode.setPasscode(newCode, length: length)
-            dismiss()
+            if hadDuressCode {
+                step = .duressCleared
+            } else {
+                dismiss()
+            }
         } catch {
             errorMessage = "Не удалось сохранить пароль"
             step = .current

@@ -95,11 +95,14 @@ struct DuressCodeTests {
         #expect(manager.isDuressSet == false)
     }
 
-    /// Wrong guesses get slower, and the wait applies to every code.
+    /// Wrong guesses get slower, and the wait keeps the real passcode out —
+    /// but never the duress code.
     ///
-    /// If the duress code skipped the cooldown it would be a shortcut past the
-    /// throttle, usable by whoever is holding the phone.
-    @Test func theCooldownAppliesToEveryCode() throws {
+    /// The cooldown exists to make guessing expensive. Guessing the duress code
+    /// right does not open anything, it wipes the device, so refusing it during a
+    /// cooldown bought no security: it only meant that five wrong guesses by the
+    /// person holding the phone disabled the wipe for up to an hour.
+    @Test func theCooldownHoldsBackThePasscodeButNotTheWipe() throws {
         let manager = fresh()
         defer { manager.wipe() }
 
@@ -110,8 +113,9 @@ struct DuressCodeTests {
         for _ in 0..<6 { _ = manager.check("0000") }
         #expect(manager.lockoutRemaining > 0)
 
-        #expect(manager.check("9999") == .lockedOut)
         #expect(manager.check("1234") == .lockedOut)
+        #expect(manager.check("0000") == .lockedOut)
+        #expect(manager.check("9999") == .duress)
     }
 
     /// The duress path must not leave a cooldown behind: an app that looks freshly

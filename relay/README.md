@@ -37,10 +37,28 @@ is only a UX mirror. Never let the relay co-sign without a valid, unspent receip
    npx wrangler secret put TREASURY_SECRET   # base58 64-byte secret key
    ```
 
-4. **Configure `wrangler.toml`:** RPC_URL (use a paid RPC in prod), BUNDLE_ID,
+4. **Set the blind-token issuer key.** This is not optional for a deployment
+   that claims sends are unlinkable to a purchase:
+   ```
+   npm run keygen                            # prints TOKEN_RSA_N / _E / _D
+   npx wrangler secret put TOKEN_RSA_N       # public modulus
+   npx wrangler secret put TOKEN_RSA_D       # SIGNING SECRET — never commit
+   ```
+   With any of the three unset, `/issue` returns 501, `GET /pubkey` returns
+   `{"enabled":false}`, and **every /send carries the Apple receipt** — so the
+   relay sees the purchase, the recipient and the timing of every message. That
+   is the legacy path, and it is the opposite of what the architecture page
+   promises. Check it after deploying:
+   ```
+   curl -s https://<your-worker>/pubkey      # must be {"enabled":true, ...}
+   ```
+   Rotating the key invalidates outstanding tokens (clients re-issue) and is
+   refused by clients that have pinned the old one — see BlindTokenService.
+
+5. **Configure `wrangler.toml`:** RPC_URL (use a paid RPC in prod), BUNDLE_ID,
    PLUS_MONTHLY / PRO_MONTHLY (must match the app's tier caps).
 
-5. **Deploy:**
+6. **Deploy:**
    ```
    npx wrangler deploy
    ```
@@ -56,9 +74,12 @@ static let treasuryPubkey = "<treasury address>"
 
 ## Security notes / TODO before production
 
-- **Pin the Apple cert chain.** `verifyAppleJWS` currently verifies the leaf
-  signature + bundle id. Add full x5c chain validation to Apple Root CA - G3
-  (see Apple's `app-store-server-library`) so a forged leaf can't pass.
+- ~~**Pin the Apple cert chain.**~~ Done. `verifyAppleJWS` walks the x5c chain to
+  Apple Root CA - G3 *and* requires Apple's marker OIDs — receipt signing on the
+  leaf, WWDR App Store on the intermediate. The root pin alone was not enough:
+  it also anchors Apple Pay merchant and developer certificates whose private
+  keys third parties hold. Consider moving to Apple's `app-store-server-library`
+  if it ever ships a Workers-compatible build.
 - **Rate-limit** per account token (e.g. max N/sec) to blunt abuse and protect
   the treasury even within quota.
 - **Dynamic priority fee**: set compute-unit price from current network

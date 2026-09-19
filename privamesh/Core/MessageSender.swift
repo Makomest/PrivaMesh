@@ -331,6 +331,11 @@ final class MessageSender {
     // MARK: - Self-envelope helpers (internal so PollingService can reuse deriveSelfKey)
 
     /// Build a kind-0x02 self-envelope: [0x02][nonce(12)][ciphertext][tag(16)]
+    ///
+    /// 0x02 is also `MessageEnvelope.Kind.sessionInitPQ`, and both kinds arrive on
+    /// the same (real) address, so the receiver cannot tell them apart by the byte:
+    /// it tries this key first and treats a failure as "not a self memo". Keep that
+    /// the only discriminator — see `PollingService.decryptSelfMemo`.
     static func buildSelfMemo(padded: Data, identity: MessagingIdentityManager) throws -> String {
         let key      = try deriveSelfKey(identity: identity)
         let combined = try CryptoBox.encrypt(plaintext: padded, key: key)
@@ -341,7 +346,10 @@ final class MessageSender {
 
     /// Derive a deterministic self-encryption key from the messaging identity DH key.
     static func deriveSelfKey(identity: MessagingIdentityManager) throws -> Data {
-        let id    = try identity.getOrCreate()
+        try deriveSelfKey(identity: try identity.getOrCreate())
+    }
+
+    static func deriveSelfKey(identity id: CryptoIdentity) throws -> Data {
         let dhKey = try id.dhIdentityKey()
         return CryptoBox.hkdf(
             inputKeyMaterial: dhKey.rawRepresentation,

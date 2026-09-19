@@ -68,13 +68,22 @@ struct privameshApp: App {
         relaySvc.receiptProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
         relaySvc.activeAccountProvider = { [weak accounts] in accounts?.activePublicKey ?? "" }
         // Anonymous blind tokens: a message spends a token the relay can't link to
-        // the purchase, instead of sending the Apple receipt on every /send. When
-        // the relay has no issuer key configured the pool stays empty and sends
-        // transparently fall back to the receipt path above.
+        // the purchase, instead of sending the Apple receipt on every /send. A
+        // relay with no issuer key configured leaves the pool empty and sends take
+        // the receipt path above — but only on a device that has never been served
+        // a key. Once one has been, the fall-back is closed and a send that cannot
+        // spend a token fails instead of carrying the receipt.
         let blindSvc = BlindTokenService()
         blindSvc.jwsProvider = { [weak sub] in await sub?.currentEntitlementJWS() }
         relaySvc.takeBlindToken = { [weak blindSvc] in blindSvc?.takeToken() }
         relaySvc.returnBlindToken = { [weak blindSvc] token in blindSvc?.returnToken(token) }
+        // Both halves have to hold: the device has been served an issuer key, and
+        // StoreKit — not the relay — says the subscription that pays for tokens is
+        // active. The free tier has no tokens by design and keeps the account path.
+        relaySvc.anonymityExpected = { [weak blindSvc, weak sub] in
+            (blindSvc?.anonymityEstablished ?? false) && (sub?.isSubscribed ?? false)
+        }
+        relaySvc.replenishBlindTokens = { [weak blindSvc] in await blindSvc?.ensureStock() }
         // Derive each account's messaging identity deterministically from its seed
         // phrase, so re-entering the phrase on any device restores the identity.
         accounts.onSeedStored = { [weak messagingIdentity, weak relaySvc] pub, phrase in

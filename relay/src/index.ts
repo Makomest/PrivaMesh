@@ -23,7 +23,7 @@
 import { Connection, Keypair, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { jwtVerify, decodeProtectedHeader } from 'jose';
-import { X509Certificate } from '@peculiar/x509';
+import { X509Certificate, BasicConstraintsExtension } from '@peculiar/x509';
 import {
   loadPublicKey, loadPrivateKey, blindSign, verifyToken, canonicalNonce,
   type IssuerKey,
@@ -192,6 +192,22 @@ function assertPinningSafe(env: Env): void {
     throw new Error('refusing to run: DEV_SKIP_PINNING set without ALLOW_INSECURE');
   }
 }
+
+/**
+ * Apple's certificate markers. Chaining to Apple Root CA - G3 says only "Apple
+ * signed something in this chain" — that root also anchors Apple Pay merchant
+ * certificates (under WWDR CA - G2) and ordinary developer signing certificates
+ * (under WWDR G6), whose private keys the merchant/developer holds. Reported
+ * externally: with any such certificate a caller could sign their own JWS and
+ * mint a PRO entitlement. These are the OIDs Apple's app-store-server-library
+ * checks, and they are what separates a receipt signer from any other leaf:
+ *
+ *   leaf         1.2.840.113635.100.6.11.1  App Store receipt signing
+ *   intermediate 1.2.840.113635.100.6.2.1   WWDR App Store CA
+ *                                           (an Apple Pay CA carries .6.2.15)
+ */
+const APPLE_RECEIPT_SIGNING_OID = '1.2.840.113635.100.6.11.1';
+const APPLE_WWDR_INTERMEDIATE_OID = '1.2.840.113635.100.6.2.1';
 
 /**
  * Apple Root CA - G3 (public), downloaded from
@@ -869,9 +885,11 @@ interface AppleClaims {
 /**
  * Verify an App Store Server JWS. The signing cert chain is in the `x5c` header.
  * When APPLE_ROOT_G3 is configured we PIN the chain: leaf must be signed by the
- * intermediate, and the intermediate by Apple Root CA - G3. This blocks a forged
- * leaf certificate from minting fake entitlements. Without the root set we fall
- * back to leaf-signature-only (development).
+ * intermediate, the intermediate by Apple Root CA - G3, AND both must carry the
+ * Apple marker OIDs that identify an App Store receipt signer. The root pin
+ * alone is not an entitlement check — the same root anchors certificates whose
+ * private keys third parties hold. Without the root set we fall back to
+ * leaf-signature-only (development).
  */
 async function verifyAppleJWS(jws: string, env: Env): Promise<AppleClaims> {
   const header: any = decodeProtectedHeader(jws);
@@ -897,6 +915,19 @@ async function verifyAppleJWS(jws: string, env: Env): Promise<AppleClaims> {
     if (!(await intermediate.verify({ publicKey: rootKey, signatureOnly: true }))) {
       throw new Error('intermediate not signed by Apple Root CA G3');
     }
+
+    // WHAT the certificates are, not just who signed them. Without these two a
+    // caller's own Apple Pay merchant or developer certificate — same root,
+    // private key in the caller's hands — signs a valid-looking receipt.
+    if (!leaf.getExtension(APPLE_RECEIPT_SIGNING_OID)) {
+      throw new Error('leaf is not an App Store receipt signing certificate');
+    }
+    if (!intermediate.getExtension(APPLE_WWDR_INTERMEDIATE_OID)) {
+      throw new Error('intermediate is not the Apple WWDR App Store CA');
+    }
+    // And an end-entity certificate must not be usable as the intermediate.
+    const bc = intermediate.getExtension(BasicConstraintsExtension);
+    if (!bc?.ca) throw new Error('intermediate is not a CA certificate');
     if (x5c[2]) {
       const shipped = new X509Certificate(x5c[2]);
       if (toB64(shipped.rawData) !== toB64(root.rawData)) {
@@ -948,12 +979,13 @@ function json(obj: unknown, status = 200): Response {
 /**
  * Exposed for `test/security-reports.test.mjs`.
 
- * The fee guard and the quota key are the two places where a mistake costs
- * money, and both were reported as exploitable. They are worth testing directly
- * rather than through a whole request.
+ * The fee guard, the quota key and the receipt verifier are the places where a
+ * mistake costs money, and each was reported as exploitable. They are worth
+ * testing directly rather than through a whole request.
  */
 export const __testing = {
   assertTreasuryOnlyPaysFees,
+  verifyAppleJWS,
   quotaKeyFor,
   rateKeyFor,
 };

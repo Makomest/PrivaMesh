@@ -4,8 +4,10 @@
 
 //  Polls getSignaturesForAddress every 30 seconds.
 //  For each new memo transaction:
-//    • Kind 0x02 → self-encrypted message (Saved Messages)
 //    • Kind 0x00/0x01 → X3DH + Double Ratchet message from a contact
+//    • Kind 0x02 → ambiguous: a self-encrypted message (Saved Messages) OR a
+//      post-quantum session init from a contact. Decided by the self key, never
+//      by the byte — see processIncomingMemo.
 
 
 import Foundation
@@ -150,11 +152,19 @@ final class PollingService {
 
         guard let rawData = Data(base64Encoded: cleaned), !rawData.isEmpty else { return }
 
-        if rawData[0] == 0x02 {
-            // Self-encrypted envelope — handle separately
-            await processSelfMemo(data: rawData, signature: senderSignature,
-                                  timestamp: timestamp, myAddress: myAddress,
-                                  identity: identity, context: context)
+        // 0x02 is ambiguous on the wire: it prefixes a self-encrypted memo AND it
+        // is MessageEnvelope.Kind.sessionInitPQ. Both land on this address — a
+        // Saved Messages note we wrote ourselves, and the first message of a
+        // conversation, which always goes to the real address because there is no
+        // stealth chain yet. Routing on the byte alone sent every PQ opener into
+        // the self handler, where it failed authentication and was dropped in
+        // silence: no message request, no contact, no error. So decide with the
+        // key, not the byte — only a memo we sealed ourselves opens under the self
+        // key, and anything else falls through to the envelope parser below.
+        if rawData[0] == 0x02,
+           processSelfMemo(data: rawData, signature: senderSignature,
+                           timestamp: timestamp, myAddress: myAddress,
+                           identity: identity, context: context) {
             return
         }
 
@@ -215,7 +225,7 @@ final class PollingService {
                 signature: senderSignature, endpointURL: rpc.currentEndpoint.address
             )
 
-            let contact = findOrCreateContact(
+            let contact = Self.findOrCreateContact(
                 senderAddress: senderAddress,
                 senderIdentityKey: envelope.senderIdentityPublic,
                 ownerAddress: myAddress,
@@ -412,16 +422,14 @@ final class PollingService {
         }
     }
 
-    /// Find the contact this sessionInit belongs to, or create a "message
-    /// request" contact so an unknown sender's first message still appears.
-    @MainActor
     /// Record the identity key a contact is using, and react if it changed.
-
+    ///
     /// First key seen is trust-on-first-use and passes quietly. A DIFFERENT key
     /// later means a new device or an impersonator, and the two are
     /// indistinguishable from here — so the verified mark is dropped (the user
     /// verified the old key, not this one) and the chat gets a system message they
     /// cannot miss.
+    @MainActor
     static func noteIdentityKey(_ key: Data?, on contact: Contact, context: ModelContext) {
         guard let key, !key.isEmpty else { return }
 
@@ -451,34 +459,58 @@ final class PollingService {
         try? context.save()
     }
 
-    private func findOrCreateContact(
+    /// Find the contact this sessionInit belongs to, or create a "message
+    /// request" contact so an unknown sender's first message still appears.
+    static func findOrCreateContact(
         senderAddress: String?,
         senderIdentityKey: Data?,
         ownerAddress: String,
         in contacts: [Contact],
         context: ModelContext
     ) -> Contact {
-        // 1. Match a contact already added via search/QR by Solana address.
+        // The treasury pays for every sponsored message, so it identifies no
+        // one. senderAddress already refuses a fee payer that did not sign the
+        // memo, which covers it - but one address standing in for every sender
+        // is what crossed two strangers' sessions, so it is refused twice.
+        let senderAddress = senderAddress.flatMap {
+            $0 == RelayConfig.treasuryPubkey ? nil : $0
+        }
+
+        // 1. Match on the messaging identity key: the key already seen on this
+        //    contact, or the one in a bundle added via search/QR. It is the only
+        //    part of an opener that says who sent it - the envelope decrypted,
+        //    so that key took part in the X3DH that produced the session.
+        //
+        //    The transaction address cannot do that job and must not be asked
+        //    first. Matching by address before the key is what merged every
+        //    unknown sender into a single contact while the sponsored path
+        //    reported the treasury as the sender of all of them.
+        if let ik = senderIdentityKey, !ik.isEmpty,
+           let existing = contacts.first(where: {
+               $0.knownIdentityKey == ik
+                   || (try? PrekeyBundle.fromBase64($0.prekeyBundleBase64))?.dhIdentityKey == ik
+           }) {
+            return existing
+        }
+        // 2. No key we recognise: a contact added by address whose key we have
+        //    never seen. An address only reaches us when the sender paid their
+        //    own fee, so it does identify them - and a key that differs from the
+        //    stored one is a key change, which noteIdentityKey warns about.
         if let addr = senderAddress,
            let existing = contacts.first(where: { $0.id == addr }) {
             return existing
         }
-        // 2. Match a contact by their messaging identity key (e.g. a prior
-        //    auto-created one, or one added by bundle).
-        if let ik = senderIdentityKey,
-           let existing = contacts.first(where: {
-               (try? PrekeyBundle.fromBase64($0.prekeyBundleBase64))?.dhIdentityKey == ik
-           }) {
-            return existing
-        }
-        // 3. New "message request" contact. Use the real address as id when we
-        //    have it (so replies work); otherwise fall back to the identity key
-        //    so the message is at least visible.
+        // 3. New "message request" contact. Prefer the real address as id when
+        //    the transaction named one (a reply can then bootstrap to it); on
+        //    the sponsored path there is none, so the identity key stands in. It
+        //    is stable per sender, which is what keeps two strangers in two
+        //    conversations, and replies ride the stealth chain regardless.
         let id = senderAddress
             ?? senderIdentityKey?.base64EncodedString()
             ?? UUID().uuidString
-        let name = senderAddress.map { NicknameManager.generate(from: $0) } ?? "Новый контакт"
-        let contact = Contact(id: id, displayName: name, prekeyBundleBase64: "")
+        let contact = Contact(id: id,
+                              displayName: NicknameManager.generate(from: id),
+                              prekeyBundleBase64: "")
         contact.ownerAddress = ownerAddress
         context.insert(contact)
         return contact
@@ -486,7 +518,27 @@ final class PollingService {
 
     // MARK: - Self-message (kind 0x02)
 
+    /// Open a self-encrypted memo under `key`. Nil means it is not ours: either a
+    /// memo from another identity, or — because 0x02 is also `.sessionInitPQ` — a
+    /// session opener from a contact, which the caller must route onward instead
+    /// of swallowing. AES-GCM authenticates, so only a memo we sealed decrypts.
+    static func decryptSelfMemo(data: Data, key: Data) -> ChatPayload? {
+        // Wire format: [0x02][nonce(12)][ciphertext][tag(16)] — minimum 29 bytes
+        guard data.count > 29, data[0] == 0x02 else { return nil }
+        do {
+            let combined  = Data(data[1...])                          // strip kind byte
+            let padded    = try CryptoBox.decrypt(combined: combined, key: key)
+            let plaintext = try MessagePadding.unpad(padded)
+            return ChatPayload.decode(from: plaintext)
+        } catch {
+            return nil
+        }
+    }
+
+    /// Store a self memo. Returns false when the memo is not ours, so the caller
+    /// keeps dispatching it (a `.sessionInitPQ` opener shares this kind byte).
     @MainActor
+    @discardableResult
     private func processSelfMemo(
         data:      Data,
         signature: String,
@@ -494,35 +546,30 @@ final class PollingService {
         myAddress: String,
         identity:  MessagingIdentityManager,
         context:   ModelContext
-    ) async {
-        // Wire format: [0x02][nonce(12)][ciphertext][tag(16)] — minimum 29 bytes
-        guard data.count > 29 else { return }
+    ) -> Bool {
+        guard let key = try? MessageSender.deriveSelfKey(identity: identity),
+              let payload = Self.decryptSelfMemo(data: data, key: key)
+        else { return false }
 
-        do {
-            let key       = try MessageSender.deriveSelfKey(identity: identity)
-            let combined  = Data(data[1...])                          // strip kind byte
-            let padded    = try CryptoBox.decrypt(combined: combined, key: key)
-            let plaintext = try MessagePadding.unpad(padded)
-            let payload   = ChatPayload.decode(from: plaintext)
+        // It opened under our own key, so it is ours whatever happens next — never
+        // re-dispatched as an envelope.
 
-            // The active account's Saved Messages (self id == own address).
-            let selfDesc = FetchDescriptor<Contact>(predicate: #Predicate { $0.id == myAddress })
-            guard let selfContact = try? context.fetch(selfDesc).first, selfContact.isSelf else { return }
+        // The active account's Saved Messages (self id == own address).
+        let selfDesc = FetchDescriptor<Contact>(predicate: #Predicate { $0.id == myAddress })
+        guard let selfContact = try? context.fetch(selfDesc).first, selfContact.isSelf else { return true }
 
-            let msg = ChatMessage(
-                id:         signature,
-                body:       payload.body,
-                photoKey:   payload.photoKey,
-                isOutgoing: true,
-                sentAt:     timestamp,
-                status:     "sent"
-            )
-            msg.contact = selfContact
-            context.insert(msg)
-            try? context.save()
-        } catch {
-            // Wrong key or corrupt data — ignore silently
-        }
+        let msg = ChatMessage(
+            id:         signature,
+            body:       payload.body,
+            photoKey:   payload.photoKey,
+            isOutgoing: true,
+            sentAt:     timestamp,
+            status:     "sent"
+        )
+        msg.contact = selfContact
+        context.insert(msg)
+        try? context.save()
+        return true
     }
 
     // MARK: - X3DH + DR decrypt
@@ -550,7 +597,7 @@ final class PollingService {
     /// Decrypt a `.sessionInit` envelope. Self-contained (uses the sender keys
     /// carried in the envelope + our identity), so it does NOT need the sender
     /// to be a known contact. Returns the message and the fresh ratchet to store.
-    private static func decryptSessionInit(
+    static func decryptSessionInit(
         envelope: MessageEnvelope,
         myIdentity: CryptoIdentity,
         pqSharedSecret: Data? = nil
@@ -578,8 +625,23 @@ final class PollingService {
         }
     }
 
-    /// Fetch the fee payer (= sender's wallet address) of a transaction so we
-    /// can attribute and reply to an unknown sender. Best-effort.
+    /// The unknown sender's wallet address, or nil when the transaction does not
+    /// name one. Best-effort.
+    ///
+    /// accountKeys[0] is the fee payer. On the direct path (the user pays their
+    /// own fee) the fee payer IS the sender: the same key signs the memo. On the
+    /// sponsored path - the default, because the relay pays every fee - the fee
+    /// payer is the shared treasury and the memo is signed by a per-message
+    /// throwaway key, deliberately: the sender's real address never reaches the
+    /// chain. Reading the fee payer there named the treasury for EVERY sender,
+    /// so unrelated message requests collapsed into one contact, each new opener
+    /// overwrote its ratchet and stealth root, and a reply meant for the first
+    /// stranger went out on the latest stranger's session. Reported externally.
+    ///
+    /// So the fee payer is the sender only when it also signed the memo; any
+    /// other shape carries no sender address and the caller falls back to the
+    /// identity key inside the envelope, which is what authenticates the sender
+    /// anyway.
     private static func fetchSenderAddress(signature: String, endpointURL: String) async -> String? {
         guard let url = URL(string: endpointURL) else { return nil }
         var req = URLRequest(url: url)
@@ -595,10 +657,28 @@ final class PollingService {
               let json    = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let result  = json["result"] as? [String: Any],
               let tx      = result["transaction"] as? [String: Any],
-              let message = tx["message"] as? [String: Any],
-              let keys    = message["accountKeys"] as? [String]
+              let message = tx["message"] as? [String: Any]
         else { return nil }
-        // accountKeys[0] is always the fee payer (the sender).
-        return keys.first
+        return senderAddress(inTransactionMessage: message)
+    }
+
+    /// The sender named by a decoded `transaction.message`, or nil. Split out of
+    /// the fetch so the rule can be tested against both transaction shapes.
+    static func senderAddress(inTransactionMessage message: [String: Any]) -> String? {
+        guard let keys = message["accountKeys"] as? [String],
+              let feePayer = keys.first,
+              feePayer != RelayConfig.treasuryPubkey,
+              let memoProgramIndex = keys.firstIndex(of: MemoTransactionBuilder.memoProgramId)
+        else { return nil }
+
+        // Only a fee payer that is also an account of the memo instruction signed
+        // the message that instruction carries.
+        let instructions = message["instructions"] as? [[String: Any]] ?? []
+        let signedTheMemo = instructions.contains { instruction in
+            guard instruction["programIdIndex"] as? Int == memoProgramIndex,
+                  let accounts = instruction["accounts"] as? [Int] else { return false }
+            return accounts.contains { $0 >= 0 && $0 < keys.count && keys[$0] == feePayer }
+        }
+        return signedTheMemo ? feePayer : nil
     }
 }

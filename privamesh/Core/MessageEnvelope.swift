@@ -24,6 +24,12 @@ struct MessageEnvelope {
         /// for a Solana memo. Only ever sent new-build → new-build (the initiator
         /// uses it solely when the contact published a PQ prekey), so an older build
         /// never has to parse it. See PQXDH.
+        ///
+        /// 0x02 is ALSO the prefix of a self-encrypted memo (MessageSender.
+        /// buildSelfMemo), and both kinds arrive on the same real address. A
+        /// receiver must therefore never route on this byte alone: try the self
+        /// key, and parse as an envelope when that fails. See
+        /// PollingService.processIncomingMemo.
         case sessionInitPQ = 0x02
     }
 

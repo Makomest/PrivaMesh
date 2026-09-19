@@ -12,6 +12,8 @@ struct PasscodeEnterView: View {
     @Environment(PasscodeManager.self) private var passcode
     @Environment(WalletManager.self) private var wallet
     @Environment(BiometryService.self) private var biometry
+    @Environment(AccountManager.self) private var accounts
+    @Environment(MessagingIdentityManager.self) private var messagingIdentity
     @Environment(\.modelContext) private var modelContext
 
     @State private var errorMessage: String?
@@ -98,10 +100,15 @@ struct PasscodeEnterView: View {
             AccountDestroyer.destroy(context: modelContext,
                                      wallet: wallet,
                                      passcode: passcode,
-                                     biometry: biometry)
+                                     biometry: biometry,
+                                     accounts: accounts,
+                                     identity: messagingIdentity)
             errorMessage = nil
             attempts = 0
-            router.go(to: .welcome)
+            // Onboarding, not Welcome: a device that has never run the app starts
+            // at the slides, so stopping one screen short of them is a visible
+            // difference to whoever made the user unlock the phone.
+            router.go(to: .onboarding)
 
         case .incorrect:
             attempts += 1
@@ -145,8 +152,10 @@ struct PasscodeEnterView: View {
         AccountDestroyer.destroy(context: modelContext,
                                  wallet: wallet,
                                  passcode: passcode,
-                                 biometry: biometry)
-        router.go(to: .welcome)
+                                 biometry: biometry,
+                                 accounts: accounts,
+                                 identity: messagingIdentity)
+        router.go(to: .onboarding)
     }
 }
 
@@ -156,4 +165,6 @@ struct PasscodeEnterView: View {
         .environment(PasscodeManager())
         .environment(WalletManager())
         .environment(BiometryService())
+        .environment(AccountManager())
+        .environment(MessagingIdentityManager())
 }

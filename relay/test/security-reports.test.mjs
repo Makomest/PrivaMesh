@@ -11,13 +11,15 @@
  * Each test below fails against the code as it was.
  */
 import assert from 'node:assert';
+import * as x509 from '@peculiar/x509';
+import { SignJWT } from 'jose';
 import { Keypair, Transaction, PublicKey, ComputeBudgetProgram, SystemProgram } from '@solana/web3.js';
 import { canonicalNonce, bytesToB64u, b64uToBytes } from '../src/blindtokens.ts';
 import { __testing } from '../src/index.ts';
 import { SpentTokenDO } from '../src/spenttokens.ts';
 import { QuotaDO } from '../src/quotado.ts';
 
-const { assertTreasuryOnlyPaysFees, quotaKeyFor, rateKeyFor } = __testing;
+const { assertTreasuryOnlyPaysFees, verifyAppleJWS, quotaKeyFor, rateKeyFor } = __testing;
 
 const treasury = Keypair.generate();
 const ephemeral = Keypair.generate();
@@ -300,5 +302,137 @@ console.log('PASS: one subscription throttles as one caller, whatever account is
   assert.equal((await claim(ttl)).ok, false, 'the cleanup made one purchase creditable twice');
   console.log('PASS: one purchase credits one pack, including after its old alarm fires');
 }
+
+// --- 5. Apple receipt chain: root pin is not a purpose check ------------------
+
+// The report: the chain was pinned to Apple Root CA - G3 and nothing checked
+// WHAT the leaf was. That root also anchors Apple Pay merchant certificates
+// (Apple WWDR CA - G2, valid to 2029) and ordinary developer signing
+// certificates (WWDR G6) — in both cases the caller generates the key pair and
+// keeps the private key. So a caller could sign their own JWS claiming
+// com.privamesh.pro.monthly and the relay accepted it as a paid entitlement:
+// free PRO, unlimited /credit packs and blind tokens by rotating the
+// transaction ids, all of it sponsored out of the treasury.
+{
+  x509.cryptoProvider.set(globalThis.crypto);
+  const APPLE_RECEIPT_SIGNING_OID = '1.2.840.113635.100.6.11.1';
+  const APPLE_WWDR_INTERMEDIATE_OID = '1.2.840.113635.100.6.2.1';
+  const APPLE_PAY_INTERMEDIATE_OID = '1.2.840.113635.100.6.2.15';  // what WWDR G2 carries
+
+  const day = 86_400_000;
+  const notBefore = new Date(Date.now() - day);
+  const notAfter = new Date(Date.now() + 365 * day);
+  const b64 = (raw) => Buffer.from(raw).toString('base64');
+  const ecKeys = (namedCurve) => crypto.subtle.generateKey(
+    { name: 'ECDSA', namedCurve }, true, ['sign', 'verify']);
+  // An Apple marker OID is an extension with an empty body; only its presence
+  // is read, here and in Apple's own app-store-server-library.
+  const marker = (oid) => new x509.Extension(oid, false, new Uint8Array(0));
+
+  // A stand-in for Apple Root CA - G3, so the test needs no Apple secret. The
+  // code under test is the real one; only the trust anchor is swapped.
+  const rootKeys = await ecKeys('P-384');
+  const root = await x509.X509CertificateGenerator.createSelfSigned({
+    serialNumber: '01', name: 'CN=Apple Root CA - G3 (stand-in)',
+    notBefore, notAfter, keys: rootKeys,
+    signingAlgorithm: { name: 'ECDSA', hash: 'SHA-384' },
+    extensions: [new x509.BasicConstraintsExtension(true, undefined, true)],
+  });
+
+  const intermediate = async (name, oids, ca = true) => {
+    const keys = await ecKeys('P-384');
+    const cert = await x509.X509CertificateGenerator.create({
+      serialNumber: '02', subject: `CN=${name}`, issuer: root.subject,
+      notBefore, notAfter, publicKey: keys.publicKey, signingKey: rootKeys.privateKey,
+      signingAlgorithm: { name: 'ECDSA', hash: 'SHA-384' },
+      extensions: [new x509.BasicConstraintsExtension(ca, undefined, true), ...oids.map(marker)],
+    });
+    return { cert, keys };
+  };
+
+  const leafUnder = async (issuer, subject, oids) => {
+    const keys = await ecKeys('P-256');
+    const cert = await x509.X509CertificateGenerator.create({
+      serialNumber: '03', subject, issuer: issuer.cert.subject,
+      notBefore, notAfter, publicKey: keys.publicKey, signingKey: issuer.keys.privateKey,
+      signingAlgorithm: { name: 'ECDSA', hash: 'SHA-384' },
+      extensions: oids.map(marker),
+    });
+    return { cert, keys };
+  };
+
+  const receiptFrom = (leaf, issuer, claims = {}) => new SignJWT({
+    productId: 'com.privamesh.pro.monthly',
+    bundleId: 'com.privamesh',
+    transactionId: 't1',
+    originalTransactionId: 's1',
+    expiresDate: Date.now() + 30 * day,
+    ...claims,
+  }).setProtectedHeader({
+    alg: 'ES256', x5c: [b64(leaf.cert.rawData), b64(issuer.cert.rawData)],
+  }).sign(leaf.keys.privateKey);
+
+  const env = { APPLE_ROOT_G3: root.toString('pem'), BUNDLE_ID: 'com.privamesh' };
+
+  // What Apple actually sends has to keep working, or the fix is an outage.
+  const appStoreCA = await intermediate(
+    'Apple Worldwide Developer Relations Certification Authority', [APPLE_WWDR_INTERMEDIATE_OID]);
+  const receiptSigner = await leafUnder(
+    appStoreCA, 'CN=Prod ECC Mac App Store and iTunes Store Receipt Signing',
+    [APPLE_RECEIPT_SIGNING_OID]);
+  const claims = await verifyAppleJWS(await receiptFrom(receiptSigner, appStoreCA), env);
+  assert.equal(claims.productId, 'com.privamesh.pro.monthly');
+  console.log('PASS: a real App Store receipt chain is still accepted');
+
+  // The report: an Apple Pay payment processing leaf under WWDR CA - G2. The
+  // merchant made the CSR and holds the key; nothing in the leaf says receipt.
+  const applePayCA = await intermediate(
+    'Apple Worldwide Developer Relations CA - G2', [APPLE_PAY_INTERMEDIATE_OID]);
+  const merchant = await leafUnder(applePayCA, 'CN=Apple Pay Payment Processing:merchant, O=Not Apple', []);
+  await assert.rejects(
+    verifyAppleJWS(await receiptFrom(merchant, applePayCA), env),
+    /not an App Store receipt signing certificate|not the Apple WWDR App Store CA/,
+    'a merchant-held certificate under the pinned root minted a PRO entitlement',
+  );
+  console.log('PASS: an Apple Pay merchant certificate is refused');
+
+  // Same root, the App Store intermediate itself: an ordinary developer signing
+  // certificate is issued under WWDR G6 and its key lives on the developer's Mac.
+  const developer = await leafUnder(appStoreCA, 'CN=Apple Development: Attacker, O=Not Apple', []);
+  await assert.rejects(
+    verifyAppleJWS(await receiptFrom(developer, appStoreCA), env),
+    /not an App Store receipt signing certificate/,
+    'a developer signing certificate minted a PRO entitlement',
+  );
+  console.log('PASS: a developer signing certificate is refused');
+
+  // The marker OIDs are presence-checked, so an attacker leaf that simply
+  // carries them must still fail the chain: it has no Apple signature over it.
+  const forgedCA = await intermediate('CN=Not Apple CA', [APPLE_WWDR_INTERMEDIATE_OID]);
+  const selfKeys = await ecKeys('P-384');
+  const offRoot = await x509.X509CertificateGenerator.createSelfSigned({
+    serialNumber: '04', name: 'CN=Not Apple Root', notBefore, notAfter, keys: selfKeys,
+    signingAlgorithm: { name: 'ECDSA', hash: 'SHA-384' },
+    extensions: [new x509.BasicConstraintsExtension(true, undefined, true)],
+  });
+  const impostor = await leafUnder(forgedCA, 'CN=Impostor Receipt Signing', [APPLE_RECEIPT_SIGNING_OID]);
+  await assert.rejects(
+    verifyAppleJWS(await receiptFrom(impostor, forgedCA), { ...env, APPLE_ROOT_G3: offRoot.toString('pem') }),
+    /not signed by Apple Root CA G3/,
+    'a self-issued chain wearing the Apple marker OIDs was accepted',
+  );
+  console.log('PASS: the marker OIDs do not replace the root pin');
+
+  // An end-entity certificate must not be usable in the intermediate slot.
+  const notACA = await intermediate('Leaf pretending to be a CA', [APPLE_WWDR_INTERMEDIATE_OID], false);
+  const under = await leafUnder(notACA, 'CN=Receipt Signing', [APPLE_RECEIPT_SIGNING_OID]);
+  await assert.rejects(
+    verifyAppleJWS(await receiptFrom(under, notACA), env),
+    /not a CA certificate/,
+    'a non-CA certificate signed for an intermediate',
+  );
+  console.log('PASS: a non-CA certificate cannot act as the intermediate');
+}
+
 
 console.log('\nALL SECURITY-REPORT REGRESSIONS PASSED');

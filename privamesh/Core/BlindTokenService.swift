@@ -28,6 +28,22 @@ final class BlindTokenService {
 
     /// True once a usable issuer public key has been fetched.
     private(set) var enabled = false
+
+    /// True when this device has ever committed to an issuer key — that is, the
+    /// relay has served a working one at least once on this install.
+
+    /// This outlives `enabled` and the pool on purpose. `enabled` is about the
+    /// last /pubkey answer; a relay can make that answer `false`, or reject every
+    /// token at /send, at any moment. Neither may turn a device that was
+    /// anonymous back into an identified one, which is what RelayService's
+    /// unconditional fall-back to the Apple receipt used to do. Reported
+    /// externally. The pin is the durable record of "this device has the
+    /// anonymous path", so it is what the fall-back is gated on.
+    var anonymityEstablished: Bool { enabled || Self.hasIssuerPin }
+
+    private static var hasIssuerPin: Bool {
+        KeychainStorage.load(key: issuerPinKey) != nil
+    }
     /// Number of spendable tokens currently stocked (for UX/diagnostics).
     private(set) var stock = 0
 

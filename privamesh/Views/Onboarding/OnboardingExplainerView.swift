@@ -19,7 +19,7 @@ struct OnboardingExplainerView: View {
         #endif
         return 0
     }()
-    private let totalPages = 7
+    private let totalPages = 8
 
     var body: some View {
         ZStack {
@@ -119,6 +119,14 @@ struct OnboardingExplainerView: View {
                 PointData(icon: "faceid", text: "**Face ID на ключи** — в Keychain под биометрией"),
                 PointData(icon: "timer", text: "**Исчезающие сообщения** — авто-удаление локальных копий"),
                 PointData(icon: "checkmark.shield.fill", text: "**Подпись контактов** — защита от подмены собеседника (MITM)"),
+            ]),
+        SlideData(icon: "exclamationmark.shield.fill", badge: nil,
+            title: "Код\nна принуждение",
+            subtitle: "Второй код — на случай, когда телефон заставляют разблокировать. Введи его на экране входа, и аккаунт сотрётся.",
+            points: [
+                PointData(icon: "lock.trianglebadge.exclamationmark.fill", text: "**Второй код** — задаётся в Профиле → Код на случай принуждения"),
+                PointData(icon: "trash.fill", text: "**Стирает молча** — переписка, контакты и оба кода уходят, экран как после установки"),
+                PointData(icon: "cube.fill", text: "**Блокчейн не стирается** — отправленное остаётся там, но без ключей нечитаемо"),
             ]),
         SlideData(icon: "network", badge: nil,
             title: "Нет сервера\nсообщений",

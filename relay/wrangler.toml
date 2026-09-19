@@ -61,8 +61,12 @@ RATE_PER_MIN = "10"     # per-account /send per minute
 
 # Anonymous blind-token issuer key (RSA). Generate with:  npm run keygen
 # That prints TOKEN_RSA_N / TOKEN_RSA_E / TOKEN_RSA_D (base64url). N and E are
-# PUBLIC (served at GET /pubkey); D is the SIGNING SECRET. Leave all three unset
-# to keep the token endpoints disabled and stay on the legacy receipt path.
+# PUBLIC (served at GET /pubkey); D is the SIGNING SECRET.
+
+# SET THESE. Unset is not a neutral default: the token endpoints go dark, every
+# /send falls back to the legacy receipt path, and the relay then sees the Apple
+# purchase behind every message - the exact link the blind signatures exist to
+# break. `curl https://<worker>/pubkey` must answer {"enabled":true}.
 TOKEN_RSA_E = "AQAB"   # public exponent 65537; N goes in as a secret below
 # ISSUE_BATCH_MAX = "64"  # max tokens per /issue call (default 64)
 

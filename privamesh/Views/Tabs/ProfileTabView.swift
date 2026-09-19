@@ -107,19 +107,16 @@ struct ProfileTabView: View {
             .alert("Сбросить аккаунт?", isPresented: $showResetAlert) {
                 Button("Отмена", role: .cancel) {}
                 Button("Сбросить", role: .destructive) {
-                    // Full wipe — leave no seeds, keys, or chats behind.
-                    // Capture addresses before removeAll so every account's
-                    // messaging identity gets wiped too.
-                    let addrs = accountManager.accounts.map(\.publicKeyBase58)
-                    accountManager.removeAll()       // per-account seeds in Keychain
-                    messagingIdentity.wipeAll(addresses: addrs)   // per-account X3DH/DR keys
-                    SessionVault.wipe()                          // ratchet-state key: without it the rows are noise
-                    try? context.delete(model: Contact.self)      // contacts (cascade → messages)
-                    try? context.delete(model: ChatMessage.self)
-                    wallet.wipe()
-                    passcode.wipe()
-                    biometry.disable()
-                    router.go(to: .welcome)
+                    // The same wipe the duress code performs. One path, so the
+                    // two can never drift apart again — they did, and the duress
+                    // one was the weaker of them.
+                    AccountDestroyer.destroy(context: context,
+                                             wallet: wallet,
+                                             passcode: passcode,
+                                             biometry: biometry,
+                                             accounts: accountManager,
+                                             identity: messagingIdentity)
+                    router.go(to: .onboarding)
                 }
             } message: {
                 Text("Все данные удалятся с устройства. Восстановить можно только по фразе восстановления.")

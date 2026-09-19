@@ -105,22 +105,9 @@ struct DuressCodeView: View {
     private var explanation: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Второй код, который стирает аккаунт вместо того, чтобы открыть его. С этого устройства уходит всё: переписка, контакты, ключи, оба кода. Остаётся экран, как будто приложение только что установили.")
+                Text("Второй код, который стирает аккаунт вместо того, чтобы открыть его. С этого устройства уходит всё: переписка, контакты, ключи, оба кода. Остаётся экран, как будто приложение только что установили. Отменить это нельзя.")
                     .font(.system(size: 15))
                     .foregroundStyle(Theme.slate700)
-
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Чего он не делает")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Theme.slate800)
-
-                    limitation("Не стирает блокчейн. Отправленные сообщения остаются там навсегда. Без ключей их никто не прочитает, но сам факт переписки с твоего адреса виден всем и не удаляется.")
-                    limitation("Не достаёт копию. Если с телефона уже сняли резервную копию, стирание сейчас до неё не дотянется.")
-                    limitation("Не отменяется. Фраза восстановления вернёт аккаунт, но переписка на этом устройстве пропадёт навсегда.")
-                }
-                .padding(16)
-                .background(Theme.glass)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
                 if passcode.isDuressSet {
                     Text("Код принуждения установлен.")
@@ -161,18 +148,6 @@ struct DuressCodeView: View {
                 }
             }
             .padding(24)
-        }
-    }
-
-    private func limitation(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Circle()
-                .fill(Theme.slate500)
-                .frame(width: 4, height: 4)
-                .padding(.top, 7)
-            Text(LocalizedStringKey(text))
-                .font(.system(size: 13))
-                .foregroundStyle(Theme.slate600)
         }
     }
 

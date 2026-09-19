@@ -106,6 +106,28 @@ struct KeychainStorage {
         delete(.publicKey)
     }
 
+    /// Every Keychain service this app owns.
+    ///
+    /// Used by the account wipe. Deleting by service instead of by key is not
+    /// tidiness: the per-account items are named after the wallet address
+    /// (`privamesh.seed.<pubkey>`, `privamesh.messaging.identity.<pubkey>`,
+    /// `privamesh.relay.token.<pubkey>`, `privamesh.gaswallet.seed.<pubkey>`),
+    /// so a list of key names can never be complete, and the one that was there
+    /// left every seed phrase on a device its owner believed to be wiped.
+    static let services = ["com.privamesh.wallet",
+                           "com.privamesh.passcode",
+                           "com.privamesh.sessionvault"]
+
+    static func wipeEverything() {
+        for service in services {
+            let query: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: service,
+            ]
+            SecItemDelete(query as CFDictionary)
+        }
+    }
+
     // MARK: - Raw string key + Data overloads (for messaging layer)
 
     static func save(key: String, data: Data, requireBiometry: Bool = false) {

@@ -153,10 +153,6 @@ final class PasscodeManager {
     }
 
     func check(_ passcode: String) -> Verification {
-        // Refuse during a brute-force cooldown (offline guessing throttle). This
-        // covers the duress code too: it must not be a way around the wait.
-        guard lockoutRemaining == 0 else { return .lockedOut }
-
         // A Keychain that cannot be read right now is not a wrong passcode, so it
         // must not burn an attempt or trigger the brute-force cooldown.
         switch (read(key: Self.hashKey), read(key: Self.saltKey)) {
@@ -181,16 +177,29 @@ final class PasscodeManager {
                 return constantTimeCompare(duressHash, attemptHash)
             }()
 
-            if matchesReal {
-                isUnlocked = true
-                resetAttempts()
-                return .correct
-            }
+            // The duress code is answered BEFORE the brute-force cooldown is
+            // consulted. The cooldown exists to make guessing expensive, and the
+            // duress code is not a way around it: guessing it right wipes the
+            // device rather than opening it. Refusing it during a cooldown meant
+            // that five wrong guesses by the person holding the phone disabled
+            // the wipe for up to an hour — exactly when it is needed.
+            //
+            // The derivation above already ran, for every code and whether or not
+            // a duress code exists, so a locked-out attempt costs the same either
+            // way and the wait cannot be timed to reveal that a second code is set.
             if matchesDuress {
                 // Clear the throttle on the way out: a freshly-installed app that
                 // refuses passcodes for four minutes is not a freshly-installed app.
                 resetAttempts()
                 return .duress
+            }
+
+            guard lockoutRemaining == 0 else { return .lockedOut }
+
+            if matchesReal {
+                isUnlocked = true
+                resetAttempts()
+                return .correct
             }
 
             failedAttempts += 1
@@ -228,13 +237,16 @@ final class PasscodeManager {
 
     // MARK: - Duress code
 
-    /// True unless we positively know there is no duress code.
+    /// True only when a duress code is positively there.
+    ///
+    /// The opposite of `isPasscodeSet`, and for the opposite reason: an
+    /// unreadable Keychain must not be reported as "a duress code is set", or
+    /// Settings tells someone they have a way out that may not exist. Claiming
+    /// it is absent is safe — setting one again requires the passcode and simply
+    /// overwrites whatever is stored.
     var isDuressSet: Bool {
-        switch read(key: Self.duressHashKey) {
-        case .found:       return true
-        case .missing:     return false
-        case .unavailable: return true
-        }
+        if case .found = read(key: Self.duressHashKey) { return true }
+        return false
     }
 
     /// Set the code that wipes the account.

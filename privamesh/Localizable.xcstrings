@@ -277,6 +277,17 @@
         }
       }
     },
+    "**Блокчейн не стирается** — отправленное остаётся там, но без ключей нечитаемо": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**The chain is not erased** — what you sent stays there, unreadable without the keys"
+          }
+        }
+      }
+    },
     "**Вместо абонплаты** серверам, которые следят за тобой": {
       "extractionState": "stale",
       "localizations": {
@@ -295,6 +306,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "**Recoverable** on any device from just 12 words"
+          }
+        }
+      }
+    },
+    "**Второй код** — задаётся в Профиле → Код на случай принуждения": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**A second code** — set it in Profile → Duress code"
           }
         }
       }
@@ -592,6 +614,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "**Messages live on the Solana blockchain** — encrypted"
+          }
+        }
+      }
+    },
+    "**Стирает молча** — переписка, контакты и оба кода уходят, экран как после установки": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Wipes silently** — chats, contacts and both codes go, leaving the first-run screen"
           }
         }
       }
@@ -1290,6 +1323,16 @@
         }
       }
     },
+    "Анонимная отправка сейчас недоступна. Сообщение не отправлено — иначе оно ушло бы вместе с чеком Apple.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anonymous sending is unavailable right now. The message was not sent — sending it would have attached your Apple receipt."
+          }
+        }
+      }
+    },
     "Базовый аватар": {
       "extractionState": "stale",
       "localizations": {
@@ -1963,13 +2006,24 @@
         }
       }
     },
-    "Второй код, который стирает аккаунт вместо того, чтобы открыть его. С этого устройства уходит всё: переписка, контакты, ключи, оба кода. Остаётся экран, как будто приложение только что установили.": {
+    "Второй код — на случай, когда телефон заставляют разблокировать. Введи его на экране входа, и аккаунт сотрётся.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A second code that erases your account instead of unlocking it. Everything on this device goes: messages, contacts, keys, both codes. What is left looks like the app was just installed."
+            "value": "A second code, for when someone makes you unlock the phone. Enter it on the lock screen and the account is erased."
+          }
+        }
+      }
+    },
+    "Второй код, который стирает аккаунт вместо того, чтобы открыть его. С этого устройства уходит всё: переписка, контакты, ключи, оба кода. Остаётся экран, как будто приложение только что установили Отменить это нельзя.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A second code that erases your account instead of unlocking it. Everything on this device goes: messages, contacts, keys, both codes. What is left looks like the app was just installed. This cannot be undone."
           }
         }
       }
@@ -3340,6 +3394,17 @@
         }
       }
     },
+    "Код\nна принуждение": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The code\nthat wipes"
+          }
+        }
+      }
+    },
     "Код на случай принуждения": {
       "extractionState": "manual",
       "localizations": {
@@ -4110,17 +4175,6 @@
         }
       }
     },
-    "Не достаёт копию. Если с телефона уже сняли резервную копию, стирание сейчас до неё не дотянется.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "It cannot reach a copy. If a backup of this phone was already taken, wiping now does not touch it."
-          }
-        }
-      }
-    },
     "Не из BIP-39: %@": {
       "localizations": {
         "en": {
@@ -4142,17 +4196,6 @@
         }
       }
     },
-    "Не отменяется. Фраза восстановления вернёт аккаунт, но переписка на этом устройстве пропадёт навсегда.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "It cannot be undone. Your recovery phrase brings the account back, but the conversations on this device are gone."
-          }
-        }
-      }
-    },
     "Не сейчас": {
       "extractionState": "stale",
       "localizations": {
@@ -4160,17 +4203,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not now"
-          }
-        }
-      }
-    },
-    "Не стирает блокчейн. Отправленные сообщения остаются там навсегда. Без ключей их никто не прочитает, но сам факт переписки с твоего адреса виден всем и не удаляется.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "It cannot erase the chain. Messages you already sent stay there for good. Without your keys nobody can read them, but the fact that your address sent messages is public and permanent."
           }
         }
       }
@@ -5546,6 +5578,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Passcodes don't match. Try again."
+          }
+        }
+      }
+    },
+    "Пароль изменён. Код на случай принуждения удалён — задай его заново в настройках безопасности.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passcode changed. The duress code was removed — set it again in security settings."
           }
         }
       }
