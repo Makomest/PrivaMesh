@@ -39,14 +39,14 @@ the public transport, undecryptable without your keys.
 
 ## The fee relay (message sponsorship)
 
-Every message is a message on a decentralized transport that carries a small network fee. So that
+Every message is written to the public Solana blockchain, which charges a small network fee. So that
 you never have to buy or hold cryptocurrency, PrivaMesh operates a **fee relay**
 that pays those fees from an app-funded account and enforces the message allowance
 you obtained through Apple In-App Purchase. When you send a message, mint a
 nickname, or publish your profile to search, the app contacts the relay. The
 relay receives:
 
-- **The transaction to co-sign** — it contains only the *encrypted* message payload (the relay cannot read it), a one-time **stealth** recipient address, and a fresh **ephemeral** sender key. Your real account address is never in it.
+- **The encrypted message and where it goes** — only the *encrypted* payload (the relay cannot read it) and a one-time **stealth** recipient address. The relay builds the transaction itself, signs it with a one-off key and pays for it. Your real account address is never in it.
 - **Your device's IP address** — as with any network request. It is used only to route the request and is not stored to build a profile of you.
 - **Your Apple purchase receipt (JWS)** — to verify you have an active PrivaMesh+ subscription or message pack. Verification is cryptographic; we receive no card or payment details.
 - **A per-account token** — used to count your remaining message allowance. It is not your name, account address, or Apple ID, and is not linked to your identity.
@@ -66,7 +66,7 @@ PrivaMesh transports messages as encrypted memos inside messages on a decentrali
 ## Third parties
 
 - **Network transport provider** — the app and relay connect to a transport endpoint to read and submit transactions. That provider may observe request metadata (including IP) like any internet service.
-- **Cloudflare** — the fee relay runs on Cloudflare's serverless platform, which processes requests on our behalf.
+- **Cloudflare** — the fee relay runs on Cloudflare Workers, which processes requests on our behalf.
 - **Apple** — In-App Purchases (PrivaMesh+ and message packs) are processed by Apple via StoreKit. Apple's privacy policy applies. We receive no payment details.
 
 ## Encryption

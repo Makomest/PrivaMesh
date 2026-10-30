@@ -19,11 +19,11 @@ Users who engage in such behaviour may be blocked by other users and reported.
 
 - You can **block** any contact at any time — you will stop receiving their messages.
 - You can **report** any user or message. Reports are sent to the developer and reviewed.
-- Because PrivaMesh is end-to-end encrypted and serverless, the developer cannot read message content or remove content from the public transport. Moderation is performed through client-side blocking and review of reports.
+- Because PrivaMesh is end-to-end encrypted, the developer cannot read message content or remove content from the public blockchain. Moderation is performed through client-side blocking and review of reports.
 
-## 3. End-to-end encryption and serverless design
+## 3. End-to-end encryption and delivery
 
-PrivaMesh has no backend server. Messages are end-to-end encrypted and transported on the public, decentralized transport. The developer has **no access** to your messages, contacts, or keys, and cannot recover, read, alter, or delete them.
+Messages are end-to-end encrypted on your device. Our relay writes them to the public Solana blockchain and pays the network fee; it cannot read them. The developer has **no access** to your messages, contacts, or keys, and cannot recover, read, alter, or delete them.
 
 ## 4. Your recovery phrase
 
@@ -31,9 +31,9 @@ You alone control your recovery phrase and keys. **Losing your recovery phrase m
 
 ## 5. Message delivery
 
-- Network actions (sending messages, payments, reserving nicknames) are recorded on a decentralized transport and are **irreversible**.
-- They cost network delivery fees. You are responsible for your transactions and for any funds you send or receive.
-- PrivaMesh is **not** a cryptocurrency exchange and does not buy, sell, or convert cryptocurrency for fiat. It only lets you send and receivemessages between accounts you control.
+- Sending a message or reserving a nickname writes encrypted data to the public Solana blockchain. It is **irreversible**: it cannot be edited or deleted.
+- We pay the network fees. You never send, receive or hold any cryptocurrency in PrivaMesh.
+- PrivaMesh is **not** a cryptocurrency wallet or exchange. It does not let you buy, sell, hold, send, receive, or convert any cryptocurrency, and there is no wallet in the app.
 
 ## 6. Subscriptions
 

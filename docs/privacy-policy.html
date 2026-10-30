@@ -38,9 +38,9 @@
   <p>We do not use third-party analytics, advertising, or tracking SDKs.</p>
 
   <h2>The delivery relay (message sponsorship)</h2>
-  <p>Every message is a small transaction on a decentralized transport that carries a network delivery fee. So that you never have to buy or hold any cryptocurrency, PrivaMesh operates a <strong>delivery relay</strong> that pays those fees from an app-funded account and enforces the message allowance you obtained through Apple In-App Purchase. When you send a message, reserve a nickname, or publish your profile to search, the app contacts the relay, which receives:</p>
+  <p>Every message is written to the public Solana blockchain, which charges a small network fee. So that you never have to buy or hold any cryptocurrency, PrivaMesh operates a <strong>delivery relay</strong> that pays those fees from an app-funded account and enforces the message allowance you obtained through Apple In-App Purchase. When you send a message, reserve a nickname, or publish your profile to search, the app contacts the relay, which receives:</p>
   <ul>
-    <li><strong>The transaction to co-sign</strong> — it contains only the <em>encrypted</em> message payload (the relay cannot read it), a one-time <strong>stealth</strong> recipient address, and a fresh <strong>ephemeral</strong> sender key. Your real account address is never in it.</li>
+    <li><strong>The encrypted message and where it goes</strong> — only the <em>encrypted</em> payload (the relay cannot read it) and a one-time <strong>stealth</strong> recipient address. The relay builds the transaction itself, signs it with a one-off key and pays for it. Your real account address is never in it.</li>
     <li><strong>Your device's IP address</strong> — as with any network request; used only to route the request, not to profile you.</li>
     <li><strong>Your Apple purchase receipt (JWS)</strong> — to verify an active PrivaMesh+ subscription or message pack. Verification is cryptographic; we receive no card or payment details.</li>
     <li><strong>A per-account token</strong> — used to count your remaining message allowance. It is not your name, account address, or Apple ID, and is not linked to your identity.</li>
@@ -67,7 +67,7 @@
   <h2>Third parties</h2>
   <ul>
     <li><strong>Network transport provider</strong> — the app and relay connect to a transport endpoint to read and submit messages. That provider may observe request metadata (including IP), like any internet service.</li>
-    <li><strong>Cloudflare</strong> — the delivery relay runs on Cloudflare's serverless platform, which processes requests on our behalf.</li>
+    <li><strong>Cloudflare</strong> — the delivery relay runs on Cloudflare Workers, which processes requests on our behalf.</li>
     <li><strong>Apple</strong> — In-App Purchases (PrivaMesh+ and message packs) are processed by Apple via StoreKit. Apple's privacy policy applies. We receive no payment details.</li>
   </ul>
 

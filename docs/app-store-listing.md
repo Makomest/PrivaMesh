@@ -19,12 +19,24 @@ Copy-paste fields for App Store Connect. Position the app as a **private messeng
 **17+** (unrestricted user-generated content / messaging)
 
 ## Promotional text (max 170 chars)
-- EN: `Private messaging with no servers, no phone number, no email. End-to-end encrypted. Your keys and chats never leave your device.`
-- RU: `Приватные сообщения без серверов, без номера телефона, без email. Сквозное шифрование. Ключи и переписка не покидают устройство.`
+- EN: `End-to-end encrypted messages with no phone number and no email. Only the person you write to can read them. We pay every network fee for you.`
+- RU: `Сквозное шифрование без номера телефона и email. Прочитать сообщение может только тот, кому ты пишешь. Все комиссии сети платим мы.`
 
 ## Keywords (max 100 bytes, comma-separated, no spaces — no brand names, no crypto terms)
-- EN: `secure,privacy,encryption,e2e,serverless,decentralized,metadata,texting,messaging,keys,no ads` (93 bytes)
+- EN: `secure,privacy,encryption,e2e,messenger,chat,texting,messaging,keys,no ads,no phone number` (90 bytes)
 - RU: `мессенджер,шифрование,безопасный,переписка,ключи` (92 bytes)
+
+### Claims that must not go back in
+
+1.2 (19) was rejected under 2.5.19 and 5.6 for metadata that described a
+different app: the promotional text said "no servers" and "chats never leave
+your device", the keywords said `serverless`, and screenshot 07 said "Nothing in
+the middle — no server of ours" while every message goes through our relay.
+None of these, in any language: `serverless`, "no servers", "no server of ours",
+"nothing in the middle", "peer to peer", "military-grade", "verification badge"
+for PrivaMesh+, "your chats never leave your device". Say what happens instead:
+the relay passes each encrypted message to the blockchain and pays the fee, and
+cannot read it.
 
 ### Two words that must not go back in
 
@@ -50,51 +62,47 @@ or additional violations, so this is not a place to argue the point.
 
 ## Description (EN)
 
-PrivaMesh is a private, end-to-end encrypted messenger for people who don't want their conversations logged, mined, or sold. No phone number. No email. No profile. Just a key that belongs to you.
+PrivaMesh is an end-to-end encrypted messenger. No phone number, no email: your account is a 12-word recovery phrase that stays on your phone.
 
-PRIVATE BY DESIGN
-Everything personal stays on your device — your identity, your contacts, your chat history. There's no account database and nothing about you to leak. Your keys never leave your phone.
+HOW MESSAGES TRAVEL
+Each message is encrypted on your phone and written to the public Solana blockchain, where only the person you write to can read it. Our relay passes it on and pays the network fee; it cannot read your messages and keeps no copy. You never need or handle cryptocurrency.
 
-NO PHONE, NO EMAIL
-Sign up with nothing at all. No phone number, no email, no personal data. Your identity is a key you own, stored in the iOS Keychain and locked with Face ID / Touch ID.
+ON YOUR PHONE
+Keys, contacts and decrypted chats stay on this device. Saved Messages come back when you restore your phrase on a new phone; chats with other people don't.
 
-REAL END-TO-END ENCRYPTION
-PrivaMesh uses a proven cryptographic core: X3DH for the initial handshake and the Double Ratchet for ongoing messages — the same family of protocols trusted by the world's leading secure messengers. Forward secrecy means even a compromised key can't unlock your past conversations.
+PROTECTION
+• A new one-time address for every message
+• Optional Face ID lock for your keys
+• Disappearing messages
+• Safety numbers to check a contact in person
+• A duress code that erases the account from this phone
 
-METADATA-RESISTANT
-No central profile of your social graph. Who you talk to, when, and how often isn't collected, logged, or sold.
+PRICING
+Your first account gets 10 free messages a month. PrivaMesh+ subscriptions and message packs add more through In-App Purchase; PrivaMesh+ also adds a PrivaMesh+ badge and up to 3 accounts. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the period; manage them in your Apple ID settings.
 
-YOUR IDENTITY, YOUR CONTROL
-Pick a unique nickname so friends can find you — no contact-list upload, no data harvesting. You hold your own recovery phrase: back it up once and restore your account on any device.
-
-PRIVAMESH+ (optional)
-PrivaMesh+ unlocks a higher monthly message allowance and a verification badge. Auto-renewable subscription; payment is charged to your Apple ID and renews unless canceled at least 24 hours before the period ends. Manage or cancel anytime in Apple ID settings.
-
-Private messaging the way it should be: your words, your keys, your device. Trust math, not companies.
+Anything you send stays on the blockchain permanently: unreadable without the keys, but impossible to delete.
 
 ## Description (RU)
 
-PrivaMesh — приватный мессенджер со сквозным шифрованием для тех, кто не хочет, чтобы их переписку логировали, анализировали или продавали. Без номера телефона. Без email. Без профиля. Только ключ, который принадлежит тебе.
+PrivaMesh — мессенджер со сквозным шифрованием. Без номера телефона и email: твой аккаунт — фраза восстановления из 12 слов, которая хранится на телефоне.
 
-ПРИВАТНОСТЬ ПО УМОЛЧАНИЮ
-Всё личное остаётся на устройстве — личность, контакты, история переписки. Нет базы аккаунтов и нечего утекать. Ключи не покидают телефон.
+КАК ИДУТ СООБЩЕНИЯ
+Каждое сообщение шифруется на телефоне и записывается в публичный блокчейн Solana, где прочитать его может только тот, кому ты пишешь. Наш relay передаёт его и платит комиссию сети; прочитать сообщения он не может и копий не хранит. Криптовалюта тебе не нужна.
 
-БЕЗ ТЕЛЕФОНА И EMAIL
-Регистрация вообще без данных. Твоя личность — ключ, который хранится в iOS Keychain и защищён Face ID / Touch ID.
+НА ТЕЛЕФОНЕ
+Ключи, контакты и расшифрованные чаты хранятся только на этом устройстве. Избранное вернётся, если восстановить фразу на новом телефоне; чаты с другими людьми — нет.
 
-НАСТОЯЩЕЕ СКВОЗНОЕ ШИФРОВАНИЕ
-X3DH для рукопожатия и Double Ratchet для сообщений — семейство протоколов, которому доверяют ведущие защищённые мессенджеры. Forward secrecy: даже скомпрометированный ключ не раскроет прошлую переписку.
+ЗАЩИТА
+• Новый одноразовый адрес для каждого сообщения
+• Face ID на ключи — по желанию
+• Исчезающие сообщения
+• Номера безопасности, чтобы проверить собеседника при встрече
+• Код на случай принуждения: стирает аккаунт с этого телефона
 
-УСТОЙЧИВОСТЬ К МЕТАДАННЫМ
-Никакого центрального профиля твоих связей. Кто, когда и как часто — не собирается и не продаётся.
+ЦЕНЫ
+Первый аккаунт получает 10 бесплатных сообщений в месяц. Подписки PrivaMesh+ и пакеты сообщений добавляют больше через встроенные покупки; PrivaMesh+ также даёт значок PrivaMesh+ и до 3 аккаунтов. Подписка продлевается автоматически, если не отменить её минимум за 24 часа до конца периода; управление — в настройках Apple ID.
 
-ТВОЯ ЛИЧНОСТЬ — ТВОЙ КОНТРОЛЬ
-Выбери уникальный ник, чтобы тебя находили — без загрузки контактов. Фраза восстановления только у тебя: сохрани один раз и восстанови аккаунт на любом устройстве.
-
-PRIVAMESH+ (опционально)
-PrivaMesh+ открывает больший месячный лимит сообщений и галочку верификации. Автопродление; оплата с Apple ID, продлевается, если не отменить за 24 часа до конца периода. Управление в настройках Apple ID.
-
-Доверяй математике, а не компаниям.
+Всё отправленное остаётся в блокчейне навсегда: без ключей его не прочитать, но и удалить нельзя.
 
 ---
 
@@ -108,45 +116,174 @@ PrivaMesh+ открывает больший месячный лимит соо�
 
 ## App Review notes (paste into "Notes for Reviewer")
 
+1.2 was rejected three times. Builds 15-18 carried dead NFT and SOL-transfer
+code (2.3.1(a)); build 19 still linked SolanaSwift (2.3.1(a)); build 19 was then
+rejected under 2.5.19 and 5.6 because the app recognised the review account and
+staged chats for it, Settings had a switch for a feature that did not exist, and
+the store text said there was no server between users. Build 21 fixes all
+three; the notes below describe the app exactly as every account gets it.
+
 ```
-PrivaMesh is a private, end-to-end encrypted messenger. It is NOT a cryptocurrency
-wallet — there is no wallet, no balance, no buy/sell/exchange, and no trading
-anywhere in the app. Users create an on-device identity key and send encrypted
-messages; that is the entire experience.
+PrivaMesh is an end-to-end encrypted messenger. The app behaves the same for
+every account, including the demo account below, and no feature is switched on
+remotely.
 
-The app has no traditional login — an identity key is generated on device. For
-review we provide a DEMO account: restoring its recovery phrase pre-populates the
-app with sample contacts and two-way conversations so all features are verifiable.
+HOW MESSAGES ARE DELIVERED
+- A message is encrypted on the device (X3DH + Double Ratchet) and sent to our
+  relay, a Cloudflare Worker. The relay writes it to the public Solana
+  blockchain as encrypted data and pays the network fee from our own account.
+  It cannot read the message and keeps no copy.
+- The app contains no blockchain, wallet or token library and builds no
+  transactions. Users never hold, see, buy, send or receive cryptocurrency.
+- Photos are encrypted on the device and stored on Arweave through Irys.
+- The recovery phrase derives the user's messaging keys. It is an account key,
+  not a wallet.
 
-DEMO ACCOUNT — restore this recovery phrase:
-Welcome screen -> "Restore from recovery phrase" -> enter:
+DEMO ACCOUNT
+Welcome -> "Restore from recovery phrase" -> enter the phrase from the Sign-In
+Information. After setting a passcode and accepting the Terms of Use, the Chats
+screen shows two conversations, "PrivaMeshTeam" and "Alex42". Both are test
+accounts we run; their messages were sent to the demo account over the network
+before submission, the way any message arrives. Reply in either chat to send a
+live message (each account has 10 free messages a month). "Saved Messages",
+your chat with yourself, works without anyone else.
 
-drum need person expire large wrist struggle labor label ill improve cloud
+FEATURES AND WHERE THEY ARE
+- Chats: a globe of contacts and a list view, search, unread counts.
+- New contact ("+"): QR code, invite link, or search by nickname.
+- In a chat: text and photos. Tap the contact's name at the top for
+  disappearing messages, the safety number ("Verify contact"), mute, block
+  and report.
+- Profile: nickname, avatar, accounts (up to 3 with PrivaMesh+), messages left
+  and purchases, "Search by nickname" (off until turned on), recovery phrase
+  (behind the passcode).
+- Profile -> Privacy: optional Face ID lock for the keys, show the PrivaMesh+
+  badge to contacts.
+- Profile -> Duress code: an optional second passcode. Entered at any passcode
+  prompt, it erases the account from this phone and returns to the welcome
+  screen. Its screen explains what it does and does not do.
+- Profile -> Notifications: mute all, show or hide the sender's name.
+- Profile -> RPC node: optionally read messages through another Solana RPC
+  server instead of the default (Helius). Reading only; nothing is sent there.
+- Profile -> Language: the app's language.
+- Profile -> Legal: Terms of Use and Privacy Policy.
+- In the background the app only checks for new messages (Background App
+  Refresh). It sends only what the user asks for: messages, and the nickname
+  record when the user turns on "Search by nickname" or reserves a nickname.
 
-After restoring and setting a passcode, the Chats screen shows pre-populated
-conversations (Alice, Bob, Decart) demonstrating the full messaging UI
-(end-to-end encryption, message info, block/report, etc.).
+IN-APP PURCHASES
+Profile -> "Messages left", or send until the free allowance is used:
+PrivaMesh+ subscriptions and one-time message packs. They grant a message
+allowance, the PrivaMesh+ badge and up to 3 accounts, nothing else.
 
-SEND A LIVE MESSAGE (no purchase needed):
-Each account includes a small free monthly message allowance. Open the "Decart"
-chat and send a message, or Chats -> "+" -> search "Decart" -> add -> message it.
-All delivery/infrastructure costs are covered by us, the developer. Users never
-buy, hold, send, or spend any cryptocurrency.
+USER-GENERATED CONTENT (Guideline 1.2)
+- The Terms of Use (zero tolerance) are accepted before first use.
+- Any contact can be blocked and any user or message reported.
 
-IN-APP PURCHASES:
-To add messages, open Profile -> the "Messages left" tile (or send until the free
-allowance is used) to reach the purchase screen: subscriptions (PrivaMesh+
-Starter/Pro) and consumable message packs. Test in the StoreKit sandbox. IAP
-grants only a message allowance and membership perks — no cryptocurrency, token,
-or digital asset is ever sold.
-
-USER-GENERATED CONTENT MODERATION (Guideline 1.2):
-- Terms of Use (zero-tolerance policy) and Privacy Policy are linked in the app.
-- Users can BLOCK any contact and REPORT any user or message.
-- The app is end-to-end encrypted, so moderation is client-side (block + report).
+REMOVED IN VERSION 1.2
+- Build 18: leftover NFT, SOL-transfer and fee-wallet code.
+- Build 19: the SolanaSwift library; the relay builds transactions instead.
+- Build 21: sample conversations the app showed only to the review account; a
+  disabled "Hide my IP through a mixnet" switch for a feature that did not
+  exist; optional background decoy messages ("cover traffic"); publishing every
+  account to the public nickname directory without asking (it is now off until
+  the user turns it on); and wording in the app and on the store that said
+  there was no server between users.
 
 Encryption: end-to-end; export-exempt (ITSAppUsesNonExemptEncryption = NO).
-iPhone-only.
+```
 
-If anything is unclear, contact privamesh@proton.me — thank you for reviewing.
+## Resolution Center replies (1.2)
+
+Third reply, for build 21 (Guidelines 2.5.19 and 5.6):
+
+```
+Hello,
+
+Thank you. We found three things in build 19 that fit your description, and
+build 21 removes them:
+
+1. The app recognised the App Review demo account by its address and showed it
+   sample conversations that no other account had. That code is gone. The demo
+   account is now an ordinary new account; the two conversations in it are real
+   messages that our test accounts sent to it over the network before
+   submission.
+
+2. Settings showed a disabled "Hide my IP through a mixnet" switch for a feature
+   that does not exist. It is removed, together with an optional setting that
+   sent invisible decoy messages in the background. The app also wrote every
+   account into the public nickname directory on launch, whatever the "Search
+   by nickname" switch said; it now publishes nothing until the user turns
+   that switch on or reserves a nickname.
+
+3. Our store text and screenshots said there was no server between users. In
+   fact every message passes through our relay, which writes it to the public
+   Solana blockchain and pays the fee, without being able to read it. The
+   description, promotional text, keywords and screenshots now say so, as do
+   the in-app explanations and the privacy policy. We also renamed the
+   subscription's "verification badge" to "PrivaMesh+ badge", because it does
+   not verify anyone.
+
+The Notes for Review now list every feature and where to find it. The app
+behaves the same for every account, and no feature is switched on remotely.
+
+Best regards
+```
+
+Second reply, for build 19:
+
+```
+Hello,
+
+Thank you for looking again. Build 18 still contained what you describe, and
+build 19 removes it:
+
+- The open-source SolanaSwift library is no longer in the app. We used it only
+  to derive the account key from the recovery phrase and to assemble a message,
+  but it brought token, swap and transfer code with it. Key derivation is now a
+  few hundred lines of our own code, and the app no longer builds or signs any
+  network transaction: it sends the encrypted message to our server, which
+  writes it to the network and pays the fee.
+- Build 18 also carried, by mistake, cached files from a developer tool that
+  listed the names of code removed earlier. They are gone from the bundle.
+
+There is no wallet, balance, transfer, token, NFT or trading code in the app.
+Messages are end-to-end encrypted and delivered over the public Solana network;
+we pay every network fee, and users pay only through In-App Purchase, for a
+message allowance. The Notes for Review describe this in full.
+
+Best regards
+```
+
+First reply, sent with build 18:
+
+```
+Hello,
+
+Thank you for the review. You were right that the build contained code that was
+not documented: an earlier, abandoned design for NFT avatars and nicknames, SOL
+transfers and a fee wallet. None of it was reachable from any screen, but it
+should not have shipped. Build 18 removes it completely.
+
+We should also have stated plainly how messages are delivered, and we have now
+done so in the Notes for Review and in the description: messages are encrypted
+on the device and delivered over the public Solana network; the developer pays
+every network fee from its own account; users never hold, see, send or receive
+cryptocurrency, and there are no tokens, NFTs, balances or trading in the app.
+Users pay only through In-App Purchase, for a message allowance.
+
+We have submitted build 18 with these changes. Please let us know if anything
+further needs clarifying.
+
+Best regards
+```
+
+## What's New in 1.2 (EN / RU)
+
+```
+Clearer explanations of how messages are delivered, a PrivaMesh+ badge instead of a check mark, and many security and reliability fixes.
+```
+
+```
+Понятнее объясняем, как доставляются сообщения; значок PrivaMesh+ вместо галочки; много исправлений безопасности и надёжности.
 ```
